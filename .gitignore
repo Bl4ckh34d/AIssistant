@@ -4,4 +4,6 @@ recording/audio/last_input.wav
 recording/audio/last_output.wav
 recording/text/*
 !recording/text/.gitkeep
+webui/*
+!webui/.gitkeep
 AI.ico

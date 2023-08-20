@@ -1,0 +1,6 @@
+env/
+webui/
+recording/audio/last_input.wav
+recording/audio/last_output.wav
+recording/text/*
+AI.ico

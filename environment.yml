@@ -59,6 +59,7 @@ dependencies:
   - mkl_fft=1.3.6=py310h4ed8f06_1
   - mkl_random=1.2.2=py310h4ed8f06_1
   - mpmath=1.3.0=py310haa95532_0
+  - numpy-base=1.25.2=py310h65a83cf_0
   - openssl=1.1.1v=h2bbff1b_0
   - pip=23.2.1=py310haa95532_0
   - portaudio=19.6.0=he774522_4

@@ -1,5 +1,7 @@
-env/
-webui/
+env/*
+!env/.gitkeep
+webui/*
+!webui/.gitkeep
 recording/audio/last_input.wav
 recording/audio/last_output.wav
 recording/text/*

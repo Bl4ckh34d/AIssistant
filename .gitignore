@@ -1,4 +1,4 @@
-env/*
+env/
 !env/.gitkeep
 recording/audio/last_input.wav
 recording/audio/last_output.wav

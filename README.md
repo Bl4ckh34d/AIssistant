@@ -17,6 +17,7 @@ cd D:\AI\webui && ^
 pip3 install -r requirements.txt && ^
 pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
 pip3 install -U openai-whisper && ^
+mv D:\airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S D:\AI\webui\models\ && ^
 mkdir "D:\AI\webui\models\airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S"
 ```
 

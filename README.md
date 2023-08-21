@@ -29,7 +29,7 @@ Model:
 ```bash
 conda deactivate && ^
 conda uninstall -p D:\AI\env --all -y && ^
-d: && ^<br>
+d: && ^
 cd D:\AI\webui\models\ && ^
 mv airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S D:\ && ^
 rmdir /s /q webui

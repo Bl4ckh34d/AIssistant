@@ -7,7 +7,7 @@ Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
 
 <pre>
-```shell
+```bash
 conda create -p D:\AI\env python==3.10.11 pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y && ^<br>
 conda activate D:\AI\env && ^<br>
 d: && ^<br>
@@ -29,7 +29,7 @@ Model:
 ## UNINSTALL Conda environment:*
 
 <pre>
-```shell
+```bash
 conda deactivate && ^<br>
 conda uninstall -p D:\AI\env --all -y && ^<br>
 d: && ^<br>

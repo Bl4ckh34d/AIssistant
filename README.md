@@ -7,16 +7,16 @@ Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
 
 ```bash
-conda create -p D:\AI\env python==3.10.11 pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y && ^<br>
-conda activate D:\AI\env && ^<br>
-d: && ^<br>
-cd D:\AI && ^<br>
-git clone https://github.com/oobabooga/text-generation-webui && ^<br>
-ren "text-generation-webui" "webui" && ^<br>
-cd D:\AI\webui && ^<br>
-pip3 install -r requirements.txt && ^<br>
-pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^<br>
-pip3 install -U openai-whisper && ^<br>
+conda create -p D:\AI\env python==3.10.11 pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y && ^
+conda activate D:\AI\env && ^
+d: && ^
+cd D:\AI && ^
+git clone https://github.com/oobabooga/text-generation-webui && ^
+ren "text-generation-webui" "webui" && ^
+cd D:\AI\webui && ^
+pip3 install -r requirements.txt && ^
+pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
+pip3 install -U openai-whisper && ^
 mkdir "D:\AI\webui\models\airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S"
 ```
 
@@ -27,10 +27,10 @@ Model:
 ## UNINSTALL Conda environment:*
 
 ```bash
-conda deactivate && ^<br>
-conda uninstall -p D:\AI\env --all -y && ^<br>
+conda deactivate && ^
+conda uninstall -p D:\AI\env --all -y && ^
 d: && ^<br>
-cd D:\AI\webui\models\ && ^<br>
-mv airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S D:\ && ^<br>
+cd D:\AI\webui\models\ && ^
+mv airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S D:\ && ^
 rmdir /s /q webui
 ```

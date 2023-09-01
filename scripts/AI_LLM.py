@@ -1,10 +1,9 @@
-import whisper
 import datetime
 import requests
-import os
-import coqui_tts
 import contextlib
 import io
+import os
+import AI_TTS
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 text_output_dir = os.path.join(current_dir, '../recording/text')
@@ -54,7 +53,7 @@ def invoke_tts(message):
         print("PROBLEM: Nothing sent to TTS...")
     else:
         with contextlib.redirect_stdout(io.StringIO()):
-            coqui_tts.text_to_speech(message)
+            AI_TTS.text_to_speech(message)
 
 def send_request(message):
     global history

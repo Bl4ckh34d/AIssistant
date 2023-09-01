@@ -1,7 +1,6 @@
 import os
 import sounddevice as sd
 import soundfile as sf
-import pyaudio
 from TTS.api import TTS
 import threading
 

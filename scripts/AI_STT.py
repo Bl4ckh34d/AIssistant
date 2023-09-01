@@ -1,11 +1,6 @@
 import whisper
-import datetime
-import requests
 import os
-import TTS
-import contextlib
-import io
-import LLM
+import AI_LLM
 
 # GLOBAL VARIABLES
 whisper_model = whisper.load_model("small") #tiny, base, small
@@ -32,5 +27,5 @@ def transcribe_audio():
     cleaned_transcription = transcription.strip() 
     
     # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
-    LLM.send_request(cleaned_transcription)
+    AI_LLM.send_request(cleaned_transcription)
             

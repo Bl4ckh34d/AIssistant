@@ -1,8 +1,7 @@
-import warnings
 import record_audio
-import sys
+import warnings
 
-#warnings.filterwarnings("ignore", message=".*The 'nopython' keyword.*")
+warnings.filterwarnings("ignore", message=".*The 'nopython' keyword.*")
 
 def show_intro():
     print("====================================================================")

@@ -4,7 +4,7 @@ import struct
 import wave
 import time
 import os
-import whisper_transcription
+import STT
 
 Init_Threshold = 15
 Threshold = 20
@@ -87,7 +87,7 @@ class Recorder:
         wf.writeframes(recording)
         wf.close()
 
-        whisper_transcription.transcribe_audio()
+        STT.transcribe_audio()
 
 
 

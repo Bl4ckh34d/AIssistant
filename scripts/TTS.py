@@ -21,7 +21,7 @@ def text_to_speech(message):
     # Play the wav file through the CABLE Input (VB-Audio Virtual C) device (ID 8)
     data, fs = sf.read(path_to_file)
     device_id_virtual = 8 #8
-    device_id_speakers = 10 #6
+    device_id_speakers = 6 #6
 
     # Create threads for playing audio on respective devices
     thread_speakers = threading.Thread(target=play_audio, args=(data, fs, device_id_speakers))

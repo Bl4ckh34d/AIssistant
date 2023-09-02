@@ -11,7 +11,7 @@ def play_audio(data, fs, device_id):
 
 def text_to_speech(message):
     path_to_file = '../recording/audio/last_output.wav'
-    model_name = 'tts_models/en/ljspeech/tacotron2-DDC' #'vocoder_models--en--ljspeech--univnet'
+    model_name = 'tts_models/en/ljspeech/vits' #'vocoder_models--en--ljspeech--univnet'
     tts = TTS(model_name)
 
     os.environ["TOKENIZERS_PARALLELISM"] = "true"

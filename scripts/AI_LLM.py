@@ -153,7 +153,7 @@ def send_request(message):
         'truncation_length': 4096, #2048
         'ban_eos_token': False, #False
         'skip_special_tokens': True, #True
-        'stopping_strings': [f'{user_name}:']
+        'stopping_strings': [f'{user_name}: ']
     }
 
     response = requests.post(URI, json=request)

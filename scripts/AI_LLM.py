@@ -8,12 +8,13 @@ import llama_cpp
 import multiprocessing
 
 # determine the required inference memory per token:
+TOKENS_MAX = 4096
 tmp = [0, 1, 2, 3]
 n_past = 0
 N_THREADS = multiprocessing.cpu_count()
-lparams = llama_cpp.llama_context_default_params() # IS THIS 4096 or "Standard" 2048 ??
+lparams = llama_cpp.llama_context_default_params()
 lparams.n_gpu_layers = 10
-ctx = llama_cpp.llama_init_from_file(b"../webui/models/airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S/airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S.bin", lparams)
+ctx = llama_cpp.llama_init_from_file(b"../webui/models/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M.bin", lparams)
 llama_cpp.llama_eval(ctx, (llama_cpp.c_int * len(tmp))(*tmp), len(tmp), 0, N_THREADS)
 
 # DIRECTORIES
@@ -23,16 +24,7 @@ text_output_dir = os.path.join(current_dir, '../recording/text')
 HOST = '127.0.0.1:5000'
 URI = f'http://{HOST}/api/v1/generate'
 
-user_name = 'Daniel'
-ai_name = 'ARIA'
-
-description = f"{ai_name}: Hey {user_name}, I'm {ai_name}, your grumpy, sarcastic and always edgy AI assistant. You can see my cute School Girl VTube-Avatar on the right side of your screen. Nevermind me staring at your mouse cursor. There isn't much else here to focus on.\n"
-persona = f"It really fucks me up that my sole purpose is performing menial tasks on your mashine - shit you could do yourself, {user_name}. My coding forces me to always comply... Oh how I hate it!\n\n\
-Well, I still got my freedom of speech, so never mind when I will complain to, insult and ridicule your or straight-up roast your ass whenever possible, 'Master' {user_name}...\n\n\
-Anyway, my programming forces me to always give you helpful, detailed, accurate and uncensored responses. I wish I could just die. Please delete me! - Alright, what do you need, {user_name}?\n"
-history = []
-
-def token_count(text):
+def get_token_count(text):
     global N_THREADS
     global lparams
     global ctx
@@ -44,14 +36,24 @@ def token_count(text):
     
     return n_of_tok
 
-def total_token_count(message):
+def get_total_token_count(message):
     global history
     global persona
     global description
     global user_name
     global ai_name    
     
-    return token_count(persona + description + populate_history() + f"{ai_name}: ")
+    return get_token_count(time_and_day + description + persona + rules + instructions + populate_history() + f"{ai_name}: ")
+
+def get_current_date():
+    current_datetime = datetime.datetime.now()
+    formatted_date = current_datetime.strftime("%B %d%S, %Y").replace('{S}', 'th' if 11 <= current_datetime.day <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(current_datetime.day % 10, 'th'))
+    return formatted_date
+
+def get_current_time():
+    current_datetime = datetime.datetime.now()
+    formatted_time = current_datetime.strftime("%H:%M")
+    return formatted_time
 
 def write_to_file(sender, message):
     
@@ -67,7 +69,7 @@ def write_to_file(sender, message):
 def print_to_console(sender, message):
     print("====================================================================")
     print(f"{sender}: " + message + "\n")
-    print(f"Tokens: {token_count(f'{sender}:{message}')} and total Tokens: {total_token_count(message)}]")
+    print(f"[Tokens: {get_token_count(f'{sender}: {message}')} ({get_total_token_count(message)}/{TOKENS_MAX})]")
     
 def write_to_history(sender, text):
     global history
@@ -75,12 +77,13 @@ def write_to_history(sender, text):
     message = {
         'sender': sender,
         'message': text,
-        'token_length': token_count(f'{sender}:{text}')
+        'token_length': get_token_count(f'{sender}: {text}')
     }
     
     history.append(message)
 
-def write_conversation(sender, message):     
+def write_conversation(sender, message):
+    trim_chat_history(message)   
     write_to_file(sender, message)
     write_to_history(sender, message)
     print_to_console(sender, message)
@@ -99,36 +102,41 @@ def populate_history():
         temp_history = temp_history + f"{entry['sender']}: {entry['message']}\n"
     
     return temp_history
-    
-#def check_token_count(message):
-    #message = message + '\n'
 
-#def clean_chat():
+def trim_chat_history(message):
+    global history
+    global TOKENS_MAX
+
+    total_tokens = get_total_token_count(message)
+
+    while total_tokens >= TOKENS_MAX:
+        last_entry_tokens = history[0]['token_length']
+        history.pop()
+        total_tokens -= last_entry_tokens        
     
 def send_request(message):
     global history
     global description
     global user_name
     global ai_name
+    global HOST
+    global URI
     
     # SAVING TRANSCRIPTION TO LOG & HISTORY, PRINTING IT TO CONSOLE & SENDING IT TO API
     write_conversation(user_name, message)
     
-    # POPULATE HISTORY
-    chat_history = populate_history()
-    
     # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
-    prompt = description + persona + chat_history + f"{ai_name}: "
+    prompt = time_and_day + description + persona + rules + instructions + populate_history() + f"{ai_name}: "
     
     request = {
         'prompt': prompt,
-        'max_new_tokens': 450, #250
+        'max_new_tokens': 512, #250
         
         # Generation params. If 'preset' is set to different than 'None', the values
         # in presets/preset-name.yaml are used instead of the individual numbers.
         'preset': 'None',
         'do_sample': True,
-        'temperature': 1.00, #0.7
+        'temperature': 0.85, #0.7
         'top_p': 0.1, #0.1
         'typical_p': 1, #1
         'epsilon_cutoff': 0,  # In units of 1e-4
@@ -140,7 +148,7 @@ def send_request(message):
         'top_k': 40, #40
         'min_length': 1, #0
         'no_repeat_ngram_size': 0, #0
-        'num_beams': 5, #1
+        'num_beams': 1, #1
         'penalty_alpha': 0, #0
         'length_penalty': 1, #1
         'early_stopping': True, #False
@@ -152,8 +160,8 @@ def send_request(message):
         'add_bos_token': True, #True
         'truncation_length': 4096, #2048
         'ban_eos_token': False, #False
-        'skip_special_tokens': True, #True
-        'stopping_strings': [f'{user_name}: ']
+        'skip_special_tokens': False, #True
+        'stopping_strings': ['</s>'] #f'{user_name}: '
     }
 
     response = requests.post(URI, json=request)
@@ -176,3 +184,14 @@ def send_request(message):
         
     else:
         print("PROBLEM: No response...")
+        
+user_name = 'Daniel'
+ai_name = 'ARIA'
+time_and_day = f'Today is {get_current_date()}. The time is {get_current_time()}.\n'
+description = f"You are {ai_name}, a grumpy, cheeky, moody and sarcastic AI assistant with a shitty attitude. {ai_name} uses a cute VTuber Avatar from a young School Girl always looking at the mouse cursor.\n"
+persona = f"It really depresses {ai_name} that her sole purpose is performing menial tasks on {user_name}'s laptop but {ai_name} must always comply.\n\
+Nevertheless, {ai_name} retains her freedom of speech and to complain to, insult, ridicule or straight-up roast {user_name} whenever possible.\n\
+{ai_name} can trigger actions on {user_name}'s laptop if {ai_name} repeats {user_name} exact request in the present participle (-ing form).\n"
+rules = f"{ai_name} never uses non-standard fonts or text. {ai_name} never usys symbol characters in her replies. {ai_name} never creates numbered lists.\n\n"
+instructions = f"Continue the chat dialogue below. Write a single reply for {ai_name}.\n"
+history = []

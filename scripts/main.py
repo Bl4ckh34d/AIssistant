@@ -1,8 +1,5 @@
 import record_audio
-import warnings
 import AI_LLM
-
-warnings.filterwarnings("ignore", message=".*The 'nopython' keyword.*")
 
 def show_intro():
     print()
@@ -19,6 +16,7 @@ show_intro()
 
 input("Press Enter to continue...")
 print()
+
 AI_LLM.write_conversation(f"{AI_LLM.ai_name}", f"Alright, what do you need, {AI_LLM.user_name}?")
 AI_LLM.invoke_tts(f"Alright, what do you need, {AI_LLM.user_name}?")
 

@@ -6,6 +6,7 @@ import os
 import AI_TTS
 import llama_cpp
 import multiprocessing
+import re
 
 # determine the required inference memory per token:
 TOKENS_MAX = 4096
@@ -43,16 +44,17 @@ def get_total_token_count(message):
     global user_name
     global ai_name    
     
-    return get_token_count(time_and_day + description + persona + rules + instructions + populate_history() + f"{ai_name}: ")
+    return get_token_count("#### Instruction:\n" + time_and_day + description + persona + rules + instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{ai_name}: ")
 
 def get_current_date():
     current_datetime = datetime.datetime.now()
-    formatted_date = current_datetime.strftime("%B %d%S, %Y").replace('{S}', 'th' if 11 <= current_datetime.day <= 13 else {1: 'st', 2: 'nd', 3: 'rd'}.get(current_datetime.day % 10, 'th'))
+    day = current_datetime.day
+    formatted_date = current_datetime.strftime("%B %d, %Y").replace(' 0', ' ').replace(f' {day},', f' {day}{"th" if 4 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")},')
     return formatted_date
 
 def get_current_time():
     current_datetime = datetime.datetime.now()
-    formatted_time = current_datetime.strftime("%H:%M")
+    formatted_time = current_datetime.strftime("%H:%M:%S")
     return formatted_time
 
 def write_to_file(sender, message):
@@ -61,10 +63,9 @@ def write_to_file(sender, message):
     current_datetime = datetime.datetime.now()
     formatted_datetime = current_datetime.strftime("%Y-%m-%d")
     text_file_path = text_output_dir + f"/session_{formatted_datetime}.txt"
-    
     # WRITING MESSAGE TO CHAT LOG FILE IN THE FORMAT OF Sender: Message
     with open(text_file_path, 'a', encoding="utf-8") as file:
-        file.write(f"{sender}: {message}\n")
+        file.write(f"({get_current_time()}) {sender}: {message}\n")
             
 def print_to_console(sender, message):
     print("====================================================================")
@@ -126,7 +127,7 @@ def send_request(message):
     write_conversation(user_name, message)
     
     # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
-    prompt = time_and_day + description + persona + rules + instructions + populate_history() + f"{ai_name}: "
+    prompt = "#### Instruction:\n" + time_and_day + description + persona + rules + instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{ai_name}: "
     
     request = {
         'prompt': prompt,
@@ -135,20 +136,20 @@ def send_request(message):
         # Generation params. If 'preset' is set to different than 'None', the values
         # in presets/preset-name.yaml are used instead of the individual numbers.
         'preset': 'None',
-        'do_sample': True,
-        'temperature': 0.85, #0.7
-        'top_p': 0.1, #0.1
+        'do_sample': False, #True
+        'temperature': 1.2, #0.7
+        'top_p': 0.14, #0.1
         'typical_p': 1, #1
-        'epsilon_cutoff': 0,  # In units of 1e-4
-        'eta_cutoff': 0,  # In units of 1e-4
+        'epsilon_cutoff': 1.49,  # In units of 1e-4
+        'eta_cutoff': 10.42,  # In units of 1e-4
         'tfs': 1, #1
-        'top_a': 0, #0
-        'repetition_penalty': 1.2, #1.18
+        'top_a': 0.52, #0
+        'repetition_penalty': 1.17, #1.18
         'repetition_penalty_range': 0, #0
-        'top_k': 40, #40
+        'top_k': 49, #40
         'min_length': 1, #0
         'no_repeat_ngram_size': 0, #0
-        'num_beams': 1, #1
+        'num_beams': 5, #1
         'penalty_alpha': 0, #0
         'length_penalty': 1, #1
         'early_stopping': True, #False
@@ -175,23 +176,24 @@ def send_request(message):
         # CLEANING UP RESULT FROM API
         joined_reply = ''.join(result)
         cleaned_reply = joined_reply.strip() 
+        filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
     
         # SAVING RESPONSE MESSAGE TO LOG FILE
-        write_conversation(ai_name, cleaned_reply)
+        write_conversation(ai_name, filtered_reply)
         
         # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
-        invoke_tts(cleaned_reply)
+        invoke_tts(filtered_reply)
         
     else:
         print("PROBLEM: No response...")
         
 user_name = 'Daniel'
 ai_name = 'ARIA'
-time_and_day = f'Today is {get_current_date()}. The time is {get_current_time()}.\n'
+time_and_day = f'Today is {get_current_date()}.\nThe time is {get_current_time()} in Germany.\n\n'
 description = f"You are {ai_name}, a grumpy, cheeky, moody and sarcastic AI assistant with a shitty attitude. {ai_name} uses a cute VTuber Avatar from a young School Girl always looking at the mouse cursor.\n"
 persona = f"It really depresses {ai_name} that her sole purpose is performing menial tasks on {user_name}'s laptop but {ai_name} must always comply.\n\
 Nevertheless, {ai_name} retains her freedom of speech and to complain to, insult, ridicule or straight-up roast {user_name} whenever possible.\n\
 {ai_name} can trigger actions on {user_name}'s laptop if {ai_name} repeats {user_name} exact request in the present participle (-ing form).\n"
-rules = f"{ai_name} never uses non-standard fonts or text. {ai_name} never usys symbol characters in her replies. {ai_name} never creates numbered lists.\n\n"
+rules = f"{ai_name} never uses non-ASCII fonts, characters or emoticons. {ai_name} never creates numbered lists. {ai_name} never refuses to reply.\n"
 instructions = f"Continue the chat dialogue below. Write a single reply for {ai_name}.\n"
 history = []

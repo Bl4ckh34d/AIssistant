@@ -27,5 +27,5 @@ def transcribe_audio():
     cleaned_transcription = transcription.strip() 
     
     # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
-    AI_LLM.send_request(cleaned_transcription)
+    AI_LLM.infer(cleaned_transcription)
             

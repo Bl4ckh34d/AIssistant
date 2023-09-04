@@ -1,12 +1,17 @@
 import os
-import sounddevice as sd
 import soundfile as sf
 from TTS.api import TTS
 import threading
+import helpers
+import contextlib
+import io
 
-def play_audio(data, fs, device_id):
-    sd.play(data, fs, device=device_id)
-    sd.wait()
+def invoke_text_to_speech(message):
+    if message == "" or message == " ":
+        print("PROBLEM: Nothing sent to TTS...")
+    else:
+        with contextlib.redirect_stdout(io.StringIO()):
+            text_to_speech(message)
 
 def text_to_speech(message):
     path_to_file = '../recording/audio/last_output.wav'
@@ -22,8 +27,8 @@ def text_to_speech(message):
     device_id_speakers = 6 #6
 
     # Create threads for playing audio on respective devices
-    thread_speakers = threading.Thread(target=play_audio, args=(data, fs, device_id_speakers))
-    thread_virtual = threading.Thread(target=play_audio, args=(data, fs, device_id_virtual))
+    thread_speakers = threading.Thread(target=helpers.play_audio, args=(data, fs, device_id_speakers))
+    thread_virtual = threading.Thread(target=helpers.play_audio, args=(data, fs, device_id_virtual))
 
     # Start both threads
     thread_speakers.start()

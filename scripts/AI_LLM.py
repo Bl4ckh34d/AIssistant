@@ -10,9 +10,9 @@ import re
 
 # determine the required inference memory per token:
 TOKENS_MAX = 4096
+N_THREADS = multiprocessing.cpu_count()
 tmp = [0, 1, 2, 3]
 n_past = 0
-N_THREADS = multiprocessing.cpu_count()
 lparams = llama_cpp.llama_context_default_params()
 lparams.n_gpu_layers = 10
 ctx = llama_cpp.llama_init_from_file(b"../webui/models/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M.bin", lparams)
@@ -22,6 +22,7 @@ llama_cpp.llama_eval(ctx, (llama_cpp.c_int * len(tmp))(*tmp), len(tmp), 0, N_THR
 current_dir = os.path.dirname(os.path.abspath(__file__))
 text_output_dir = os.path.join(current_dir, '../recording/text')
 
+# NETWORK
 HOST = '127.0.0.1:5000'
 URI = f'http://{HOST}/api/v1/generate'
 
@@ -105,8 +106,8 @@ def populate_history():
     return temp_history
 
 def trim_chat_history(message):
-    global history
     global TOKENS_MAX
+    global history
 
     total_tokens = get_total_token_count(message)
 

@@ -1,4 +1,4 @@
-import record_audio
+import recorder
 import AI_LLM
 
 def show_intro():
@@ -20,5 +20,5 @@ print()
 AI_LLM.write_conversation(f"{AI_LLM.ai_name}", f"Alright, what do you need, {AI_LLM.user_name}?")
 AI_LLM.invoke_tts(f"Alright, what do you need, {AI_LLM.user_name}?")
 
-recording = record_audio.Recorder()
+recording = recorder.Recorder()
 recording.listen()

@@ -5,7 +5,6 @@ from TTS.api import TTS
 import threading
 
 def play_audio(data, fs, device_id):
-    print(f"Playing audio through device ID: {device_id}")
     sd.play(data, fs, device=device_id)
     sd.wait()
 

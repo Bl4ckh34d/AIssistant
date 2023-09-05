@@ -12,8 +12,7 @@ def write_to_file(sender, message):
 def print_to_console(sender, message):
     print("====================================================================")
     print(f"{sender}: " + message + "\n")
-    all_content = helpers.assemble_prompt_for_LLM()
-    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(all_content)}/{vars.TOKENS_MAX})]')
+    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]')
     
 def write_to_history(sender, text):    
     message = {
@@ -39,7 +38,7 @@ def populate_history():
     return temp_history
 
 def trim_chat_history():
-    total_tokens = helpers.get_token_count("#### Instruction:\n" + vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{vars.ai_name}: ")
+    total_tokens = helpers.get_token_count(vars.prompt)
 
     while total_tokens >= vars.TOKENS_MAX:
         last_entry_tokens = vars.history[0]['token_length']
@@ -47,14 +46,12 @@ def trim_chat_history():
         total_tokens -= last_entry_tokens        
     
 def infer(message):
+    
     # SAVING TRANSCRIPTION TO LOG & HISTORY, PRINTING IT TO CONSOLE & SENDING IT TO API
     write_conversation(vars.user_name, message)
     
-    # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
-    prompt = helpers.assemble_prompt_for_LLM()
-    
     request = {
-        'prompt': prompt,
+        'prompt': helpers.assemble_prompt_for_LLM(),
         'max_new_tokens': 512, #250
         
         # Generation params. If 'preset' is set to different than 'None', the values

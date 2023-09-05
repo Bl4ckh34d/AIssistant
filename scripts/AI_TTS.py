@@ -5,6 +5,7 @@ import threading
 import helpers
 import contextlib
 import io
+import variables as vars
 
 def invoke_text_to_speech(message):
     if message == "" or message == " ":
@@ -14,21 +15,18 @@ def invoke_text_to_speech(message):
             text_to_speech(message)
 
 def text_to_speech(message):
-    path_to_file = '../recording/audio/last_output.wav'
-    model_name = 'tts_models/en/ljspeech/vits' #'vocoder_models--en--ljspeech--univnet'
-    tts = TTS(model_name)
+    tts = TTS(vars.model_name)
 
     os.environ["TOKENIZERS_PARALLELISM"] = "true"
-    tts.tts_to_file(text=message, file_path=path_to_file, gpu=True)
+    
+    tts.tts_to_file(text=message, file_path=vars.path_audio_output_file, gpu=True)
     
     # Play the wav file through the CABLE Input (VB-Audio Virtual C) device (ID 8)
-    data, fs = sf.read(path_to_file)
-    device_id_virtual = 8 #8
-    device_id_speakers = 6 #6
+    data, fs = sf.read(vars.path_audio_output_file)
 
     # Create threads for playing audio on respective devices
-    thread_speakers = threading.Thread(target=helpers.play_audio, args=(data, fs, device_id_speakers))
-    thread_virtual = threading.Thread(target=helpers.play_audio, args=(data, fs, device_id_virtual))
+    thread_speakers = threading.Thread(target=helpers.play_audio, args=(data, fs, vars.AUDIO_DEVICE_ID_SPEAKERS))
+    thread_virtual = threading.Thread(target=helpers.play_audio, args=(data, fs, vars.AUDIO_DEVICE_ID_VIRTUAL))
 
     # Start both threads
     thread_speakers.start()

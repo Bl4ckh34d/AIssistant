@@ -3,6 +3,8 @@ import multiprocessing
 import llama_cpp
 import datetime
 import os
+import variables as vars
+import AI_LLM
 
 # GLOBAL VARIABLES
 N_THREADS = multiprocessing.cpu_count()
@@ -62,3 +64,6 @@ def check_for_keywords_from_list(word_list, message):
         if word in message:
             return word
     return None
+
+def assemble_prompt_for_LLM():
+    return "#### Instruction:\n" + vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + "\n#### Chat History:\n" + AI_LLM.populate_history() + "\n#### Response:\n" + f"{vars.ai_name}: "

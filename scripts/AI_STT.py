@@ -1,15 +1,5 @@
-import whisper
-import os
 import AI_LLM
-
-# GLOBAL VARIABLES
-whisper_model = whisper.load_model("small") #tiny, base, small
-language = "en"
-task = "transcribe" #translate
-current_dir = os.path.dirname(os.path.abspath(__file__))
-audio_output_dir = os.path.join(current_dir, '../recording/audio')
-audio_file_path = os.path.abspath(os.path.join(audio_output_dir, "last_input.wav"))
-text_output_dir = os.path.join(current_dir, '../recording/text')
+import variables as vars
 
 def transcribe_audio():
     global audio_output_dir
@@ -20,7 +10,7 @@ def transcribe_audio():
     ", end="\r", flush=True)
     
     # RECEIVING TRANSCRIPTION
-    segments = whisper_model.transcribe(audio_file_path, language=language, task=task)
+    segments = vars.whisper_model.transcribe(vars.audio_file_path, language=vars.language, task=vars.task)
     
     # CLEANING UP TRANSCRIPTION
     transcription = ''.join(segments["text"])

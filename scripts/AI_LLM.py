@@ -3,80 +3,55 @@ import AI_TTS
 import re
 import helpers
 import commands as cm
-
-# determine the required inference memory per token:
-TOKENS_MAX = 4096
-
-# NETWORK
-HOST = '127.0.0.1:5000'
-URI = f'http://{HOST}/api/v1/generate'
+import variables as vars
 
 def write_to_file(sender, message):
     with open(helpers.generate_file_path(), 'a', encoding="utf-8") as file:
         file.write(f"({helpers.get_current_time()}) {sender}: {message}\n")
             
 def print_to_console(sender, message):
-    global time_and_day
-    global description
-    global persona
-    global rules
-    global instructions
-    global ai_name
-    
     print("====================================================================")
     print(f"{sender}: " + message + "\n")
-    all_content = "#### Instruction:\n" + time_and_day + description + persona + rules + instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{sender}: "
-    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(all_content)}/{TOKENS_MAX})]')
+    all_content = helpers.assemble_prompt_for_LLM()
+    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(all_content)}/{vars.TOKENS_MAX})]')
     
-def write_to_history(sender, text):
-    global history
-    
+def write_to_history(sender, text):    
     message = {
         'sender': sender,
         'message': text,
         'token_length': helpers.get_token_count(f'{sender}: {text}')
     }
     
-    history.append(message)
+    vars.history.append(message)
 
-def write_conversation(sender, message):
-    trim_chat_history(message)   
+def write_conversation(sender, message):  
     write_to_file(sender, message)
     write_to_history(sender, message)
+    trim_chat_history() 
     print_to_console(sender, message)
 
 def populate_history():
     temp_history = ''
     
-    for entry in history:
+    for entry in vars.history:
         temp_history = temp_history + f"{entry['sender']}: {entry['message']}\n"
     
     return temp_history
 
-def trim_chat_history(message):
-    global TOKENS_MAX
-    global history
+def trim_chat_history():
+    total_tokens = helpers.get_token_count("#### Instruction:\n" + vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{vars.ai_name}: ")
 
-    total_tokens = helpers.get_token_count("#### Instruction:\n" + time_and_day + description + persona + rules + instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{ai_name}: ")
-
-    while total_tokens >= TOKENS_MAX:
-        last_entry_tokens = history[0]['token_length']
-        history.pop()
+    while total_tokens >= vars.TOKENS_MAX:
+        last_entry_tokens = vars.history[0]['token_length']
+        vars.history.pop()
         total_tokens -= last_entry_tokens        
     
 def infer(message):
-    global history
-    global description
-    global user_name
-    global ai_name
-    global HOST
-    global URI
-    
     # SAVING TRANSCRIPTION TO LOG & HISTORY, PRINTING IT TO CONSOLE & SENDING IT TO API
-    write_conversation(user_name, message)
+    write_conversation(vars.user_name, message)
     
     # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
-    prompt = "#### Instruction:\n" + time_and_day + description + persona + rules + instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{ai_name}: "
+    prompt = helpers.assemble_prompt_for_LLM()
     
     request = {
         'prompt': prompt,
@@ -114,7 +89,7 @@ def infer(message):
         'stopping_strings': ['</s>'] #f'{user_name}: '
     }
 
-    response = requests.post(URI, json=request)
+    response = requests.post(vars.URI, json=request)
     
     if response.status_code == 200:
     
@@ -128,7 +103,7 @@ def infer(message):
         filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
         
         # SAVING RESPONSE MESSAGE TO LOG FILE
-        write_conversation(ai_name, filtered_reply)
+        write_conversation(vars.ai_name, filtered_reply)
         
         # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
         AI_TTS.invoke_text_to_speech(filtered_reply)
@@ -138,14 +113,3 @@ def infer(message):
         
     else:
         print("PROBLEM: No response...")
-        
-user_name = 'Daniel'
-ai_name = 'ARIA'
-time_and_day = f'Today is {helpers.get_current_date()}.\nThe time is {helpers.get_current_time()} in Germany.\n\n'
-description = f"You are {ai_name}, a grumpy, cheeky, moody and sarcastic AI assistant with a shitty attitude. {ai_name} uses a cute VTuber Avatar from a young School Girl always looking at the mouse cursor.\n"
-persona = f"It really depresses {ai_name} that her sole purpose is performing menial tasks on {user_name}'s laptop but {ai_name} must always comply.\n\
-Nevertheless, {ai_name} retains her freedom of speech and to complain to, insult, ridicule or straight-up roast {user_name} whenever possible.\n\
-{ai_name} can trigger actions on {user_name}'s laptop if {ai_name} repeats {user_name} exact request in the present participle (-ing form).\n"
-rules = f"{ai_name} never uses non-ASCII fonts, characters or emoticons. {ai_name} never creates numbered lists. {ai_name} never refuses to reply.\n"
-instructions = f"Continue the chat dialogue below. Write a single reply for {ai_name}.\n"
-history = []

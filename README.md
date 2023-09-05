@@ -6,18 +6,29 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
 
+Conda:
+- https://docs.conda.io/projects/miniconda/en/latest/ is where you can find the current version of conda. THIS IS REQUIRED for the following install script. Paths also need to adapted for your environment:
+
 ```shell
-conda create -p D:\AI\env python==3.10.11 pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y && ^
-conda activate D:\AI\env && ^
-d: && ^
-cd D:\AI && ^
+install_path="D:\AI\env"
+path_to_model="D:\airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S"
+
+env_path="$install_path\env"
+webui_path="$install_path\webui"
+model_path="$webui_path\models"
+
+mkdir -p "$install_path" && ^
+cd $install_path && ^
+conda create -p $env_path python==3.10.11 pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y && ^
+conda activate $env_path && ^
 git clone https://github.com/oobabooga/text-generation-webui && ^
 ren "text-generation-webui" "webui" && ^
-cd D:\AI\webui && ^
+cd "$webui_path" && ^
 pip3 install -r requirements.txt && ^
 pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
 pip3 install -U openai-whisper && ^
-move D:\airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S D:\AI\webui\models\"
+pip3 install pywinauto && ^
+move $path_to_model $model_path
 ```
 
 Model:

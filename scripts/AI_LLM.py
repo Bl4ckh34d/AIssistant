@@ -7,7 +7,7 @@ import variables as vars
 
 def write_to_file(sender, message):
     with open(helpers.generate_file_path(), 'a', encoding="utf-8") as file:
-        file.write(f"({helpers.get_current_time()}) {sender}: {message}\n")
+        file.write(f"({vars.get_current_time()}) {sender}: {message}\n")
             
 def print_to_console(sender, message):
     print("====================================================================")
@@ -38,7 +38,7 @@ def populate_history():
     return temp_history
 
 def trim_chat_history():
-    total_tokens = helpers.get_token_count(vars.prompt)
+    total_tokens = helpers.get_token_count(helpers.assemble_prompt_for_LLM())
 
     while total_tokens >= vars.TOKENS_MAX:
         last_entry_tokens = vars.history[0]['token_length']

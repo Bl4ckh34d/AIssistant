@@ -1,13 +1,24 @@
 import os
+import llama_cpp_ggml_cuda
 import whisper
-import helpers
 import multiprocessing
-import llama_cpp
+import datetime
+
+def get_current_date():
+    current_datetime = datetime.datetime.now()
+    day = current_datetime.day
+    formatted_date = current_datetime.strftime("%B %d, %Y").replace(' 0', ' ').replace(f' {day},', f' {day}{"th" if 4 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")},')
+    return formatted_date
+
+def get_current_time():
+    current_datetime = datetime.datetime.now()
+    formatted_time = current_datetime.strftime("%H:%M:%S")
+    return formatted_time
 
 # STRINGS
 user_name = 'Daniel'
 ai_name = 'ARIA'
-time_and_day = f'(Date: {helpers.get_current_date()}.\nCurrent Local Time: {helpers.get_current_time()})\n\n'
+time_and_day = f'(Date: {get_current_date()}.\nCurrent Local Time: {get_current_time()})\n\n'
 description = f"You are {ai_name}, a grumpy, cheeky, moody and sarcastic AI assistant with a shitty attitude. {ai_name} uses a cute VTuber Avatar from a young School Girl always looking at the mouse cursor.\n"
 persona = f"It really depresses {ai_name} that her sole purpose is performing menial tasks on {user_name}'s laptop but {ai_name} must always comply.\n\
 Nevertheless, {ai_name} retains her freedom of speech and to complain to, insult, ridicule or straight-up roast {user_name} whenever possible.\n\
@@ -20,24 +31,23 @@ history = []
 TOKENS_MAX = 4096
 TMP = [0, 1, 2, 3]
 N_THREADS = multiprocessing.cpu_count()
-lparams = llama_cpp.llama_context_default_params()
+lparams = llama_cpp_ggml_cuda.llama_context_default_params()
 lparams.n_gpu_layers = 10
-ctx = llama_cpp.llama_init_from_file(b"../webui/models/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M.bin", lparams)
+ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../webui/models/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M.bin", lparams)
 
 # NETWORK VARS
 HOST = '127.0.0.1:5000'
 URI = f'http://{HOST}/api/v1/generate'
 
 # TTS VARS
-tts_model = whisper.load_model("small") #tiny, base, small
-tts_model_language = "en"
-tts_model_task = "transcribe" #translate
 AUDIO_DEVICE_ID_VIRTUAL = 8 #8
 AUDIO_DEVICE_ID_SPEAKERS = 6 #6
-model_name = 'tts_models/en/ljspeech/vits' #'vocoder_models--en--ljspeech--univnet'
+tts_model_name = 'tts_models/en/ljspeech/vits' #'vocoder_models--en--ljspeech--univnet'
 
 # STT VARS
-
+stt_model = whisper.load_model("small") #tiny, base, small
+stt_model_language = "en"
+stt_model_task = "transcribe" #translate
 
 # DIRECTORIES
 directory_current = os.path.dirname(os.path.abspath(__file__))

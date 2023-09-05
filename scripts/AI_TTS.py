@@ -15,7 +15,7 @@ def invoke_text_to_speech(message):
             text_to_speech(message)
 
 def text_to_speech(message):
-    tts = TTS(vars.model_name)
+    tts = TTS(vars.tts_model_name)
 
     os.environ["TOKENIZERS_PARALLELISM"] = "true"
     

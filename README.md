@@ -11,7 +11,7 @@ Conda:
 
 ```shell
 install_path="D:\AI\env"
-path_to_model="D:\airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S"
+path_to_model="D:\airoboros-l2-7b-2.1.ggmlv3.Q4_K_M"
 
 env_path="$install_path\env"
 webui_path="$install_path\webui"
@@ -34,15 +34,3 @@ move $path_to_model $model_path
 Model:
 - https://huggingface.co/TheBloke/airoboros-l2-7B-gpt4-2.0-GGML/blob/main/airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S.bin
 - https://huggingface.co/TheBloke/airoboros-l2-7B-gpt4-2.0-GGML/blob/main/config.json
-
-## UNINSTALL for Github committing and pushing:
-
-```shell
-conda deactivate && ^
-conda uninstall -p D:\AI\env --all -y && ^
-d: && ^
-cd D:\AI\webui\models\ && ^
-move airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S D:\ && ^
-cd D:\AI\ && ^
-rmdir /s /q webui"
-```

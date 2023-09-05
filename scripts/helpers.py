@@ -1,7 +1,7 @@
 import sounddevice as sd
+import variables as vars
 import datetime
 import llama_cpp
-import variables as vars
 import AI_LLM
 
 def show_intro():
@@ -23,17 +23,6 @@ def get_token_count(text):
     embd_inp = (llama_cpp.llama_token * (len(byte_text) + 1))()
     n_of_tok = llama_cpp.llama_tokenize(vars.ctx, byte_text, embd_inp, len(embd_inp), True)
     return n_of_tok
-
-def get_current_date():
-    current_datetime = datetime.datetime.now()
-    day = current_datetime.day
-    formatted_date = current_datetime.strftime("%B %d, %Y").replace(' 0', ' ').replace(f' {day},', f' {day}{"th" if 4 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")},')
-    return formatted_date
-
-def get_current_time():
-    current_datetime = datetime.datetime.now()
-    formatted_time = current_datetime.strftime("%H:%M:%S")
-    return formatted_time
 
 def generate_file_path():
     current_datetime = datetime.datetime.now()

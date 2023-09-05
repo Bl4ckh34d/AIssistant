@@ -1,13 +1,13 @@
 import helpers
 import command_list as cl
-from pywinauto import Application, findwindows
+import subprocess
+import pyautogui
+import time
 
 # APPLICATIONS
-firefox = Application(backend="uia")
-firefox_incognito = Application(backend="uia")
+# Define the paths to the applications
 firefox_path = r"C:\Program Files\Mozilla Firefox\firefox.exe"
-
-explorer = Application(backend="uia")
+explorer_path = "explorer.exe"
 
 def check_ai_for_command(message):
     # OPENING
@@ -17,31 +17,27 @@ def check_ai_for_command(message):
         # FIREFOX
         if helpers.check_for_keywords_from_list(cl.firefoxList,message) is not None:
             # Open Firefox
-            firefox.start(firefox_path)
+            subprocess.Popen([firefox_path])
             # Wait for Firefox to open
-            firefox.wait('ready')
+            time.sleep(5)
             # Bring Firefox to the foreground
-            firefox.set_focus()
+            pyautogui.click()
         
         # FIREFOX INCOGNITO
         if helpers.check_for_keywords_from_list(cl.incognitoList,message) is not None:
             # Start Firefox in incognito (private browsing) mode
-            firefox_incognito.start(f'{firefox_path} -private-window')
+            subprocess.Popen([firefox_path, "-private-window"])
             # Wait for Firefox to open
-            firefox_incognito.wait('ready')
+            time.sleep(5)
             # Bring Firefox incognito to the foreground
-            firefox_incognito.set_focus()
+            pyautogui.click()
         
         # EXPLORER
         if helpers.check_for_keywords_from_list(cl.explorerList,message) is not None:
             # Start a new Windows Explorer window
-            explorer.start("explorer.exe")
+            subprocess.Popen([explorer_path])
             # Wait for Explorer to open
-            explorer.wait('ready')
-            # Send the path to "My Computer" to the address bar
-            explorer.window(title="File Explorer").type_keys('::{20D04FE0-3AEA-1069-A2D8-08002B30309D}')
-            explorer.window(title="File Explorer").type_keys('{ENTER}')
-            explorer.set_focus()
+            time.sleep(5)
             
     # CLOSING
     elif helpers.check_for_keywords_from_list(cl.closingList,message) is not None:

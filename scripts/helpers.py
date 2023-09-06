@@ -1,8 +1,7 @@
 import sounddevice as sd
 import variables as vars
 import datetime
-import llama_cpp
-import AI_LLM
+import llama_cpp_ggml_cuda
 
 def show_intro():
     print()
@@ -20,8 +19,8 @@ def play_audio(data, fs, device_id):
     
 def get_token_count(text):
     byte_text = b" " + text.encode("utf-8")
-    embd_inp = (llama_cpp.llama_token * (len(byte_text) + 1))()
-    n_of_tok = llama_cpp.llama_tokenize(vars.ctx, byte_text, embd_inp, len(embd_inp), True)
+    embd_inp = (llama_cpp_ggml_cuda.llama_token * (len(byte_text) + 1))()
+    n_of_tok = llama_cpp_ggml_cuda.llama_tokenize(vars.ctx, byte_text, embd_inp, len(embd_inp), True)
     return n_of_tok
 
 def generate_file_path():
@@ -36,7 +35,7 @@ def check_for_keywords_from_list(word_list, message):
     return None
 
 def assemble_prompt_for_LLM():
-    prompt = "#### Instruction:\n" + vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + "\n#### Chat History:\n" + AI_LLM.populate_history() + "\n#### Response:\n" + f"{vars.ai_name}: "
+    prompt = "#### Instruction:\n" + vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{vars.ai_name}: "
     return prompt
 
 def populate_history():

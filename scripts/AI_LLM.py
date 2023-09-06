@@ -34,9 +34,8 @@ def trim_chat_history():
 
 def print_to_console(sender, message):
     print("====================================================================")
-    print(f"{sender}: " + message + "\n")
-    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]')
-   
+    print(f"{sender}: " + message)
+    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]\n')
 def infer(message):
     
     # SAVING TRANSCRIPTION TO LOG & HISTORY, PRINTING IT TO CONSOLE & SENDING IT TO API

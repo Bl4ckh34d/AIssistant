@@ -44,7 +44,7 @@ URI = f'http://{HOST}/api/v1/generate'
 stt_model = whisper.load_model("small") #tiny, base, small
 stt_model_language = "en"
 stt_model_task = "transcribe" #translate
-
+ 
 # LLM VARS
 TOKENS_MAX = 4096
 TMP = [0, 1, 2, 3]

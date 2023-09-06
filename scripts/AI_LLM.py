@@ -5,15 +5,16 @@ import helpers
 import commands as cm
 import variables as vars
 
+def write_conversation(sender, message):  
+    write_to_file(sender, message)
+    write_to_history(sender, message)
+    trim_chat_history() 
+    print_to_console(sender, message)
+
 def write_to_file(sender, message):
     with open(helpers.generate_file_path(), 'a', encoding="utf-8") as file:
         file.write(f"({vars.get_current_time()}) {sender}: {message}\n")
-            
-def print_to_console(sender, message):
-    print("====================================================================")
-    print(f"{sender}: " + message + "\n")
-    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]')
-    
+        
 def write_to_history(sender, text):    
     message = {
         'sender': sender,
@@ -21,30 +22,21 @@ def write_to_history(sender, text):
         'token_length': helpers.get_token_count(f'{sender}: {text}')
     }
     
-    vars.history.append(message)
-
-def write_conversation(sender, message):  
-    write_to_file(sender, message)
-    write_to_history(sender, message)
-    trim_chat_history() 
-    print_to_console(sender, message)
-
-def populate_history():
-    temp_history = ''
-    
-    for entry in vars.history:
-        temp_history = temp_history + f"{entry['sender']}: {entry['message']}\n"
-    
-    return temp_history
-
+    vars.history.append(message)  
+              
 def trim_chat_history():
     total_tokens = helpers.get_token_count(helpers.assemble_prompt_for_LLM())
 
     while total_tokens >= vars.TOKENS_MAX:
         last_entry_tokens = vars.history[0]['token_length']
         vars.history.pop()
-        total_tokens -= last_entry_tokens        
-    
+        total_tokens -= last_entry_tokens 
+
+def print_to_console(sender, message):
+    print("====================================================================")
+    print(f"{sender}: " + message + "\n")
+    print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]')
+   
 def infer(message):
     
     # SAVING TRANSCRIPTION TO LOG & HISTORY, PRINTING IT TO CONSOLE & SENDING IT TO API
@@ -106,7 +98,7 @@ def infer(message):
         AI_TTS.invoke_text_to_speech(filtered_reply)
         
         # CHECK FOR AI COMMANDS
-        cm.check_ai_for_command(filtered_reply)
+        cm.check_for_command(filtered_reply)
         
     else:
         print("PROBLEM: No response...")

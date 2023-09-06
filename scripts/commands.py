@@ -9,7 +9,7 @@ import time
 firefox_path = r"C:\Program Files\Mozilla Firefox\firefox.exe"
 explorer_path = "explorer.exe"
 
-def check_ai_for_command(message):
+def check_for_command(message):
     # OPENING
     if helpers.check_for_keywords_from_list(cl.openingList,message) is not None:
         print(f"- - - {helpers.check_for_keywords_from_list(cl.openingList,message).upper()} - - -")

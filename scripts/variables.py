@@ -15,6 +15,15 @@ def get_current_time():
     formatted_time = current_datetime.strftime("%H:%M:%S")
     return formatted_time
 
+# DIRECTORIES
+directory_current = os.path.dirname(os.path.abspath(__file__))
+directory_audio = os.path.join(directory_current, '../recording/audio')
+directory_text = os.path.join(directory_current, '../recording/text')
+
+# PATHS
+path_audio_input_file = os.path.abspath(os.path.join(directory_audio, "last_input.wav"))
+path_audio_output_file = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))
+
 # STRINGS
 user_name = 'Daniel'
 ai_name = 'ARIA'
@@ -27,6 +36,15 @@ rules = f"{ai_name} never uses non-ASCII fonts, characters or emoticons. {ai_nam
 instructions = f"Continue the chat dialogue below. Write a single reply for {ai_name}.\n"
 history = []
 
+# NETWORK VARS
+HOST = '127.0.0.1:5000'
+URI = f'http://{HOST}/api/v1/generate'
+
+# STT VARS
+stt_model = whisper.load_model("small") #tiny, base, small
+stt_model_language = "en"
+stt_model_task = "transcribe" #translate
+
 # LLM VARS
 TOKENS_MAX = 4096
 TMP = [0, 1, 2, 3]
@@ -35,28 +53,10 @@ lparams = llama_cpp_ggml_cuda.llama_context_default_params()
 lparams.n_gpu_layers = 10
 ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../webui/models/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M/airoboros-l2-7b-2.1.ggmlv3.Q4_K_M.bin", lparams)
 
-# NETWORK VARS
-HOST = '127.0.0.1:5000'
-URI = f'http://{HOST}/api/v1/generate'
-
 # TTS VARS
 AUDIO_DEVICE_ID_VIRTUAL = 8 #8
 AUDIO_DEVICE_ID_SPEAKERS = 6 #6
 tts_model_name = 'tts_models/en/ljspeech/vits' #'vocoder_models--en--ljspeech--univnet'
-
-# STT VARS
-stt_model = whisper.load_model("small") #tiny, base, small
-stt_model_language = "en"
-stt_model_task = "transcribe" #translate
-
-# DIRECTORIES
-directory_current = os.path.dirname(os.path.abspath(__file__))
-directory_audio = os.path.join(directory_current, '../recording/audio')
-directory_text = os.path.join(directory_current, '../recording/text')
-
-# PATHS
-path_audio_input_file = os.path.abspath(os.path.join(directory_audio, "last_input.wav"))
-path_audio_output_file = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))
 
 # RECORDING SETTINGS
 RECORDING_INIT_THRESHOLD = 20

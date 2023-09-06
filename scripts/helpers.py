@@ -38,3 +38,11 @@ def check_for_keywords_from_list(word_list, message):
 def assemble_prompt_for_LLM():
     prompt = "#### Instruction:\n" + vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + "\n#### Chat History:\n" + AI_LLM.populate_history() + "\n#### Response:\n" + f"{vars.ai_name}: "
     return prompt
+
+def populate_history():
+    temp_history = ''
+    
+    for entry in vars.history:
+        temp_history = temp_history + f"{entry['sender']}: {entry['message']}\n"
+    
+    return temp_history

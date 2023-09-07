@@ -1,51 +1,191 @@
 # ACTIONS
 openingList = [
-    "Opening",
-    "Starting"
+    "open",
+    "start"
 ]
 
 closingList = [
-    "Closing",
-    "Shutting down"
+    "close",
+    "shut down"
 ]
 
 switchingList = [
-    "Switching",
-    "Swapping",
-    "Changing"
+    "switch",
+    "swap",
+    "change"
 ]
 
 minimizingList = [
-    "Minimizing",
-    "Minimising",
-    "Shrinking",
-    "Hiding"
+    "minimize",
+    "minimise",
+    "shrink",
+    "hide"
 ]
 
 maximizingList = [
-    "Maximizing",
-    "Maximising",
-    "Enlarge"
+    "maximize",
+    "maximise",
+    "enlarge"
 ]
 
 # PROGRAMS
 firefoxList = [
-    "Firefox",
-    "Fire Fox",
-    "Fire fox",
-    "FireFox",
-    "Browser"
+    "firefox",
+    "fire Fox",
+    "fire fox",
+    "fireFox",
+    "browser"
 ]
 
 incognitoList = [
-    "Incognito",
-    "Private"
+    "incognito",
+    "private"
 ]
 
 explorerList = [
-    "My Computer",
-    "Explorer",
-    "Folder",
-    "Harddrives",
-    "Hard drives"
+    "explorer",
+    "folder",
+    "my computer",
+    "mycomputer"
+]
+
+cDriveList = [
+    "c:",
+    "c drive",
+    "drive c"
+]
+
+dDriveList = [
+    "d:",
+    "d drive",
+    "drive d"
+]
+
+appDataList = [
+    "appdata",
+    "app data"
+]
+
+programsFolderList = [
+    "programs"
+]
+
+programs86FolderList = [
+    "programs86",
+    "programs 86",
+    "program's 86",
+    "other programs"
+]
+
+homeFolderList = [
+    "user folder",
+    "home folder"
+]
+
+chromeList = [
+    "chrome"
+]
+
+vlcList = [
+    "vlc",
+    "video player"
+]
+
+mpcList = [
+    "mpc",
+    "media player"
+]
+
+keepassList = [
+    "keypass",
+    "key pass",
+    "keepass",
+    "kee pass"
+]
+
+steamList = [
+    "steam"
+]
+
+discordList = [
+    "discord"
+]
+
+wordList = [
+    "word"
+]
+
+excelList = [
+    "excel",
+    "exel"
+]
+
+powerpointList = [
+    "powerpoint",
+    "power point"
+]
+
+notepadppList = [
+    "notepad++",
+    "notepad plus plus",
+    "notepadplusplus"
+]
+
+vscList = [
+    "vsc",
+    "visual studio",
+    "studio code"
+]
+
+purerefList = [
+    "pureref",
+    "pure ref"
+]
+
+audacityList = [
+    "audacity"
+]
+
+blenderList = [
+    "blender"
+]
+
+stablediffusionList = [
+    "stable diffusion"
+]
+
+calculatorList = [
+    "calculator"
+]
+
+controlList = [
+    "controls",
+    "system settings"
+]
+
+audioList = [
+    "audio settings",
+    "sound settings",
+    "volume settings",
+    "sound devices",
+    "audio devices",
+    "microphone",
+    "speakers"
+]
+
+videoList = [
+    "video settings",
+    "video options",
+    "resolution settings",
+    "display settings",
+    "display options",
+    "graphics card settings",
+    "graphic card settings",
+    "graphic settings",
+    "graphics settings"
+]
+
+desktopList = [
+    "desktop settings",
+    "desktop options"
 ]

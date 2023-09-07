@@ -29,13 +29,14 @@ def generate_file_path():
     return vars.directory_text + f"/session_{formatted_datetime}.txt"
 
 def check_for_keywords_from_list(word_list, message):
+    message_lower = message.lower()
     for word in word_list:
-        if word in message:
+        if word.lower() in message_lower:
             return word
     return None
 
 def assemble_prompt_for_LLM():
-    prompt = "#### Instruction:\n" + vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + "\n#### Chat History:\n" + populate_history() + "\n#### Response:\n" + f"{vars.ai_name}: "
+    prompt = vars.time_and_day + vars.description + vars.persona + vars.rules + vars.instructions + populate_history() + f"{vars.ai_name}:"
     return prompt
 
 def populate_history():

@@ -10,8 +10,8 @@ print()
 input("Press Enter to continue...")
 print()
 
-AI_LLM.write_conversation(f"{vars.ai_name}", f"Alright, what do you need, {vars.user_name}?")
-AI_TTS.invoke_text_to_speech(f"Alright, what do you need, {vars.user_name}?")
+AI_LLM.write_conversation(f"{vars.ai_name}", f"Alright, what do you need?")
+AI_TTS.invoke_text_to_speech(f"Alright, what do you need?")
 
 recording = recorder.Recorder()
 recording.listen()

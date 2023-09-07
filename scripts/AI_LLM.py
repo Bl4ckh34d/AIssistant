@@ -36,11 +36,12 @@ def print_to_console(sender, message):
     print("====================================================================")
     print(f"{sender}: " + message)
     print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]\n')
+
 def infer(message):
-    
-    # SAVING TRANSCRIPTION TO LOG & HISTORY, PRINTING IT TO CONSOLE & SENDING IT TO API
     write_conversation(vars.user_name, message)
-    
+    # send_request(message)
+
+def send_request(message):    
     request = {
         'prompt': helpers.assemble_prompt_for_LLM(),
         'max_new_tokens': 512, #250
@@ -49,7 +50,7 @@ def infer(message):
         # in presets/preset-name.yaml are used instead of the individual numbers.
         'preset': 'None',
         'do_sample': False, #True
-        'temperature': 1.2, #0.7
+        'temperature': 0.5, #0.7
         'top_p': 0.14, #0.1
         'typical_p': 1, #1
         'epsilon_cutoff': 1.49,  # In units of 1e-4
@@ -74,7 +75,7 @@ def infer(message):
         'truncation_length': 4096, #2048
         'ban_eos_token': False, #False
         'skip_special_tokens': False, #True
-        'stopping_strings': ['</s>'] #f'{user_name}: '
+        'stopping_strings': [f'{vars.user_name}: '] #f'{user_name}: '
     }
 
     response = requests.post(vars.URI, json=request)
@@ -95,9 +96,6 @@ def infer(message):
         
         # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
         AI_TTS.invoke_text_to_speech(filtered_reply)
-        
-        # CHECK FOR AI COMMANDS
-        cm.check_for_command(filtered_reply)
         
     else:
         print("PROBLEM: No response...")

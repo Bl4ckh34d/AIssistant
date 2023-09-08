@@ -17,5 +17,5 @@ def transcribe_audio():
     # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
     # CHECK FOR AI COMMANDS
     cmd.check_for_command(cleaned_transcription)
-    AI_LLM.infer(cleaned_transcription)
+    # AI_LLM.infer(cleaned_transcription)
             

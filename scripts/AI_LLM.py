@@ -39,28 +39,31 @@ def print_to_console(sender, message):
 
 def infer(message):
     write_conversation(vars.user_name, message)
-    # send_request(message)
+    send_request()
 
-def send_request(message):    
+def send_request():
+    
+    helpers.cycle_personas()   
+    
     request = {
         'prompt': helpers.assemble_prompt_for_LLM(),
-        'max_new_tokens': 512, #250
+        'max_new_tokens': 250, #250
         
         # Generation params. If 'preset' is set to different than 'None', the values
         # in presets/preset-name.yaml are used instead of the individual numbers.
         'preset': 'None',
         'do_sample': False, #True
-        'temperature': 0.5, #0.7
-        'top_p': 0.14, #0.1
+        'temperature': 0.8, #0.7
+        'top_p': 0.1, #0.1
         'typical_p': 1, #1
-        'epsilon_cutoff': 1.49,  # In units of 1e-4
-        'eta_cutoff': 10.42,  # In units of 1e-4
+        'epsilon_cutoff': 0,  # In units of 1e-4
+        'eta_cutoff': 0,  # In units of 1e-4
         'tfs': 1, #1
-        'top_a': 0.52, #0
-        'repetition_penalty': 1.17, #1.18
+        'top_a': 0, #0
+        'repetition_penalty': 1.5, #1.18
         'repetition_penalty_range': 0, #0
-        'top_k': 49, #40
-        'min_length': 1, #0
+        'top_k': 40, #40
+        'min_length': 0, #0
         'no_repeat_ngram_size': 0, #0
         'num_beams': 5, #1
         'penalty_alpha': 0, #0
@@ -95,7 +98,7 @@ def send_request(message):
         write_conversation(vars.ai_name, filtered_reply)
         
         # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
-        AI_TTS.invoke_text_to_speech(filtered_reply)
+        # AI_TTS.invoke_text_to_speech(filtered_reply)
         
     else:
         print("PROBLEM: No response...")

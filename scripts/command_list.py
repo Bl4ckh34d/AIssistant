@@ -1,4 +1,8 @@
 # ACTIONS
+findList = [
+    "find"
+]
+
 openingList = [
     "open",
     "start"
@@ -26,6 +30,10 @@ maximizingList = [
     "maximize",
     "maximise",
     "enlarge"
+]
+
+tabList = [
+    "tab"
 ]
 
 # PROGRAMS

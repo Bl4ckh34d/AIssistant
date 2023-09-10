@@ -3,6 +3,10 @@ import command_list as cl
 import subprocess
 import os
 import pyautogui
+import websockets
+import asyncio
+import re
+import json
 
 # LOCATIONS
 home_folder = os.environ['USERPROFILE']
@@ -30,7 +34,32 @@ blender_path = r"C:\Program Files\Blender Foundation\Blender 3.6\blender.exe"
 stablediffusion_path = r"D:\SD\run.bat"
 calculator_path = r"C:\Windows\System32\calc.exe"
 
+async def send_command(message):
+    async with websockets.connect("ws://localhost:3000") as websocket:
+        pattern = r'\b(?:' + '|'.join(re.escape(word) for word in ["find", "tab"]) + r')\b'
+        result_string = re.sub(pattern, '', message)
+
+        command = {
+            "command": "find_tab",
+            "query": result_string
+        }
+        await websocket.send(json.dumps(command))  # Serialize the command to JSON
+        response = await websocket.recv()
+        try:
+            response_data = json.loads(response)  # Deserialize the response JSON
+            print("Matching tab titles:")
+            for title in response_data:
+                print(title)
+        except json.JSONDecodeError as e:
+            print("Error decoding JSON response:", e)
+
 def check_for_command(message):
+    # FIND
+    if helpers.check_for_keywords_from_list(cl.findList,message) is not None:
+        print(f"- - - {helpers.check_for_keywords_from_list(cl.findList,message).upper()} - - -")
+        asyncio.get_event_loop().run_until_complete(send_command(message))
+            
+            
     # OPENING
     if helpers.check_for_keywords_from_list(cl.openingList,message) is not None:
         print(f"- - - {helpers.check_for_keywords_from_list(cl.openingList,message).upper()} - - -")
@@ -180,17 +209,23 @@ def check_for_command(message):
             print(f"- - - {helpers.check_for_keywords_from_list(cl.desktopList,message).upper()} - - -")
             subprocess.Popen(["control", "desk.cpl"])
             
+        # NEW TAB   
+        if helpers.check_for_keywords_from_list(cl.tabList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.tabList,message).upper()} - - -")
+            pyautogui.hotkey('ctrl', 't')
+            
             
             
     # CLOSING
-    elif helpers.check_for_keywords_from_list(cl.closingList,message) is not None:
-        print(f"- - - {helpers.check_for_keywords_from_list(cl.closingList,message).upper()} - - -")
-        pyautogui.hotkey('alt', 'f4')
-        # Close something like:
-            # Program List
-            # Folder List
-            # Pretty much everyrhing
-            # Tab
+    elif helpers.check_for_keywords_from_list(cl.closingList,message) is not None:        
+        # NEW TAB   
+        if helpers.check_for_keywords_from_list(cl.tabList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.tabList,message).upper()} - - -")
+            pyautogui.hotkey('ctrl', 'w')
+        
+        else:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.closingList,message).upper()} - - -")
+            pyautogui.hotkey('alt', 'f4')
             
     # SWITCHING
     elif helpers.check_for_keywords_from_list(cl.switchingList,message) is not None:
@@ -207,7 +242,7 @@ def check_for_command(message):
         print(f"- - - {helpers.check_for_keywords_from_list(cl.minimizingList,message).upper()} - - -")
         pyautogui.hotkey('win', 'down')
         # Minimize something like:
-            # Program List
+            # Program List  
             # Folder List
             # Pretty much everyrhing
             # Tab

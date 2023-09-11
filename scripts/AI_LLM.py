@@ -60,8 +60,8 @@ def send_request():
         'eta_cutoff': 0,  # In units of 1e-4
         'tfs': 1, #1
         'top_a': 0, #0
-        'repetition_penalty': 1.5, #1.18
-        'repetition_penalty_range': 0, #0
+        'repetition_penalty': 4.0, #1.18
+        'repetition_penalty_range': 3, #0
         'top_k': 40, #40
         'min_length': 0, #0
         'no_repeat_ngram_size': 0, #0

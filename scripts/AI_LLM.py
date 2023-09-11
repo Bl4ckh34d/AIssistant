@@ -13,7 +13,7 @@ def write_conversation(sender, message):
 
 def write_to_file(sender, message):
     with open(helpers.generate_file_path(), 'a', encoding="utf-8") as file:
-        file.write(f"({vars.get_current_time()}) {sender}: {message}\n")
+        file.write(f"({helpers.get_current_time()}) {sender}: {message}\n")
         
 def write_to_history(sender, text):    
     message = {
@@ -53,7 +53,7 @@ def send_request():
         # in presets/preset-name.yaml are used instead of the individual numbers.
         'preset': 'None',
         'do_sample': False, #True
-        'temperature': 0.8, #0.7
+        'temperature': 1.3, #0.7
         'top_p': 0.1, #0.1
         'typical_p': 1, #1
         'epsilon_cutoff': 0,  # In units of 1e-4
@@ -98,7 +98,7 @@ def send_request():
         write_conversation(vars.ai_name, filtered_reply)
         
         # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
-        # AI_TTS.invoke_text_to_speech(filtered_reply)
+        AI_TTS.invoke_text_to_speech(filtered_reply)
         
     else:
         print("PROBLEM: No response...")

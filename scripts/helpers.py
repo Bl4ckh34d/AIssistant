@@ -3,7 +3,7 @@ import variables as vars
 import datetime
 import llama_cpp_ggml_cuda
 import random
-import asyncio
+import datetime
 import time
 
 def show_intro():
@@ -19,6 +19,17 @@ def show_intro():
 def play_audio(data, fs, device_id):
     sd.play(data, fs, device=device_id)
     sd.wait()
+    
+def get_current_date():
+    current_datetime = datetime.datetime.now()
+    day = current_datetime.day
+    formatted_date = current_datetime.strftime("%B %d, %Y").replace(' 0', ' ').replace(f' {day},', f' {day}{"th" if 4 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")},')
+    return formatted_date
+
+def get_current_time():
+    current_datetime = datetime.datetime.now()
+    formatted_time = current_datetime.strftime("%H:%M:%S")
+    return formatted_time
     
 def get_token_count(text):
     byte_text = b" " + text.encode("utf-8")
@@ -39,7 +50,7 @@ def check_for_keywords_from_list(word_list, message):
     return None
 
 def assemble_prompt_for_LLM():
-    prompt = vars.time_and_day + vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + f"{vars.ai_name}:"
+    prompt = f'(Date: {get_current_date()}. Time: {get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + f"{vars.ai_name}:"
     return prompt
 
 def populate_history():
@@ -63,8 +74,8 @@ def search_and_activate_tab(webdriver, keyword):
 def swap_persona():
     # Define the persona descriptions
     persona_descriptions = [
-        vars.happy_mood_persona,
-        vars.sad_mood_persona,
+        vars.happy_mood,
+        vars.sad_mood,
         vars.angry_mood,
         vars.horny_mood,
         vars.bored_mood,
@@ -73,8 +84,8 @@ def swap_persona():
 
     # Define the base weights
     base_weights = {
-        vars.happy_mood_persona: 0.3,
-        vars.sad_mood_persona: 0.15,
+        vars.happy_mood: 0.3,
+        vars.sad_mood: 0.15,
         vars.angry_mood: 0.05,
         vars.horny_mood: 0.15,
         vars.bored_mood: 0.18,
@@ -112,9 +123,9 @@ def swap_persona():
     selected_persona = random.choices(persona_descriptions, list(base_weights.values()))[0]
     
     # Print the selected persona description
-    if selected_persona == vars.happy_mood_persona:
+    if selected_persona == vars.happy_mood:
         print(f"({vars.ai_name} is happy)\n")
-    if selected_persona == vars.sad_mood_persona:
+    if selected_persona == vars.sad_mood:
         print(f"({vars.ai_name} is sad)\n")
     if selected_persona == vars.angry_mood:
         print(f"({vars.ai_name} is angry)\n")

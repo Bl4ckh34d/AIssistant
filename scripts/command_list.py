@@ -1,4 +1,11 @@
 # ACTIONS
+
+typingList = [
+    "type",
+    "write"
+    "enter"
+]
+
 findList = [
     "find"
 ]
@@ -32,10 +39,6 @@ maximizingList = [
     "enlarge"
 ]
 
-tabList = [
-    "tab"
-]
-
 # PROGRAMS
 firefoxList = [
     "firefox",
@@ -54,7 +57,29 @@ explorerList = [
     "explorer",
     "folder",
     "my computer",
-    "mycomputer"
+    "mycomputer",
+    "c:",
+    "c drive",
+    "drive c",
+    "d:",
+    "d drive",
+    "drive d",
+    "appdata",
+    "app data",
+    "programs",
+    "programs86",
+    "programs 86",
+    "program's 86",
+    "other programs",
+    "user folder",
+    "home folder",
+    "downloads",
+    "download folder"
+]
+
+folderList = [
+    "folder",
+    "directory"
 ]
 
 cDriveList = [
@@ -88,6 +113,26 @@ programs86FolderList = [
 homeFolderList = [
     "user folder",
     "home folder"
+]
+
+downloadFolderList = [
+    "download",
+    "down load",
+    "downloads"
+]
+
+myComputerList = [
+    "MyComputer",
+    "My Computer"
+]
+
+tabList = [
+    "tab"
+]
+
+browserTabList = [
+    "browser tab",
+    "browsertab"
 ]
 
 chromeList = [

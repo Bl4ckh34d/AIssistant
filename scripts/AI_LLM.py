@@ -2,8 +2,9 @@ import requests
 import AI_TTS
 import re
 import helpers
-import commands as cm
 import variables as vars
+import commands as cmd
+import AI_VC as vc
 
 def write_conversation(sender, message):  
     write_to_file(sender, message)
@@ -36,36 +37,35 @@ def print_to_console(sender, message):
     print("====================================================================")
     print(f"{sender}: " + message)
     print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]\n')
+    vc.getCurrentWindow()
 
 def infer(message):
     write_conversation(vars.user_name, message)
     send_request()
 
-def send_request():
-    
-    helpers.cycle_personas()   
+def send_request():  
     
     request = {
         'prompt': helpers.assemble_prompt_for_LLM(),
-        'max_new_tokens': 250, #250
+        'max_new_tokens': 150, #250
         
         # Generation params. If 'preset' is set to different than 'None', the values
         # in presets/preset-name.yaml are used instead of the individual numbers.
         'preset': 'None',
-        'do_sample': False, #True
-        'temperature': 1.3, #0.7
+        'do_sample': True, #True
+        'temperature': 0.8, #0.7
         'top_p': 0.1, #0.1
         'typical_p': 1, #1
         'epsilon_cutoff': 0,  # In units of 1e-4
         'eta_cutoff': 0,  # In units of 1e-4
         'tfs': 1, #1
         'top_a': 0, #0
-        'repetition_penalty': 4.0, #1.18
-        'repetition_penalty_range': 3, #0
+        'repetition_penalty': 1.18, #1.18
+        'repetition_penalty_range': 0, #0
         'top_k': 40, #40
         'min_length': 0, #0
         'no_repeat_ngram_size': 0, #0
-        'num_beams': 5, #1
+        'num_beams': 1, #1
         'penalty_alpha': 0, #0
         'length_penalty': 1, #1
         'early_stopping': True, #False
@@ -77,8 +77,8 @@ def send_request():
         'add_bos_token': True, #True
         'truncation_length': 4096, #2048
         'ban_eos_token': False, #False
-        'skip_special_tokens': False, #True
-        'stopping_strings': [f'{vars.user_name}: '] #f'{user_name}: '
+        'skip_special_tokens': True, #True
+        'stopping_strings': [f'{vars.user_name}:']
     }
 
     response = requests.post(vars.URI, json=request)
@@ -87,12 +87,17 @@ def send_request():
     
         # RECEIVING RESULT FROM API
         result = response.json()['results'][0]['text']
-        #print(json.dumps(result, indent=4))
 
         # CLEANING UP RESULT FROM API
         joined_reply = ''.join(result)
         cleaned_reply = joined_reply.strip() 
         filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
+        
+        # CLEARING OUT EMOJIS, PARENTHESE, ASTERISKS, ETC.
+        filtered_reply = helpers.filter_text(filtered_reply)
+        
+        # SENTIMENT ANALYSIS
+        helpers.sentiment_calculation(filtered_reply)
         
         # SAVING RESPONSE MESSAGE TO LOG FILE
         write_conversation(vars.ai_name, filtered_reply)

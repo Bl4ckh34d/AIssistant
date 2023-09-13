@@ -1,6 +1,7 @@
 import AI_LLM
 import variables as vars
 import commands as cmd
+import helpers
 
 def transcribe_audio():
     
@@ -14,8 +15,10 @@ def transcribe_audio():
     transcription = ''.join(segments["text"])
     cleaned_transcription = transcription.strip() 
     
-    # APPENDING MESSAGE TO HISTORY IN THE FORMAT OF Speaker:Message
-    # CHECK FOR AI COMMANDS
+    # SENTIMENT ANALYSIS
+    helpers.sentiment_calculation(cleaned_transcription)
+    
+    # CHECK FOR USER COMMANDS
     cmd.check_for_command(cleaned_transcription)
     AI_LLM.infer(cleaned_transcription)
             

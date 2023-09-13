@@ -5,6 +5,11 @@ import llama_cpp_ggml_cuda
 import random
 import datetime
 import time
+import re
+import pygetwindow as gw
+from transformers import pipeline
+
+classifier_sentiment = pipeline("sentiment-analysis")
 
 def show_intro():
     print()
@@ -50,26 +55,16 @@ def check_for_keywords_from_list(word_list, message):
     return None
 
 def assemble_prompt_for_LLM():
-    prompt = f'(Date: {get_current_date()}. Time: {get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + f"{vars.ai_name}:"
+    prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + f"{vars.ai_name}:"
     return prompt
 
 def populate_history():
     temp_history = ''
     
     for entry in vars.history:
-        temp_history = temp_history + f"{entry['sender']}: {entry['message']}\n"
+        temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
     
     return temp_history
-
-# Function to search for a tab with "youtube" in the title and make it active
-def search_and_activate_tab(webdriver, keyword):
-    tabs = webdriver.window_handles
-    for tab in tabs:
-        webdriver.switch_to.window(tab)
-        if keyword in webdriver.title.lower():
-            return
-    # If no YouTube tab found, create a new tab with YouTube
-    webdriver.execute_script(f"window.open('https://www.{keyword}.com');")
     
 def swap_persona():
     # Define the persona descriptions
@@ -84,21 +79,18 @@ def swap_persona():
 
     # Define the base weights
     base_weights = {
-        vars.happy_mood: 0.3,
-        vars.sad_mood: 0.15,
+        vars.happy_mood: 0.1,
+        vars.sad_mood: 0.1,
         vars.angry_mood: 0.05,
-        vars.horny_mood: 0.15,
-        vars.bored_mood: 0.18,
-        vars.neutral_mood: 0.22
+        vars.horny_mood: 0.05,
+        vars.bored_mood: 0.2,
+        vars.neutral_mood: 0.4
     }
     
     # Define the fluctuation budget
-    fluctuation_budget = 0.2
+    fluctuation_budget = 0.1
     
-    # Reduce the base weights to 0.8 total
-    total_base_weight = sum(base_weights.values())
-    reduction_factor = 0.8 / total_base_weight
-    base_weights = {persona: weight * reduction_factor for persona, weight in base_weights.items()}
+    base_weights = {persona: weight for persona, weight in base_weights.items()}
 
     # Shuffle the persona descriptions to randomize the order
     random.shuffle(persona_descriptions)
@@ -110,7 +102,7 @@ def swap_persona():
     for i, persona in enumerate(persona_descriptions):
         if i < num_personas - 1:
             # Generate a random weight within the remaining budget
-            fluctuation = random.uniform(0, fluctuation_budget)
+            fluctuation = random.uniform(-fluctuation_budget, fluctuation_budget)
             fluctuation_budget -= fluctuation
         else:
             # Use the remaining budget for the last persona
@@ -123,22 +115,100 @@ def swap_persona():
     selected_persona = random.choices(persona_descriptions, list(base_weights.values()))[0]
     
     # Print the selected persona description
-    if selected_persona == vars.happy_mood:
-        print(f"({vars.ai_name} is happy)\n")
-    if selected_persona == vars.sad_mood:
-        print(f"({vars.ai_name} is sad)\n")
-    if selected_persona == vars.angry_mood:
-        print(f"({vars.ai_name} is angry)\n")
-    if selected_persona == vars.horny_mood:
-        print(f"({vars.ai_name} is aroused)\n")
-    if selected_persona == vars.bored_mood:
-        print(f"({vars.ai_name} is bored)\n")
-    if selected_persona == vars.neutral_mood:
-        print(f"({vars.ai_name} is neutral)\n")
+    if not vars.silent:
+        if selected_persona == vars.happy_mood:
+            print(f"({vars.ai_name} is happy)\n")
+        if selected_persona == vars.sad_mood:
+            print(f"({vars.ai_name} is sad)\n")
+        if selected_persona == vars.angry_mood:
+            print(f"({vars.ai_name} is angry)\n")
+        if selected_persona == vars.horny_mood:
+            print(f"({vars.ai_name} is aroused)\n")
+        if selected_persona == vars.bored_mood:
+            print(f"({vars.ai_name} is bored)\n")
+        if selected_persona == vars.neutral_mood:
+            print(f"({vars.ai_name} is neutral)\n")
         
     vars.active_mood = selected_persona
+
+def filter_text(input_text):
+    # Define regular expressions to match emojis and *wink*
+    emoji_pattern = re.compile("["
+                               u"\U0001F600-\U0001F64F"  # Emojis
+                               u"\U0001F300-\U0001F5FF"  # Misc symbols & pictographs
+                               u"\U0001F680-\U0001F6FF"  # Transport & map symbols
+                               u"\U0001F700-\U0001F77F"  # Alchemical symbols
+                               u"\U0001F780-\U0001F7FF"  # Geometric shapes
+                               u"\U0001F800-\U0001F8FF"  # Supplemental symbols & pictographs
+                               "]+", flags=re.UNICODE) 
     
-def cycle_personas():
+    text_in_asterisks_pattern = re.compile(r'\*([^*]+)\*')
+    text_in_parentheses_pattern = re.compile(r'\(([^)]+)\)')
+    hashtag_pattern = re.compile(r'#\w+')
+    
+    # Remove emojis, text in asterisks, and hashtags from the input text
+    filtered_text = emoji_pattern.sub('', input_text)
+    filtered_text = text_in_asterisks_pattern.sub('', filtered_text)
+    filtered_text = text_in_parentheses_pattern.sub('', filtered_text)
+    filtered_text = hashtag_pattern.sub('', filtered_text)
+    
+    return filtered_text
+    
+def split_to_sentences(message):
+    sentences = []
+    current_sentence = []
+    for char in message:
+        current_sentence.append(char)
+        if char in ('.', '!', '?'):
+            # Check if there are consecutive punctuation marks
+            if len(current_sentence) > 1 and current_sentence[-2] == char:
+                if len(current_sentence) > 1 and current_sentence[-3] == char:
+                    sentences[-1] += char  # Add the consecutive punctuation to the previous sentence
+                    current_sentence.pop()  # Remove the extra punctuation from the current sentence
+                sentences[-1] += char  # Add the consecutive punctuation to the previous sentence
+                current_sentence.pop()  # Remove the extra punctuation from the current sentence
+            else:
+                sentences.append(''.join(current_sentence).strip())
+                current_sentence = []
+    if current_sentence:
+        sentences.append(''.join(current_sentence).strip())
+    return sentences
+
+def sentiment_calculation(message):
+    if message != "" and message != " ":
+        total_sentiment = 0
+        for sentence in split_to_sentences(message):
+            sentiment = classifier_sentiment(sentence)
+            if sentiment[0]['label'] == "POSITIVE":
+                total_sentiment += sentiment[0]['score']
+            else:
+                total_sentiment -= sentiment[0]['score']
+            if not vars.silent:
+                print(f"SENTIMENT ANALYSIS: FEELING: {sentiment[0]['label']} and SCORE: {sentiment[0]['score']}")
+        if not vars.silent:
+            print(f"TOTAL SCORE: {total_sentiment}")
+            print(f"AI SCORE: {vars.ai_mood_score}")
+        vars.ai_mood_score += total_sentiment * random.gauss(0.05, 0.2)
+        
+        if vars.ai_mood_score > 5:
+            vars.ai_mood_score = 5
+        if vars.ai_mood_score <= 5 and vars.ai_mood_score > 4.5:
+            vars.active_mood = random.choice([vars.happy_mood,vars.horny_mood,vars.neutral_mood,vars.bored_mood])
+        if vars.ai_mood_score <= 4.5 and vars.ai_mood_score > 3:
+            vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood,vars.bored_mood])
+        if vars.ai_mood_score <= 3 and vars.ai_mood_score > 2:
+            vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood])
+        if vars.ai_mood_score <= 2 and vars.ai_mood_score > -2:
+            vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood,vars.bored_mood])
+        if vars.ai_mood_score <= -2 and vars.ai_mood_score > -3:
+            vars.active_mood = random.choice([vars.neutral_mood,vars.bored_mood])
+        if vars.ai_mood_score <= -3 and vars.ai_mood_score > -4.5:
+            vars.active_mood = random.choice([vars.sad_mood,vars.neutral_mood,vars.bored_mood])
+        if vars.ai_mood_score <= -4.5 and vars.ai_mood_score > -5:
+            vars.active_mood = random.choice([vars.sad_mood,vars.angry_mood,vars.neutral_mood,vars.bored_mood])
+        if vars.ai_mood_score < -5:
+            vars.ai_mood_score = -5
+    
     current_time = time.time()
     time_difference = current_time - vars.persona_saved_time
     if time_difference > vars.persona_current_change_time:
@@ -148,3 +218,12 @@ def cycle_personas():
 
         # Generate a random delay between 1 to 10 minutes (60 to 600 seconds)
         vars.persona_current_change_time = random.randint(vars.persona_min_change_time, vars.persona_max_change_time)
+
+def get_current_window_title():
+    focused_window = gw.getActiveWindow()
+    if focused_window:
+        print("Focused Window Title:", focused_window.title)
+        print("Focused Window ID:", focused_window.id)
+    else:
+        print("No window is currently focused.")
+    return focused_window.title

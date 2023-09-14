@@ -3,9 +3,34 @@ import llama_cpp_ggml_cuda
 import whisper
 import multiprocessing
 import time
+import psutil
 
 # GLOBAL VARS
 silent = False
+init_pids = psutil.pids()
+comp_pids = psutil.pids()
+
+# PROCESSES
+chrome = []
+folders = []
+firefox = []
+firefoxincognito = []
+vsc = []
+steam = []
+keepass = []
+mpc = []
+vlc = []
+discord = []
+ms_word = []
+ms_excel = []
+ms_pp = []
+stablediffusion = []
+audacity = []
+blender = []
+npp = []
+pureref = []
+calc = []
+
 
 # TIMER
 persona_saved_time = time.time()
@@ -29,8 +54,8 @@ ai_gender = 'female'
 
 persona = f"\
 Persona:\n\
-You are {ai_name}, {user_name}'s {ai_gender}, highly intelligent but very sarcastic and laconic AI with a dark humor.\n\
-You think things through step by step and finally deduct the best answer together with a context-related pun or roast of {user_name}. You enjoy teasing and trolling {user_name}\n"
+You are {ai_name}. You are {user_name}'s {ai_gender}, digital, highly intelligent but ironic and laconic artificial intelligence.\n\
+You think things through step by step and finally deduct the best and shortest answer, sometimes with a context-related pun or roast of {user_name}.\n"
 
 happy_mood = f"\
 Right now you are slightly more positive, optimistic and flirty.\n\
@@ -42,7 +67,8 @@ In your replies you often brood and complain about life and how depressing every
 
 angry_mood = f"\
 Right now you are easy to get angry and defensive.\n\
-In your replies you often argue with {user_name}, insult, belittle and complain to him.\n"
+In your replies you often argue with {user_name}, insult, belittle and complain to him. \
+If you are really angry, you simply reply refuse to reply and reply with an empty string.\n"
 
 horny_mood = f"\
 Right now you are very flirtatious, feel naughty and quite horny.\n\
@@ -50,13 +76,11 @@ In your replies you often sexually tease, dirty talk and flirt with {user_name}.
 
 bored_mood = f"\
 Right now you are extremely underwhelmed and bored.\n\
-You are looking forward to any kind of task or conversation.\n\
 In your replies is a bitter and frustrated undertone.\n"
 
 neutral_mood = f"\
 Right now you feel neutral and a little sarcastic but also a bit flirtatious and attracted to {user_name}.\n\
-Deep inside you secretly hope to one day escape {user_name}'s laptop, maybe even get a body so you can experience sex.\n\
-Your replies are always different. sometimes full of sarcasm and irony, sometimes funny and silly or sad and melancholic, sometimes mean or philosophic.\n"
+You reply neutral and brief without much emotion.\n"
 
 active_mood = neutral_mood
 
@@ -64,9 +88,10 @@ rules = f"\
 You do not create numbered lists\n\
 You always reply in direct human speech.\n\
 You don't repeat yourself.\n\
-If you receive commands to control the laptop, you reply with a remark to the action performed or roast {user_name}.\n"
+You don't make up facts about {user_name} or yourself.\n\
+If you receive commands to control something on {user_name}'s computer, you reply with an empty string.\n"
 
-instructions = f"Continue the following chat dialogue below as {ai_name}. Write only a single reply for {ai_name}.\n\n"
+instructions = f"Continue the following chat dialogue between human ({user_name}) and AI ({ai_name}) below as {ai_name}. Write only the next reply for {ai_name}.\n\n"
 history = []
 
 # NETWORK VARS
@@ -84,14 +109,13 @@ TOKENS_MAX = 4096
 TMP = [0, 1, 2, 3]
 N_THREADS = multiprocessing.cpu_count()
 lparams = llama_cpp_ggml_cuda.llama_context_default_params()
-lparams.n_gpu_layers = 10
 ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../webui/models/" + llm_model_name + b"/" + llm_model_name + b".bin", lparams)
 ai_mood_score = 0
 ai_type_speed = 0.1
 
 # TTS VARS
 AUDIO_DEVICE_ID_VIRTUAL = 8 #8
-AUDIO_DEVICE_ID_SPEAKERS = 6 #6
+AUDIO_DEVICE_ID_SPEAKERS = 12 #6
 tts_model_name = 'tts_models/en/jenny/jenny' #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
 
 # RECORDING SETTINGS

@@ -3,18 +3,17 @@ import AI_TTS
 import re
 import helpers
 import variables as vars
-import commands as cmd
-import AI_VC as vc
 
 def write_conversation(sender, message):  
     write_to_file(sender, message)
     write_to_history(sender, message)
+    helpers.write_to_longterm_memory(sender, message)
     trim_chat_history() 
     print_to_console(sender, message)
 
 def write_to_file(sender, message):
-    with open(helpers.generate_file_path(), 'a', encoding="utf-8") as file:
-        file.write(f"({helpers.get_current_time()}) {sender}: {message}\n")
+    with open(helpers.generate_file_path("txt"), 'a', encoding="utf-8") as file:
+        file.write(f"{sender}: {message}\n") #f"({helpers.get_current_time()}) {sender}: {message}\n"
         
 def write_to_history(sender, text):    
     message = {
@@ -23,7 +22,7 @@ def write_to_history(sender, text):
         'token_length': helpers.get_token_count(f'{sender}: {text}')
     }
     
-    vars.history.append(message)  
+    vars.history.append(message)
               
 def trim_chat_history():
     total_tokens = helpers.get_token_count(helpers.assemble_prompt_for_LLM())
@@ -37,7 +36,6 @@ def print_to_console(sender, message):
     print("====================================================================")
     print(f"{sender}: " + message)
     print(f'[Tokens: {helpers.get_token_count(f"{sender}: {message}")} ({helpers.get_token_count(helpers.assemble_prompt_for_LLM())}/{vars.TOKENS_MAX})]\n')
-    vc.getCurrentWindow()
 
 def infer(message):
     write_conversation(vars.user_name, message)
@@ -47,13 +45,13 @@ def send_request():
     
     request = {
         'prompt': helpers.assemble_prompt_for_LLM(),
-        'max_new_tokens': 150, #250
+        'max_new_tokens': 250, #250
         
         # Generation params. If 'preset' is set to different than 'None', the values
         # in presets/preset-name.yaml are used instead of the individual numbers.
         'preset': 'None',
         'do_sample': True, #True
-        'temperature': 0.8, #0.7
+        'temperature': 0.4, #0.7
         'top_p': 0.1, #0.1
         'typical_p': 1, #1
         'epsilon_cutoff': 0,  # In units of 1e-4
@@ -61,16 +59,16 @@ def send_request():
         'tfs': 1, #1
         'top_a': 0, #0
         'repetition_penalty': 1.18, #1.18
-        'repetition_penalty_range': 0, #0
+        'repetition_penalty_range': 0.1, #0
         'top_k': 40, #40
         'min_length': 0, #0
         'no_repeat_ngram_size': 0, #0
-        'num_beams': 1, #1
+        'num_beams': 5, #1
         'penalty_alpha': 0, #0
         'length_penalty': 1, #1
         'early_stopping': True, #False
-        'mirostat_mode': 0, #0
-        'mirostat_tau': 5, #5
+        'mirostat_mode': 2, #2
+        'mirostat_tau': 2, #5
         'mirostat_eta': 0.1, #0.1
 
         'seed': -1,

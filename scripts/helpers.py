@@ -6,7 +6,10 @@ import random
 import datetime
 import time
 import re
+import json
+import os
 import pygetwindow as gw
+import psutil
 from transformers import pipeline
 
 classifier_sentiment = pipeline("sentiment-analysis")
@@ -42,10 +45,10 @@ def get_token_count(text):
     n_of_tok = llama_cpp_ggml_cuda.llama_tokenize(vars.ctx, byte_text, embd_inp, len(embd_inp), True)
     return n_of_tok
 
-def generate_file_path():
+def generate_file_path(filetype):
     current_datetime = datetime.datetime.now()
     formatted_datetime = current_datetime.strftime("%Y-%m-%d")
-    return vars.directory_text + f"/session_{formatted_datetime}.txt"
+    return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
 def check_for_keywords_from_list(word_list, message):
     message_lower = message.lower()
@@ -157,21 +160,27 @@ def filter_text(input_text):
 def split_to_sentences(message):
     sentences = []
     current_sentence = []
+    consecutive_count = 0
+    
     for char in message:
         current_sentence.append(char)
         if char in ('.', '!', '?'):
-            # Check if there are consecutive punctuation marks
-            if len(current_sentence) > 1 and current_sentence[-2] == char:
-                if len(current_sentence) > 1 and current_sentence[-3] == char:
-                    sentences[-1] += char  # Add the consecutive punctuation to the previous sentence
-                    current_sentence.pop()  # Remove the extra punctuation from the current sentence
-                sentences[-1] += char  # Add the consecutive punctuation to the previous sentence
-                current_sentence.pop()  # Remove the extra punctuation from the current sentence
-            else:
-                sentences.append(''.join(current_sentence).strip())
+            consecutive_count += 1
+        else:
+            consecutive_count = 0
+
+        if consecutive_count > 1:
+            # Remove extra consecutive punctuation from the current sentence
+            current_sentence = current_sentence[:-consecutive_count + 1]
+
+            if sentences:
+                # Add consecutive punctuation to the previous sentence
+                sentences[-1] += ''.join(current_sentence).strip()
                 current_sentence = []
+
     if current_sentence:
         sentences.append(''.join(current_sentence).strip())
+
     return sentences
 
 def sentiment_calculation(message):
@@ -215,15 +224,216 @@ def sentiment_calculation(message):
         
         swap_persona()
         vars.persona_saved_time = time.time()
-
-        # Generate a random delay between 1 to 10 minutes (60 to 600 seconds)
         vars.persona_current_change_time = random.randint(vars.persona_min_change_time, vars.persona_max_change_time)
 
-def get_current_window_title():
-    focused_window = gw.getActiveWindow()
-    if focused_window:
-        print("Focused Window Title:", focused_window.title)
-        print("Focused Window ID:", focused_window.id)
+def gather_pids():
+    vars.init_pids = psutil.pids()
+    for process in psutil.process_iter(attrs=['pid', 'name']):
+        print(f"PID: {process.info['pid']}   NAME: {process.info['name']}")
+
+def compare_pids():   
+    vars.comp_pids = psutil.pids()
+    
+    new_pids = [pid for pid in vars.comp_pids if pid not in vars.init_pids]
+    
+    if not vars.silent:
+        for pid in new_pids:
+            print("new PID: ", pid)
+    
+    return new_pids
+
+def close_pids(search_term, pid_list):
+    find_pids(search_term, pid_list)
+    for pid in pid_list:
+        if psutil.pid_exists(pid):
+            try:
+                # Terminate the process
+                process = psutil.Process(pid)
+                process.terminate()
+                if not vars.silent:
+                    print(f"Process with PID {pid} has been terminated.")
+            except psutil.NoSuchProcess:
+                if not vars.silent:
+                    print(f"No process found with PID {pid}.")
+        else:
+            print(f"Process with PID {pid} does not exist.")
+            
+def find_pids(search_term, target_list):
+    # Initialize an empty dictionary to store PIDs and their names
+    pid_name_dict = {}
+
+    # Get a list of all running processes and their names
+    for process in psutil.process_iter(attrs=['pid', 'name', 'status']):
+        if process.info['status'] == "running":
+            try:
+                pid = process.info['pid']
+                name = process.info['name']
+                pid_name_dict[pid] = name
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                pass
+
+    # Find PIDs that contain the keyword in their process name
+    matching_pids = [pid for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
+    matching_names = [name for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
+
+    if not vars.silent:
+        for match in matching_names:
+            print("Process name:", match)
+
+    # Clear the external list and extend it with the matching PIDs
+    target_list.clear()
+    target_list.extend(matching_pids)
+
+def build_memory():
+    # Get a list of all JSON files in the specified directory
+    json_files = [filename for filename in os.listdir(vars.directory_text) if filename.endswith('.json')]
+
+    # Create a dictionary to store files and their ages
+    file_ages = {}
+
+    # Calculate the age of each file and store it in the dictionary
+    for json_file in json_files:
+        file_date = extract_date_from_filename(json_file)
+        age = datetime.datetime.now() - file_date
+        file_ages[json_file] = age
+    
+    # Sort the files based on their ages (newest first)    
+    sorted_files = sorted(file_ages.items(), key=lambda x: x[1], reverse=True)
+
+    # Initialize variables for today, yesterday, and the rest
+    today_file = None
+    yesterday_file = None
+    rest_files = []
+    
+    # Separate the files into today, yesterday, and the rest
+    for file, age in sorted_files:
+        if age.days == 0:
+            today_file = file
+        elif age.days == 1:
+            yesterday_file = file
+        else:
+            rest_files.append(file)
+            
+    # Check if there are no files for today or yesterday
+    if today_file is None:
+        print("No file for today.")
+    if yesterday_file is None:
+        print("No file for yesterday.")
+
+    # Select one random file from the rest
+    if rest_files:
+        random_file = random.choice(rest_files)
     else:
-        print("No window is currently focused.")
-    return focused_window.title
+        print("No files in the 'rest' category.")
+            
+    # Now you have the most recent file for today, the file for yesterday, and a random file from the rest
+    # You can process or use them as needed
+    print("Today's File:", today_file)
+    print("Yesterday's File:", yesterday_file)
+    if rest_files:
+        print("Random File from the Rest:", random_file)
+
+    # Construct file paths if needed
+   
+    if rest_files:
+        vars.history.extend(memory_to_history(os.path.join(vars.directory_text, random_file)))
+    if yesterday_file:
+        vars.history.extend(memory_to_history(os.path.join(vars.directory_text, yesterday_file)))
+    if today_file:
+        vars.history.extend(memory_to_history(os.path.join(vars.directory_text, today_file)))
+
+def memory_to_history(json_f):
+    message_list = []
+
+    # Read the JSON file
+    with open(json_f, 'r') as json_file:
+        data = json.load(json_file)
+
+    for entry in data:
+        messages = entry['message']
+
+        # Check if there's only one message in this entry
+        if len(messages) == 1:
+            sender = messages[0]['speaker']
+            text = messages[0]['text']
+            token_length = messages[0]['token']
+
+            # Create a message dictionary for the single message
+            message = {
+                'sender': sender,
+                'message': text,
+                'token_length': token_length
+            }
+
+            # Append the single message entry to your list variable
+            message_list.append(message)
+        else:
+            # Assuming there are always two messages when there's more than one
+            for i in range(0, len(messages), 2):
+                sender1 = messages[i]['speaker']
+                text1 = messages[i]['text']
+                token_length1 = messages[i]['token']
+
+                sender2 = messages[i + 1]['speaker']
+                text2 = messages[i + 1]['text']
+                token_length2 = messages[i + 1]['token']
+
+                # Create message dictionaries for both pairs
+                message = {
+                    'sender': sender1,
+                    'message': text1,
+                    'token_length': token_length1
+                }
+                message_list.append(message)
+                message = {
+                    'sender': sender2,
+                    'message': text2,
+                    'token_length': token_length2
+                }
+                message_list.append(message)
+
+    return message_list
+
+def extract_date_from_filename(filename):
+    date_str = filename.split('_')[1].split('.')[0]
+    return datetime.datetime.strptime(date_str, '%Y-%m-%d')
+
+def write_to_longterm_memory(sender, message):
+    # Get the current date in the 'YYYY-MM-DD' format
+    current_date = datetime.datetime.now().strftime('%Y-%m-%d')
+
+    # Construct the filename using the current date
+    json_filename = f"session_{current_date}.json"
+    
+    # Load existing chat history (if any)
+    try:
+        with open(generate_file_path("json"), 'r', encoding='utf-8') as json_file:
+            memory = json.load(json_file)
+    except FileNotFoundError:
+        # If the file doesn't exist, initialize an empty chat history
+        memory = []
+        
+    # Create a new message block if there's no current block or if the current block belongs to the AI
+    if not memory or memory[-1]['message'][-1]['speaker'] == vars.ai_name:
+        memory.append({
+            "message": [
+                {
+                    "speaker": sender,
+                    "text": message,
+                    "token": get_token_count(f"{sender}: {message}")
+                }
+            ]
+        })
+    else:
+        # Append to the existing message block
+        memory[-1]['message'].append({
+            "speaker": sender,
+            "text": message,
+            "token": get_token_count(f"{sender}: {message}")
+        })
+    
+    # Write the updated chat history back to the JSON file
+    with open(generate_file_path("json"), 'w', encoding='utf-8') as json_file:
+        json.dump(memory, json_file, indent=4)
+
+    print(f"Chat history has been updated and saved to {json_filename}")

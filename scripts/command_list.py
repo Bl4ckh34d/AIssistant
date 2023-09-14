@@ -12,12 +12,14 @@ findList = [
 
 openingList = [
     "open",
-    "start"
+    "start",
+    "create"
 ]
 
 closingList = [
     "close",
-    "shut down"
+    "shut down",
+    "terminate"
 ]
 
 switchingList = [
@@ -40,6 +42,9 @@ maximizingList = [
 ]
 
 # PROGRAMS
+windowList = [
+    "window"
+]
 firefoxList = [
     "firefox",
     "fire Fox",
@@ -50,7 +55,8 @@ firefoxList = [
 
 incognitoList = [
     "incognito",
-    "private"
+    "private",
+    "in cognito"
 ]
 
 explorerList = [

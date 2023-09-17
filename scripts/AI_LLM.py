@@ -3,8 +3,6 @@ import AI_TTS
 import re
 import helpers
 import variables as vars
-
-import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def write_conversation(sender, message):  
@@ -34,10 +32,39 @@ def print_to_console(sender, message):
 
 def infer(message):
     if message == "":
-        send_request(True)
+        #send_request(True)
+        prompt_llm(True)
     else:
         write_conversation(vars.user_name, message)
-        send_request()  
+        prompt_llm()
+        #send_request()
+        
+def prompt_llm(init):
+    if init:
+        prompt = helpers.assemble_prompt_for_LLM() + f"Write a greeting to {vars.user_name} depending on your current mood{vars.ai_name}.\n{vars.ai_name}:"
+    else:
+        prompt = helpers.assemble_prompt_for_LLM() + f"{vars.ai_name}:"
+        
+    
+    llm_output = vars.llm(prompt, max_tokens=300, stop=[f'{vars.user_name}:'], echo=True)
+    answer = llm_output["choices"][0]["text"][len(prompt):]
+    
+    # CLEANING UP RESULT FROM API
+    joined_reply = ''.join(answer)
+    cleaned_reply = joined_reply.strip() 
+    filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
+    
+    # CLEARING OUT EMOJIS, PARENTHESE, ASTERISKS, ETC.
+    filtered_reply = helpers.filter_text(filtered_reply)
+    
+    # SENTIMENT ANALYSIS
+    helpers.sentiment_calculation(filtered_reply)
+    
+    # SAVING RESPONSE MESSAGE TO LOG FILE
+    write_conversation(vars.ai_name, filtered_reply)
+    
+    # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
+    AI_TTS.invoke_text_to_speech(filtered_reply)
 
 def send_request(init=False):  
     if init:

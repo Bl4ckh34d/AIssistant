@@ -1,5 +1,6 @@
 import os
 import llama_cpp_ggml_cuda
+from llama_cpp import Llama
 import whisper
 import multiprocessing
 import time
@@ -103,14 +104,17 @@ stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
 # LLM VARS
-llm_model_name = b"airoboros-l2-7b-2.1.ggmlv3.Q4_K_M"
+llm = Llama(model_path="../models/llm/airoboros-l2-7b-2.2.Q4_K_M/airoboros-l2-7b-2.2.Q4_K_M.gguf", n_ctx=2048, n_gpu_layers=35)
+llm_model_name = b"airoboros-l2-7b-2.2.Q4_K_M"
+#llm_model_name = b"airoboros-l2-7b-2.1.ggmlv3.Q4_K_M"
 TOKENS_MAX = 4096
 TMP = [0, 1, 2, 3]
 N_THREADS = multiprocessing.cpu_count()
 lparams = llama_cpp_ggml_cuda.llama_context_default_params()
-ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../webui/models/" + llm_model_name + b"/" + llm_model_name + b".bin", lparams)
+ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../models/llm/" + llm_model_name + b"/" + llm_model_name + b".gguf", lparams)
+#ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../webui/models/" + llm_model_name + b"/" + llm_model_name + b".bin", lparams)
 ai_mood_score = 0
-ai_type_speed = 0.1
+ai_type_speed = 0.05
 
 # TTS VARS
 AUDIO_DEVICE_ID_VIRTUAL = 8 #8

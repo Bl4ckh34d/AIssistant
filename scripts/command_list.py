@@ -10,6 +10,18 @@ findList = [
     "find"
 ]
 
+gotoList = [
+    "Go to",
+    "Goto",
+    "Focus",
+    "Show",
+    "Switch to"
+]
+
+scrollList = [
+    "scroll"
+]
+
 openingList = [
     "open",
     "start",
@@ -39,6 +51,15 @@ maximizingList = [
     "maximize",
     "maximise",
     "enlarge"
+]
+
+# DIRECTIONS
+upList = [
+    "up"
+]
+
+downList = [
+    "down"
 ]
 
 # PROGRAMS
@@ -159,7 +180,8 @@ keepassList = [
     "keypass",
     "key pass",
     "keepass",
-    "kee pass"
+    "kee pass",
+    "keep pass"
 ]
 
 steamList = [
@@ -244,7 +266,11 @@ videoList = [
     "graphics settings"
 ]
 
-desktopList = [
+desktopSettingsList = [
     "desktop settings",
     "desktop options"
+]
+
+desktopList = [
+    "desktop"
 ]

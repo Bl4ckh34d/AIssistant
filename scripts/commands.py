@@ -8,7 +8,6 @@ import websockets
 import asyncio
 import re
 import json
-import pygetwindow as gw
 import keyboard
 import time
 
@@ -40,6 +39,7 @@ blender_path = r"C:\Program Files\Blender Foundation\Blender 3.6\blender.exe"
 stablediffusion_path = r"D:\SD\run.bat"
 calculator_path = r"C:\Windows\System32\calc.exe"
 
+# FIREFOX EXTENSION
 async def send_command(message):
     async with websockets.connect("ws://localhost:3000") as websocket:
         pattern = r'\b(?:' + '|'.join(re.escape(word) for word in ["find", "tab"]) + r')\b'
@@ -65,6 +65,7 @@ async def send_command(message):
             # Pretty much everyrhing
             # Tab
 
+# CREATE PROCESS
 def create_process(pid_collection, collection_name, word_list, message, path, params):
     print(f"- - - {helpers.check_for_keywords_from_list(word_list,message).upper()} - - -")
     helpers.gather_pids()
@@ -73,18 +74,137 @@ def create_process(pid_collection, collection_name, word_list, message, path, pa
     else:
         subprocess.Popen([path, params])
     helpers.find_pids(collection_name, pid_collection)
-    
+
+# EXECUTE COMMAND   
 def check_for_command(message):
-    # FIND FIREFOX EXTENSION
+    # FIND FIREFOX EXTENSION (WIP)
     if helpers.check_for_keywords_from_list(cl.findList,message) is not None:
         print(f"- - - {helpers.check_for_keywords_from_list(cl.findList,message).upper()} - - -")
         #asyncio.get_event_loop().run_until_complete(send_command(message))
-    
-    # TYPE
+        
+    # TYPE (WIP)
     if helpers.check_for_keywords_from_list(cl.typingList,message) is not None:
         print(f"- - - {helpers.check_for_keywords_from_list(cl.typingList,message).upper()} - - -")
         # pyautogui.typewrite(STRING, interval=0.2)
+    
+    # SCROLL
+    if helpers.check_for_keywords_from_list(cl.scrollList,message) is not None:
+        print(f"- - - {helpers.check_for_keywords_from_list(cl.scrollList,message).upper()} - - -")
+        
+        # UP
+        if helpers.check_for_keywords_from_list(cl.upList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.upList,message).upper()} - - -")
+            pyautogui.scroll(400)
+        
+        # DOWN
+        if helpers.check_for_keywords_from_list(cl.downList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.downList,message).upper()} - - -")
+            pyautogui.scroll(-400)
+    
+    # GO TO
+    if helpers.check_for_keywords_from_list(cl.gotoList,message) is not None:
+        print(f"- - - {helpers.check_for_keywords_from_list(cl.gotoList,message).upper()} - - -")
+        
+        # DESKTOP
+        if helpers.check_for_keywords_from_list(cl.desktopList,message) is not None and helpers.check_for_keywords_from_list(cl.tabList,message) is None:            
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.desktopList,message).upper()} - - -")
+            pyautogui.hotkey('win', 'd')
+        
+        # EXPLORER
+        if helpers.check_for_keywords_from_list(cl.explorerList,message) is not None and helpers.check_for_keywords_from_list(cl.tabList,message) is None:            
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.explorerList,message).upper()} - - -")
+            helpers.focus_pids(vars.folders, "Explorer")
             
+        # CHROME
+        elif helpers.check_for_keywords_from_list(cl.chromeList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.chromeList,message).upper()} - - -")
+            helpers.focus_pids(vars.chrome, "Chrome")
+            
+        # FIREFOX
+        elif helpers.check_for_keywords_from_list(cl.firefoxList,message) is not None:
+            # FIREFOX INCOGNITO
+            if helpers.check_for_keywords_from_list(cl.incognitoList,message) is not None:
+                print(f"- - - {helpers.check_for_keywords_from_list(cl.incognitoList,message).upper()} - - -")
+                helpers.focus_pids(vars.firefoxincognito, "Incognito")
+            else:
+                print(f"- - - {helpers.check_for_keywords_from_list(cl.firefoxList,message).upper()} - - -")
+                helpers.focus_pids(vars.firefox, "Firefox")
+                
+        # VLC
+        elif helpers.check_for_keywords_from_list(cl.vlcList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.vlcList,message).upper()} - - -")
+            helpers.focus_pids(vars.vlc, "VLC")
+            
+        # MEDIA PLAYER CLASSIC
+        elif helpers.check_for_keywords_from_list(cl.mpcList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.mpcList,message).upper()} - - -")
+            helpers.focus_pids(vars.mpc, "MPC")
+            
+        # KEEPASS
+        elif helpers.check_for_keywords_from_list(cl.keepassList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.keepassList,message).upper()} - - -")
+            helpers.focus_pids(vars.keepass, "KeePass")
+            
+        # STEAM
+        elif helpers.check_for_keywords_from_list(cl.steamList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.steamList,message).upper()} - - -")
+            helpers.focus_pids(vars.steam, "Steam")
+            
+        # DISCORD
+        elif helpers.check_for_keywords_from_list(cl.discordList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.discordList,message).upper()} - - -")
+            helpers.focus_pids(vars.discord, "Discord")
+
+        # MS WORD
+        elif helpers.check_for_keywords_from_list(cl.wordList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.wordList,message).upper()} - - -")
+            helpers.focus_pids(vars.ms_word, "Winword")
+
+        # MS EXCEL
+        elif helpers.check_for_keywords_from_list(cl.excelList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.excelList,message).upper()} - - -")
+            helpers.focus_pids(vars.ms_excel, "Excel")
+            
+        # MS POWERPOINT
+        elif helpers.check_for_keywords_from_list(cl.powerpointList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.powerpointList,message).upper()} - - -")
+            helpers.focus_pids(vars.ms_pp, "Powerpnt")
+            
+        # NOTEPAD++
+        elif helpers.check_for_keywords_from_list(cl.notepadppList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.notepadppList,message).upper()} - - -")
+            helpers.focus_pids(vars.npp, "Notepad++")
+               
+        # VISUAL STUDIO CODE
+        elif helpers.check_for_keywords_from_list(cl.vscList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.vscList,message).upper()} - - -")
+            helpers.focus_pids(vars.vsc, "Code.exe")
+              
+        # PUREREF
+        elif helpers.check_for_keywords_from_list(cl.purerefList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.purerefList,message).upper()} - - -")
+            helpers.focus_pids(vars.pureref, "PureRef")
+            
+        # AUDACITY
+        elif helpers.check_for_keywords_from_list(cl.audacityList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.audacityList,message).upper()} - - -")
+            helpers.focus_pids(vars.audacity, "Audacity")
+        
+        # BLENDER
+        elif helpers.check_for_keywords_from_list(cl.blenderList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.blenderList,message).upper()} - - -")
+            helpers.focus_pids(vars.blender, "Blender")
+            
+        # STABLE DIFFUSION
+        elif helpers.check_for_keywords_from_list(cl.stablediffusionList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.stablediffusionList,message).upper()} - - -")
+            helpers.focus_pids(vars.stablediffusion, "Stable Diffusion")
+            
+        # CALCULATOR
+        elif helpers.check_for_keywords_from_list(cl.calculatorList,message) is not None:
+            print(f"- - - {helpers.check_for_keywords_from_list(cl.calculatorList,message).upper()} - - -")
+            helpers.focus_pids(vars.calc, "Rechner")
+              
     # OPENING
     if helpers.check_for_keywords_from_list(cl.openingList,message) is not None:
         print(f"- - - {helpers.check_for_keywords_from_list(cl.openingList,message).upper()} - - -")
@@ -129,7 +249,7 @@ def check_for_command(message):
         elif helpers.check_for_keywords_from_list(cl.firefoxList,message) is not None:
             # FIREFOX INCOGNITO
             if helpers.check_for_keywords_from_list(cl.incognitoList,message) is not None:
-                create_process(vars.firefoxincognito, "Incognito", cl.incognitoList, message, firefox_path, "-private-window")
+                create_process(vars.firefoxincognito, "Firefox", cl.incognitoList, message, firefox_path, "-private-window")
 
             else:
                 create_process(vars.firefox, "Firefox", cl.firefoxList, message, firefox_path, None)   
@@ -140,7 +260,7 @@ def check_for_command(message):
             
         # MEDIA PLAYER CLASSIC
         elif helpers.check_for_keywords_from_list(cl.mpcList,message) is not None:
-            create_process(vars.mpc, "Media Player Classic", cl.mpcList, message, mpc_path, None)
+            create_process(vars.mpc, "MPC", cl.mpcList, message, mpc_path, None)
             
         # KEEPASS
         elif helpers.check_for_keywords_from_list(cl.keepassList,message) is not None:
@@ -156,15 +276,15 @@ def check_for_command(message):
             
         # MS WORD
         elif helpers.check_for_keywords_from_list(cl.wordList,message) is not None:
-            create_process(vars.ms_word, "Microsoft Word", cl.wordList, message, word_path, None)
+            create_process(vars.ms_word, "Winword", cl.wordList, message, word_path, None)
         
         # MS EXCEL
         elif helpers.check_for_keywords_from_list(cl.excelList,message) is not None:
-            create_process(vars.ms_excel, "Microsoft Excel", cl.excelList, message, excel_path, None)
+            create_process(vars.ms_excel, "Excel", cl.excelList, message, excel_path, None)
             
         # MS POWERPOINT
         elif helpers.check_for_keywords_from_list(cl.powerpointList,message) is not None:
-            create_process(vars.ms_pp, "Microsoft Power", cl.powerpointList, message, powerpoint_path, None)
+            create_process(vars.ms_pp, "Powerpnt", cl.powerpointList, message, powerpoint_path, None)
         
         # NOTEPAD++
         elif helpers.check_for_keywords_from_list(cl.notepadppList,message) is not None:
@@ -172,7 +292,7 @@ def check_for_command(message):
             
         # VISUAL STUDIO CODE
         elif helpers.check_for_keywords_from_list(cl.vscList,message) is not None:
-            create_process(vars.vsc, "Visual Studio Code", cl.vscList, message, vsc_path, None)
+            create_process(vars.vsc, "Code.exe", cl.vscList, message, vsc_path, None)
             
         # PUREREF
         elif helpers.check_for_keywords_from_list(cl.purerefList,message) is not None:
@@ -192,7 +312,7 @@ def check_for_command(message):
             
         # CALCULATOR
         elif helpers.check_for_keywords_from_list(cl.calculatorList,message) is not None:
-            create_process(vars.calc, "Calculator", cl.calculatorList, message, calculator_path, None)
+            create_process(vars.calc, "Rechner", cl.calculatorList, message, calculator_path, None)
             
         # SYSTEM SETTINGS
         elif helpers.check_for_keywords_from_list(cl.controlList,message) is not None:
@@ -283,86 +403,86 @@ def check_for_command(message):
         # EXPLORER
         elif helpers.check_for_keywords_from_list(cl.explorerList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.explorerList,message).upper()} - - -")
-            helpers.close_pids("Explorer", vars.folders)
+            helpers.close_pids(vars.folders, "Explorer")
         # CHROME
         elif helpers.check_for_keywords_from_list(cl.chromeList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.chromeList,message).upper()} - - -")
-            helpers.close_pids("Chrome", vars.chrome)
+            helpers.close_pids(vars.chrome, "Chrome")
         # FIREFOX
         elif helpers.check_for_keywords_from_list(cl.firefoxList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.firefoxList,message).upper()} - - -")
             if helpers.check_for_keywords_from_list(cl.incognitoList,message) is not None:
                 print(f"- - - {helpers.check_for_keywords_from_list(cl.incognitoList,message).upper()} - - -")
-                helpers.close_pids("Firefox", vars.firefoxincognito)
+                helpers.close_pids(vars.firefoxincognito, "Firefox")
             else:
-                helpers.close_pids("Firefox", vars.firefox)
+                helpers.close_pids(vars.firefox, "Firefox")
         # VLC
         elif helpers.check_for_keywords_from_list(cl.vlcList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.vlcList,message).upper()} - - -")
-            helpers.close_pids("VLC", vars.vlc)
+            helpers.close_pids(vars.vlc, "VLC")
         # MEDIA PLAYER CLASSIC
         elif helpers.check_for_keywords_from_list(cl.mpcList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.mpcList,message).upper()} - - -")
-            helpers.close_pids("MPC", vars.mpc)
+            helpers.close_pids(vars.mpc, "MPC")
         # KEEPASS
         elif helpers.check_for_keywords_from_list(cl.keepassList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.keepassList,message).upper()} - - -")
-            helpers.close_pids("KeePass", vars.keepass)
+            helpers.close_pids(vars.keepass, "KeePass")
         # STEAM
         elif helpers.check_for_keywords_from_list(cl.steamList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.steamList,message).upper()} - - -")
-            helpers.close_pids("Steam", vars.steam)
+            helpers.close_pids(vars.steam, "Steam")
         # DISCORD
         elif helpers.check_for_keywords_from_list(cl.discordList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.discordList,message).upper()} - - -")
-            helpers.close_pids("Discord", vars.discord)
+            helpers.close_pids(vars.discord, "Discord")
         # MS WORD
         elif helpers.check_for_keywords_from_list(cl.wordList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.wordList,message).upper()} - - -")
-            helpers.close_pids("Winword", vars.ms_word)
+            helpers.close_pids(vars.ms_word, "Winword")
         # MS EXCEL
         elif helpers.check_for_keywords_from_list(cl.excelList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.excelList,message).upper()} - - -")
-            helpers.close_pids("Excel", vars.ms_excel)
+            helpers.close_pids(vars.ms_excel, "Excel")
         # MS POWERPOINT
         elif helpers.check_for_keywords_from_list(cl.powerpointList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.powerpointList,message).upper()} - - -")
-            helpers.close_pids("Powerpnt", vars.ms_pp)
+            helpers.close_pids(vars.ms_pp, "Powerpnt")
         # NOTEPAD++
         elif helpers.check_for_keywords_from_list(cl.notepadppList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.notepadppList,message).upper()} - - -")
-            helpers.close_pids("Notepad++", vars.npp)
+            helpers.close_pids(vars.npp, "Notepad++")
         # VISUAL STUDIO CODE
         elif helpers.check_for_keywords_from_list(cl.vscList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.vscList,message).upper()} - - -")
-            helpers.close_pids("Code.exe", vars.vsc)
+            helpers.close_pids(vars.vsc, "Code.exe")
         # PUREREF
         elif helpers.check_for_keywords_from_list(cl.purerefList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.purerefList,message).upper()} - - -")
-            helpers.close_pids("PureRef", vars.pureref)
+            helpers.close_pids(vars.pureref, "PureRef")
         # AUDACITY
         elif helpers.check_for_keywords_from_list(cl.audacityList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.audacityList,message).upper()} - - -")
-            helpers.close_pids("Audacity", vars.audacity)
+            helpers.close_pids(vars.audacity, "Audacity")
         # BLENDER
         elif helpers.check_for_keywords_from_list(cl.blenderList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.blenderList,message).upper()} - - -")
-            helpers.close_pids("Blender", vars.blender)
+            helpers.close_pids(vars.blender, "Blender")
         # STABLE DIFFUSION
         elif helpers.check_for_keywords_from_list(cl.stablediffusionList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.stablediffusionList,message).upper()} - - -")
-            helpers.close_pids("Stable Diffusion", vars.stablediffusion)
+            helpers.close_pids(vars.stablediffusion, "Stable Diffusion")
         # CALCULATOR
         elif helpers.check_for_keywords_from_list(cl.calculatorList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.calculatorList,message).upper()} - - -")
-            helpers.close_pids("Rechner", vars.calc)
+            helpers.close_pids(vars.calc, "Rechner")
         # WINDOW
         elif helpers.check_for_keywords_from_list(cl.windowList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.windowList,message).upper()} - - -")
             pyautogui.hotkey('alt', 'f4')
             
     # SWITCHING
-    elif helpers.check_for_keywords_from_list(cl.switchingList,message) is not None:
+    elif helpers.check_for_keywords_from_list(cl.switchingList,message) is not None and helpers.check_for_keywords_from_list(cl.gotoList,message) is None:
         print(f"- - - {helpers.check_for_keywords_from_list(cl.switchingList,message).upper()} - - -")
         if helpers.check_for_keywords_from_list(cl.tabList,message) is not None:
             print(f"- - - {helpers.check_for_keywords_from_list(cl.tabList,message).upper()} - - -")
@@ -382,10 +502,9 @@ def check_for_command(message):
         pyautogui.hotkey('win', 'up')
             
         
-    # if message contains word from list of words, trigger next function tree
-        # Youtube
-        # Close Tab
-        # Open Tab
-        # Close Window
-        # Switch Tab
+    # Multisentence Analysis: Split reply into sentences, then find verbs in the sentences and object and formulate command chain.
+    # Extension for Firefox to control browser tab content
+    # Youtube API for outside browser access of youtube search
+    # Google API for scraping information
+    # ChatGPT API for complicated tasks
         

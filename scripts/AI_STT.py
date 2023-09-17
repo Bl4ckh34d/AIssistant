@@ -20,5 +20,6 @@ def transcribe_audio():
     
     # CHECK FOR USER COMMANDS
     cmd.check_for_command(cleaned_transcription)
-    AI_LLM.infer(cleaned_transcription)
+    #AI_LLM.infer(cleaned_transcription)
+    AI_LLM.infer2(cleaned_transcription)
             

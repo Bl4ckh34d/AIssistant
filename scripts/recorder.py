@@ -71,8 +71,6 @@ class Recorder:
 
         AI_STT.transcribe_audio()
 
-
-
     def listen(self):
         print('> Speak, when you are ready...')
         while True:

@@ -15,11 +15,11 @@ def invoke_text_to_speech(message):
             text_to_speech(message)
 
 def text_to_speech(message):
-    tts = TTS(vars.tts_model_name, gpu=True)
+    tts = TTS(vars.tts_model_name)
 
     os.environ["TOKENIZERS_PARALLELISM"] = "true"
     
-    tts.tts_to_file(text=message, file_path=vars.path_audio_output_file, speaker_wav=vars.path_audio_input_file, language="en")
+    tts.tts_to_file(text=message, file_path=vars.path_audio_output_file, gpu=True)
     
     # Play the wav file through the CABLE Input (VB-Audio Virtual C) device (ID 8)
     data, fs = sf.read(vars.path_audio_output_file)

@@ -37,39 +37,7 @@ def infer(message):
         send_request(True)
     else:
         write_conversation(vars.user_name, message)
-        send_request()
-        
-def infer2(message):
-    if message == "":
-        prompt = helpers.assemble_prompt_for_LLM() + f"Write a greeting to {vars.user_name} depending on your current mood{vars.ai_name}.\n{vars.ai_name}:"
-    else:
-        prompt = helpers.assemble_prompt_for_LLM() + f"{vars.ai_name}:"
-    
-    torch.set_default_device('cuda')
-    model = AutoModelForCausalLM.from_pretrained("microsoft/phi-1_5", trust_remote_code=True, torch_dtype="auto")
-    tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-1_5", trust_remote_code=True, torch_dtype="auto")
-    inputs = tokenizer(prompt, return_tensors="pt", return_attention_mask=False)
-
-    outputs = model.generate(**inputs, max_length=200)
-    text = tokenizer.batch_decode(outputs)[0]
-    
-    # CLEANING UP RESULT FROM API
-    joined_reply = ''.join(text)
-    cleaned_reply = joined_reply.strip() 
-    filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
-    
-    # CLEARING OUT EMOJIS, PARENTHESE, ASTERISKS, ETC.
-    filtered_reply = helpers.filter_text(filtered_reply)
-    
-    # SENTIMENT ANALYSIS
-    helpers.sentiment_calculation(filtered_reply)
-    
-    # SAVING RESPONSE MESSAGE TO LOG FILE
-    write_conversation(vars.ai_name, filtered_reply)
-    
-    # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
-    AI_TTS.invoke_text_to_speech(filtered_reply)
-    
+        send_request()  
 
 def send_request(init=False):  
     if init:

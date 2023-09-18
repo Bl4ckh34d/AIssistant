@@ -3,6 +3,7 @@ import variables as vars
 import commands as cmd
 import helpers
 
+
 def transcribe_audio():
     
     print("> Transcribing...                                                          \

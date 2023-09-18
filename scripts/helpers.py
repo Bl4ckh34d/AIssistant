@@ -1,15 +1,15 @@
 import sounddevice as sd
 import variables as vars
 import datetime
-import llama_cpp_ggml_cuda
+import llama_cpp
 import random
 import datetime
 import time
 import re
 import json
 import os
-import pygetwindow as gw
 import psutil
+import llama_cpp
 from transformers import pipeline
 import win32gui
 import win32con
@@ -30,10 +30,9 @@ def show_intro():
     print("====================================================================")
 
 def get_token_count(text):
-    byte_text = b" " + text.encode("utf-8")
-    embd_inp = (llama_cpp_ggml_cuda.llama_token * (len(byte_text) + 1))()
-    n_of_tok = llama_cpp_ggml_cuda.llama_tokenize(vars.ctx, byte_text, embd_inp, len(embd_inp), True)
-    return n_of_tok
+    text = text.encode('utf-8')
+    llm_embd_inp = (llama_cpp.llama_token * (len(text) + 1))()
+    return llama_cpp.llama_tokenize(vars.llm_ctx, text, llm_embd_inp, len(llm_embd_inp), True)
 
 def get_current_date():
     current_datetime = datetime.datetime.now()
@@ -234,12 +233,12 @@ def swap_persona():
     vars.active_mood = selected_persona
  
 def assemble_prompt_for_LLM():
-    prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history()
+    prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + populate_history()
     return prompt
 
 # LLM HISTORY
 def populate_history():
-    temp_history = ''
+    temp_history = 'CHAT HISTORY:\n'
     
     for entry in vars.history:
         temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
@@ -378,9 +377,8 @@ def build_memory():
         random_recent_file = random.choice(recent_files)
 
     # Check available Token count
-    token_used = get_token_count(assemble_prompt_for_LLM() + f"Write a random greeting to {vars.user_name} depending on your current mood{vars.ai_name}.\n{vars.ai_name}:")
-    total_tokens = 4096
-    token_budget = total_tokens - token_used
+    token_used = get_token_count(assemble_prompt_for_LLM() + f"Write a random greeting to {vars.user_name} depending on your current mood.\n{vars.ai_name}:")
+    token_budget = vars.TOKENS_MAX - token_used
     today_budget = (token_budget * 70) / 100
     recent_budget = (token_budget * 15) / 100
     rest_budget = token_budget - today_budget - recent_budget
@@ -412,19 +410,6 @@ def check_for_keywords_from_list(word_list, message):
 # PROCESSES
 def gather_pids():
     vars.init_pids = psutil.pids()
-    for process in psutil.process_iter(attrs=['pid', 'name']):
-        print(f"PID: {process.info['pid']}   NAME: {process.info['name']}")
-
-def compare_pids():   
-    vars.comp_pids = psutil.pids()
-    
-    new_pids = [pid for pid in vars.comp_pids if pid not in vars.init_pids]
-    
-    if not vars.silent:
-        for pid in new_pids:
-            print("new PID: ", pid)
-    
-    return new_pids
 
 def close_pids(pid_list, search_term):
     gather_pids()
@@ -465,8 +450,6 @@ def focus_pids(pid_list, search_term):
                 win32gui.ShowWindow(window_handles[0], win32con.SW_RESTORE)
                 pyautogui.press("alt")
                 win32gui.SetForegroundWindow(window_handles[0])
-        else:
-            print(f"No window found with PID {pid}.")
             
 def find_window_handle(pid):
     def callback(hwnd, hwnd_list):
@@ -483,27 +466,24 @@ def find_window_handle(pid):
     return hwnd_list
             
 def find_pids(target_list, search_term):
-    # Initialize an empty dictionary to store PIDs and their names
-    pid_name_dict = {}
+    if isinstance(search_term, str):
+        # Initialize an empty dictionary to store PIDs and their names
+        pid_name_dict = {}
+        # Get a list of all running processes and their names
+        for process in psutil.process_iter(attrs=['pid', 'name', 'status']):
+            if process.info['status'] == "running":
+                try:
+                    pid = process.info['pid']
+                    name = process.info['name']
+                    pid_name_dict[pid] = name
+                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                    pass
 
-    # Get a list of all running processes and their names
-    for process in psutil.process_iter(attrs=['pid', 'name', 'status']):
-        if process.info['status'] == "running":
-            try:
-                pid = process.info['pid']
-                name = process.info['name']
-                pid_name_dict[pid] = name
-            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                pass
+        # Find PIDs that contain the keyword in their process name
+        
+        matching_pids = [pid for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
+        matching_names = [name for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
 
-    # Find PIDs that contain the keyword in their process name
-    matching_pids = [pid for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
-    matching_names = [name for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
-
-    if not vars.silent:
-        for match in matching_names:
-            print("Process name:", match)
-
-    # Clear the external list and extend it with the matching PIDs
-    target_list.clear()
-    target_list.extend(matching_pids)
+        # Clear the external list and extend it with the matching PIDs
+        target_list.clear()
+        target_list.extend(matching_pids)

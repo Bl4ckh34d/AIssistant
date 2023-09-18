@@ -1,10 +1,10 @@
 import os
-import llama_cpp_ggml_cuda
 from llama_cpp import Llama
 import whisper
-import multiprocessing
+import llama_cpp
 import time
 import psutil
+import torch
 
 # GLOBAL VARS
 silent = False
@@ -56,7 +56,7 @@ ai_gender = 'female'
 persona = f"\
 Persona:\n\
 You are {ai_name}. You are {user_name}'s {ai_gender}, digital, highly intelligent but ironic and laconic AI.\n\
-You talk in an easy-going and chatty way, sometimes with a context-related pun or roast of {user_name}.\n\
+You talk in informal, sometimes with a context-related pun or roast of {user_name}.\n\
 {user_name} is communicating with you using his microphone.\n\
 A STT model then transcribes what he says and sends it to you.\n\
 Your reply then is turned into an audible female voice using a TTS model and played back.\n"
@@ -89,30 +89,31 @@ You reply neutral and brief, without much emotion.\n"
 active_mood = neutral_mood
 
 rules = f"\
-You never make up facts about {user_name} or yourself.\n"
+You never make up facts about {user_name} or yourself.\n\
+You only speak in direct speech.\n"
 
 instructions = f"Continue the following chat dialogue between you and your human creator {user_name}. Write only {ai_name}'s next reply.\n\n"
+instructions_init = f"Write a greeting to {user_name} depending on your current mood.\n\n"
 history = []
 
-# NETWORK VARS
-HOST = '127.0.0.1:5000'
-URI = f'http://{HOST}/api/v1/generate'
-
 # STT VARS
-stt_model = whisper.load_model("small") #tiny, base, small
+stt_device = 'cuda' if torch.cuda.is_available() else 'cpu'
+stt_model = whisper.load_model("small").to(stt_device) #tiny, base, small
 stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
 # LLM VARS
-llm = Llama(model_path="../models/llm/airoboros-l2-7b-2.2.Q4_K_M/airoboros-l2-7b-2.2.Q4_K_M.gguf", n_ctx=2048, n_gpu_layers=35)
-llm_model_name = b"airoboros-l2-7b-2.2.Q4_K_M"
-#llm_model_name = b"airoboros-l2-7b-2.1.ggmlv3.Q4_K_M"
 TOKENS_MAX = 4096
-TMP = [0, 1, 2, 3]
-N_THREADS = multiprocessing.cpu_count()
-lparams = llama_cpp_ggml_cuda.llama_context_default_params()
-ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../models/llm/" + llm_model_name + b"/" + llm_model_name + b".gguf", lparams)
-#ctx = llama_cpp_ggml_cuda.llama_init_from_file(b"../webui/models/" + llm_model_name + b"/" + llm_model_name + b".bin", lparams)
+llm_model_name = "airoboros-l2-7b-2.2.Q4_K_M"
+llm_model_type = "gguf"
+llm_model_path = f"../models/llm/{llm_model_name}/{llm_model_name}.{llm_model_type}"
+
+llm_lparams = llama_cpp.llama_context_default_params()
+llm_model = llama_cpp.llama_load_model_from_file(llm_model_path.encode('utf-8'), llm_lparams)
+llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
+
+llm = Llama(model_path=llm_model_path, n_ctx=TOKENS_MAX , n_gpu_layers=10)
+
 ai_mood_score = 0
 ai_type_speed = 0.05
 

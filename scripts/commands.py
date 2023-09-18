@@ -4,8 +4,6 @@ import variables as vars
 import subprocess
 import os
 import pyautogui
-import websockets
-import asyncio
 import re
 import json
 import keyboard

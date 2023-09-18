@@ -4,4 +4,3 @@ recording/audio/*
 recording/audio/.gitkeep
 recording/text/*
 !recording/text/.gitkeep
-AI.ico

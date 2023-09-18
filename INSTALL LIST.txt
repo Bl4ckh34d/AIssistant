@@ -1,0 +1,24 @@
+# ENVIRONMENT
+conda create -p D:\AI\env python
+conda activate D:\AI\env
+
+# LLM
+pip install llama-cpp-python
+
+# STT
+pip install pyaudio
+pip install sounddevice
+pip install soundfile
+
+# TTS
+pip install TTS
+
+# STT
+pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu118
+pip install -U openai-whisper
+choco install ffmpeg
+
+# COMMANDS
+pip install pygetwindows
+pip install pywin32
+pip install pyautogui

@@ -1,7 +1,30 @@
+import AI_LLM
 import variables as vars
+import commands as cmd
+import helpers
+import os
+import whisper
 
-test1 = "Hi, this is a test"
-test2 = "Hi, this is also a test"
 
-print(len(vars.llm.tokenize(test1)))
-print(len(vars.llm.tokenize(test2)))
+# STT VARS
+stt_model = whisper.load_model("small") #tiny, base, small
+stt_model_language = "en"
+stt_model_task = "transcribe" #translate
+# PATHS
+directory_current = os.path.dirname(os.path.abspath(__file__))
+directory_audio = os.path.join(directory_current, '../recording/audio')
+path_audio_input_file = os.path.abspath(os.path.join(directory_audio, "last_input.wav"))
+path_audio_output_file = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))
+    
+print("> Transcribing...                                                          \
+", end="\r", flush=True)
+
+# RECEIVING TRANSCRIPTION
+segments = stt_model.transcribe(path_audio_input_file, language=stt_model_language, task=stt_model_task)
+
+# CLEANING UP TRANSCRIPTION
+transcription = ''.join(segments["text"])
+cleaned_transcription = transcription.strip() 
+
+print(cleaned_transcription)
+            

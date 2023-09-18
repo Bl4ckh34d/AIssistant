@@ -1,6 +1,7 @@
 import os
 import soundfile as sf
 from TTS.api import TTS
+import torch
 import threading
 import helpers
 import contextlib
@@ -15,7 +16,7 @@ def invoke_text_to_speech(message):
             text_to_speech(message)
 
 def text_to_speech(message):
-    tts = TTS(vars.tts_model_name)
+    tts = TTS(model_name=vars.tts_model_name, progress_bar=False).to("cuda")
 
     os.environ["TOKENIZERS_PARALLELISM"] = "true"
     

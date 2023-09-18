@@ -4,7 +4,6 @@ import whisper
 import llama_cpp
 import time
 import psutil
-import torch
 
 # GLOBAL VARS
 silent = False
@@ -97,8 +96,7 @@ instructions_init = f"Write a greeting to {user_name} depending on your current 
 history = []
 
 # STT VARS
-stt_device = 'cuda' if torch.cuda.is_available() else 'cpu'
-stt_model = whisper.load_model("small").to(stt_device) #tiny, base, small
+stt_model = whisper.load_model("small") #tiny, base, small
 stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
@@ -112,7 +110,7 @@ llm_lparams = llama_cpp.llama_context_default_params()
 llm_model = llama_cpp.llama_load_model_from_file(llm_model_path.encode('utf-8'), llm_lparams)
 llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
 
-llm = Llama(model_path=llm_model_path, n_ctx=TOKENS_MAX , n_gpu_layers=10)
+llm = Llama(model_path=llm_model_path, n_ctx=TOKENS_MAX ,verbose=False, n_gpu_layers=10)
 
 ai_mood_score = 0
 ai_type_speed = 0.05

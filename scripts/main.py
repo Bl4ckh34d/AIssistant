@@ -1,6 +1,7 @@
 import recorder
 import helpers
 import AI_LLM
+import variables as vars
 
 helpers.show_intro()
 helpers.build_memory()

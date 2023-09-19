@@ -17,13 +17,12 @@ def invoke_text_to_speech(message):
 
 def text_to_speech(message):
     tts = TTS(model_name=vars.tts_model_name, progress_bar=False).to("cuda")
-
-    os.environ["TOKENIZERS_PARALLELISM"] = "true"
+    os.environ["TOKENIZERS_PARALLELISM"] = "True"
     
-    tts.tts_to_file(text=message, file_path=vars.path_audio_output_file, gpu=True)
+    tts.tts_to_file(text=message, file_path=vars.tts_output_file_path, gpu=True)
     
     # Play the wav file through the CABLE Input (VB-Audio Virtual C) device (ID 8)
-    data, fs = sf.read(vars.path_audio_output_file)
+    data, fs = sf.read(vars.tts_output_file_path)
 
     # Create threads for playing audio on respective devices
     thread_speakers = threading.Thread(target=helpers.play_audio, args=(data, fs, vars.AUDIO_DEVICE_ID_SPEAKERS))

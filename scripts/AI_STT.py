@@ -10,7 +10,7 @@ def transcribe_audio():
     ", end="\r", flush=True)
     
     # RECEIVING TRANSCRIPTION
-    segments = vars.stt_model.transcribe(vars.path_audio_input_file, language=vars.stt_model_language, task=vars.stt_model_task)
+    segments = vars.stt_model.transcribe(vars.stt_input_file_path, language=vars.stt_model_language, task=vars.stt_model_task)
     
     # CLEANING UP TRANSCRIPTION
     transcription = ''.join(segments["text"])

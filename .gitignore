@@ -4,3 +4,9 @@ recording/audio/*
 recording/audio/.gitkeep
 recording/text/*
 !recording/text/.gitkeep
+models/llm/*
+!models/llm/.gitkeep
+models/tts/*
+!models/tts/.gitkeep
+models/stt/*
+!models/stt/.gitkeep

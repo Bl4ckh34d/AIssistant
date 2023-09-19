@@ -39,15 +39,14 @@ persona_min_change_time = 120
 persona_current_change_time = persona_min_change_time
 
 # DIRECTORIES
-directory_current = os.path.dirname(os.path.abspath(__file__))
-directory_audio = os.path.join(directory_current, '../recording/audio')
-directory_text = os.path.join(directory_current, '../recording/text')
+directory_scripts = os.path.dirname(os.path.abspath(__file__))
+main_directory = os.path.join(directory_scripts, '..')
+directory_audio = os.path.join(main_directory, 'recording/audio')
+directory_text = os.path.join(main_directory, 'recording/text')
+directory_stt_model = os.path.join(main_directory, 'models/stt')
+directory_llm_model = os.path.join(main_directory, f'models/llm')
 
-# PATHS
-path_audio_input_file = os.path.abspath(os.path.join(directory_audio, "last_input.wav"))
-path_audio_output_file = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))
-
-# STRINGS
+# PROMPT STRINGS
 user_name = 'Daniel'
 ai_name = 'ARIA'
 ai_gender = 'female'
@@ -95,31 +94,6 @@ instructions = f"Continue the following chat dialogue between you and your human
 instructions_init = f"Write a greeting to {user_name} depending on your current mood.\n\n"
 history = []
 
-# STT VARS
-stt_model = whisper.load_model("small") #tiny, base, small
-stt_model_language = "en"
-stt_model_task = "transcribe" #translate
- 
-# LLM VARS
-TOKENS_MAX = 4096
-llm_model_name = "airoboros-l2-7b-2.2.Q4_K_M"
-llm_model_type = "gguf"
-llm_model_path = f"../models/llm/{llm_model_name}/{llm_model_name}.{llm_model_type}"
-
-llm_lparams = llama_cpp.llama_context_default_params()
-llm_model = llama_cpp.llama_load_model_from_file(llm_model_path.encode('utf-8'), llm_lparams)
-llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
-
-llm = Llama(model_path=llm_model_path, n_ctx=TOKENS_MAX ,verbose=False, n_gpu_layers=10)
-
-ai_mood_score = 0
-ai_type_speed = 0.05
-
-# TTS VARS
-AUDIO_DEVICE_ID_VIRTUAL = 8 #8
-AUDIO_DEVICE_ID_SPEAKERS = 6 #6
-tts_model_name = 'tts_models/en/jenny/jenny' #'tts_models/en/jenny/jenny' #'tts_models/multilingual/multi-dataset/xtts_v1'  #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
-
 # RECORDING SETTINGS
 RECORDING_INIT_THRESHOLD = 18
 RECORDING_CONTINUOUS_THRESHOLD = 14
@@ -130,3 +104,30 @@ NUM_CHANNELS = 1
 HZ_RATE = 16000
 S_WIDTH = 2
 CHUNK_SIZE = 1024
+
+# STT VARS
+stt_input_file_path = os.path.abspath(os.path.join(directory_audio, "last_input.wav"))
+stt_model = whisper.load_model("small", download_root=directory_stt_model) # tiny, base, small, medium
+stt_model_language = "en"
+stt_model_task = "transcribe" #translate
+ 
+# LLM VARS
+TOKENS_MAX = 4096
+llm_model_name = "airoboros-l2-7b-2.2.Q4_K_M"
+llm_model_type = "gguf"
+llm_lparams = llama_cpp.llama_context_default_params()
+llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_name}"))
+llm_model_file_path = os.path.abspath(os.path.join(llm_model_path, f"{llm_model_name}.{llm_model_type}"))
+llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_lparams)
+llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
+
+llm = Llama(model_path=llm_model_file_path, n_ctx=TOKENS_MAX ,verbose=False, n_gpu_layers=10)
+
+ai_mood_score = 0
+ai_type_speed = 0.05
+
+# TTS VARS
+AUDIO_DEVICE_ID_VIRTUAL = 8 #8
+AUDIO_DEVICE_ID_SPEAKERS = 6 #6
+tts_model_name = 'tts_models/en/jenny/jenny' #'tts_models/en/jenny/jenny' #'tts_models/multilingual/multi-dataset/xtts_v1'  #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
+tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))

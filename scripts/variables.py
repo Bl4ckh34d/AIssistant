@@ -45,6 +45,7 @@ directory_audio = os.path.join(main_directory, 'recording/audio')
 directory_text = os.path.join(main_directory, 'recording/text')
 directory_stt_model = os.path.join(main_directory, 'models/stt')
 directory_llm_model = os.path.join(main_directory, f'models/llm')
+directory_tts_model = os.path.join(main_directory, f'models/tts')
 
 # PROMPT STRINGS
 user_name = 'Daniel'
@@ -129,5 +130,8 @@ ai_type_speed = 0.05
 # TTS VARS
 AUDIO_DEVICE_ID_VIRTUAL = 8 #8
 AUDIO_DEVICE_ID_SPEAKERS = 6 #6
-tts_model_name = 'tts_models/en/jenny/jenny' #'tts_models/en/jenny/jenny' #'tts_models/multilingual/multi-dataset/xtts_v1'  #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
+tts_model_name = 'tts_models--en--jenny--jenny' #'tts_models/en/jenny/jenny' #'tts_models/multilingual/multi-dataset/xtts_v1'  #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
+tts_model_path = os.path.abspath(os.path.join(directory_tts_model, tts_model_name))
+tts_model_file_path = os.path.abspath(os.path.join(tts_model_path, "model.pth"))
+tts_model_config_file_path = tts_model_file_path = os.path.abspath(os.path.join(tts_model_path, "config.json"))
 tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))

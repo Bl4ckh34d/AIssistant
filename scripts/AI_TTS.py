@@ -16,9 +16,8 @@ def invoke_text_to_speech(message):
             text_to_speech(message)
 
 def text_to_speech(message):
-    tts = TTS(model_name=vars.tts_model_name, progress_bar=False).to("cuda")
+    tts = TTS(model_path=r"D:\AI\models\tts\tts_models--en--jenny--jenny\model.pth", config_path=r"D:\AI\models\tts\tts_models--en--jenny--jenny\config.json", progress_bar=False).to("cuda")
     os.environ["TOKENIZERS_PARALLELISM"] = "True"
-    
     tts.tts_to_file(text=message, file_path=vars.tts_output_file_path, gpu=True)
     
     # Play the wav file through the CABLE Input (VB-Audio Virtual C) device (ID 8)

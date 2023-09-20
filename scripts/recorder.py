@@ -1,10 +1,4 @@
-import pyaudio
-import math
-import struct
-import wave
-import time
-import os
-import AI_STT
+import pyaudio, math, struct, wave, time, os, AI_STT
 import variables as vars
 
 class Recorder:

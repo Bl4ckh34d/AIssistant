@@ -10,3 +10,5 @@ models/tts/*
 !models/tts/.gitkeep
 models/stt/*
 !models/stt/.gitkeep
+models/sa/*
+!models/sa/.gitkeep

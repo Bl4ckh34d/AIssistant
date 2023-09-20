@@ -1,7 +1,5 @@
 import AI_LLM
-import variables as vars
-import commands as cmd
-import helpers
+import variables as vars, commands as cmd, helpers as help
 
 
 def transcribe_audio():
@@ -17,7 +15,7 @@ def transcribe_audio():
     cleaned_transcription = transcription.strip() 
     
     # SENTIMENT ANALYSIS
-    helpers.sentiment_calculation(cleaned_transcription)
+    help.sentiment_calculation(cleaned_transcription)
     
     # CHECK FOR USER COMMANDS
     cmd.check_for_command(cleaned_transcription)

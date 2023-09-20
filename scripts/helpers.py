@@ -1,22 +1,8 @@
-import sounddevice as sd
-import variables as vars
-import datetime
-import llama_cpp
-import random
-import datetime
-import time
-import re
-import json
-import os
-import psutil
-import llama_cpp
+import datetime, time, llama_cpp, random, re, json, os, psutil, win32gui, win32con, win32process, pyautogui
+import sounddevice as sd, variables as vars
 from transformers import pipeline
-import win32gui
-import win32con
-import win32process
-import pyautogui
 
-classifier_sentiment = pipeline("sentiment-analysis")
+classifier_sentiment = pipeline("sentiment-analysis", model=vars.sa_model_path, tokenizer=vars.sa_model_path)
 
 # MISC
 def show_intro():
@@ -238,7 +224,7 @@ def assemble_prompt_for_LLM():
 
 # LLM HISTORY
 def populate_history():
-    temp_history = 'CHAT HISTORY:\n'
+    temp_history = 'YOUR MEMORIES FROM PREVIOUS CONVERSATIONS:\n'
     
     for entry in vars.history:
         temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
@@ -246,9 +232,9 @@ def populate_history():
     return temp_history
 
 def trim_chat_history():
-    total_tokens = get_token_count(assemble_prompt_for_LLM())
+    total_tokens = get_token_count(assemble_prompt_for_LLM() + vars.instructions + vars.instructions_init + f"{vars.ai_name}:")
 
-    while total_tokens >= vars.TOKENS_MAX:
+    while total_tokens >= vars.llm_n_ctx:
         last_entry_tokens = vars.history[0]['token_length']
         vars.history.pop()
         total_tokens -= last_entry_tokens 
@@ -260,8 +246,10 @@ def sentiment_calculation(message):
         total_sentiment = 0
         for sentence in split_to_sentences(message):
             sentiment = classifier_sentiment(sentence)
-            if sentiment[0]['label'] == "POSITIVE":
+            if sentiment[0]['label'] == "Positive":
                 total_sentiment += sentiment[0]['score']
+            elif sentiment[0]['label'] == "Neutral":
+                total_sentiment += sentiment[0]['score'] - 0.5
             else:
                 total_sentiment -= sentiment[0]['score']
             if not vars.silent:
@@ -269,7 +257,10 @@ def sentiment_calculation(message):
         if not vars.silent:
             print(f"TOTAL SCORE: {total_sentiment}")
             print(f"AI SCORE: {vars.ai_mood_score}")
-        vars.ai_mood_score += total_sentiment * random.gauss(0.1, 0.3)
+        if sentiment[0]['label'] == "Neutral":
+            vars.ai_mood_score += total_sentiment * random.gauss(0.1, 0.3)
+        else:
+            vars.ai_mood_score += total_sentiment * random.gauss(0.2, 0.5)
         
         if vars.ai_mood_score > 5:
             vars.ai_mood_score = 5
@@ -378,7 +369,7 @@ def build_memory():
 
     # Check available Token count
     token_used = get_token_count(assemble_prompt_for_LLM() + f"Write a random greeting to {vars.user_name} depending on your current mood.\n{vars.ai_name}:")
-    token_budget = vars.TOKENS_MAX - token_used
+    token_budget = vars.llm_n_ctx - token_used
     today_budget = (token_budget * 70) / 100
     recent_budget = (token_budget * 15) / 100
     rest_budget = token_budget - today_budget - recent_budget
@@ -396,6 +387,8 @@ def build_memory():
     if today_file:
         mem = memory_to_history(os.path.join(vars.directory_text, today_file), today_budget)
         vars.history.extend(mem)
+        
+    trim_chat_history()
 
    
 # COMMANDS

@@ -1,12 +1,6 @@
-import os
-import soundfile as sf
+import os, threading, contextlib, io
+import soundfile as sf, variables as vars, helpers as help
 from TTS.api import TTS
-import torch
-import threading
-import helpers
-import contextlib
-import io
-import variables as vars
 
 def invoke_text_to_speech(message):
     if message == "" or message == " ":
@@ -16,7 +10,7 @@ def invoke_text_to_speech(message):
             text_to_speech(message)
 
 def text_to_speech(message):
-    tts = TTS(model_path=r"D:\AI\models\tts\tts_models--en--jenny--jenny\model.pth", config_path=r"D:\AI\models\tts\tts_models--en--jenny--jenny\config.json", progress_bar=False).to("cuda")
+    tts = TTS(model_path=vars.tts_model_file_path, config_path=vars.tts_model_config_file_path, progress_bar=False).to("cuda")
     os.environ["TOKENIZERS_PARALLELISM"] = "True"
     tts.tts_to_file(text=message, file_path=vars.tts_output_file_path, gpu=True)
     
@@ -24,8 +18,8 @@ def text_to_speech(message):
     data, fs = sf.read(vars.tts_output_file_path)
 
     # Create threads for playing audio on respective devices
-    thread_speakers = threading.Thread(target=helpers.play_audio, args=(data, fs, vars.AUDIO_DEVICE_ID_SPEAKERS))
-    thread_virtual = threading.Thread(target=helpers.play_audio, args=(data, fs, vars.AUDIO_DEVICE_ID_VIRTUAL))
+    thread_speakers = threading.Thread(target=help.play_audio, args=(data, fs, vars.AUDIO_DEVICE_ID_SPEAKERS))
+    thread_virtual = threading.Thread(target=help.play_audio, args=(data, fs, vars.AUDIO_DEVICE_ID_VIRTUAL))
 
     # Start both threads
     thread_speakers.start()

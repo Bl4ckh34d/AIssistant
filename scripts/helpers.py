@@ -224,7 +224,8 @@ def assemble_prompt_for_LLM():
 
 # LLM HISTORY
 def populate_history():
-    temp_history = 'YOUR MEMORIES FROM PREVIOUS CONVERSATIONS:\n'
+    if vars.history is not []:
+        temp_history = 'YOUR MEMORIES FROM PREVIOUS CONVERSATIONS:\n'
     
     for entry in vars.history:
         temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
@@ -246,11 +247,11 @@ def sentiment_calculation(message):
         total_sentiment = 0
         for sentence in split_to_sentences(message):
             sentiment = classifier_sentiment(sentence)
-            if sentiment[0]['label'] == "Positive":
+            if sentiment[0]['label'] == "positive":
                 total_sentiment += sentiment[0]['score']
-            elif sentiment[0]['label'] == "Neutral":
+            if sentiment[0]['label'] == "neutral":
                 total_sentiment += sentiment[0]['score'] - 0.5
-            else:
+            if sentiment[0]['label'] == "negative":
                 total_sentiment -= sentiment[0]['score']
             if not vars.silent:
                 print(f"SENTIMENT ANALYSIS: FEELING: {sentiment[0]['label']} and SCORE: {sentiment[0]['score']}")

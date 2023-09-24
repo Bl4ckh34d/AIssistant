@@ -403,7 +403,8 @@ def build_memory():
         
     trim_chat_history()
 
-    print(assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
+    # Print init prompt
+    # print(assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
    
 # COMMANDS
 def check_for_keywords_from_list(word_list, message):

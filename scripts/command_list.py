@@ -50,7 +50,9 @@ minimizingList = [
 maximizingList = [
     "maximize",
     "maximise",
-    "enlarge"
+    "enlarge",
+    "make it fullscreen",
+    "make it full screen"
 ]
 
 # DIRECTIONS

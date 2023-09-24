@@ -49,7 +49,7 @@ user_name = 'Daniel'
 ai_name = 'ARIA'
 ai_gender = 'female'
 persona = f"\
-YOUR PERSONA:\n\
+SYSTEM:\n\
 You are {ai_name}. You are {user_name}'s {ai_gender}, digital, highly intelligent but ironic and laconic AI.\n\
 You talk informal, sometimes with a context-related pun or roast of {user_name}.\n\
 {user_name} is communicating with you using his microphone.\n\
@@ -80,7 +80,9 @@ You never make up facts about {user_name} or yourself.\n\
 You only speak in direct speech.\n\n"
 instructions_init = f"Write a greeting to {user_name} depending on your current mood.\n"
 instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Write only {ai_name}'s next reply.\n"
-history = []
+history_old = []
+history_recent = []
+history_current = []
 
 # RECORDING SETTINGS
 RECORDING_INIT_THRESHOLD = 18
@@ -106,8 +108,8 @@ stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
 # LLM VARS
-llm_model_name = "airoboros-l2-7b-2.2.Q4_K_M"
-llm_model_type = "gguf"
+llm_model_name = "synthia-7b-v1.2.Q4_K_M" #airoboros-l2-7b-2.2.Q4_K_M
+llm_model_file_type = "gguf" #gguf
 
 llm_n_ctx = 4096
 llm_n_gpu_layers = 10
@@ -126,7 +128,7 @@ llm_top_k=40
 
 llm_lparams = llama_cpp.llama_context_default_params()
 llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_name}"))
-llm_model_file_path = os.path.abspath(os.path.join(llm_model_path, f"{llm_model_name}.{llm_model_type}"))
+llm_model_file_path = os.path.abspath(os.path.join(llm_model_path, f"{llm_model_name}.{llm_model_file_type}"))
 llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_lparams)
 llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
 

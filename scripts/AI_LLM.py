@@ -19,7 +19,7 @@ def write_to_history(sender, text):
         'token_length': help.get_token_count(f'{sender}: {text}')
     }
     
-    vars.history.append(message)
+    vars.history_current.append(message)
 
 def print_to_console(sender, message):
     print("====================================================================")
@@ -37,11 +37,13 @@ def infer(message):
         
 def prompt_llm(init):
     if init:
-        prompt = help.assemble_prompt_for_LLM() + vars.instructions_init + f"\n{vars.ai_name}:"
+        # prompt = help.assemble_prompt_for_LLM() + vars.instructions_init + f"\n{vars.ai_name}:"
+        prompt = help.assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:"
     else:
+        # prompt = help.assemble_prompt_for_LLM() + vars.instructions + f"{vars.ai_name}:"
         prompt = help.assemble_prompt_for_LLM() + vars.instructions + f"{vars.ai_name}:"
     
-    print(prompt)
+    # print(prompt)
     
     llm_output = vars.llm(
         prompt=prompt,

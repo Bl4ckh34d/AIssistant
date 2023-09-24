@@ -224,11 +224,24 @@ def assemble_prompt_for_LLM():
 
 # LLM HISTORY
 def populate_history():
-    if vars.history is not []:
-        temp_history = 'YOUR MEMORIES FROM PREVIOUS CONVERSATIONS:\n'
+    temp_history = ""
+    if vars.history_old != []:
+        temp_history = temp_history + '\nYOUR MEMORIES FROM A OLD CONVERSATION:\n'
     
-    for entry in vars.history:
-        temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
+        for entry in vars.history_old:
+            temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
+        
+    if vars.history_recent != []:
+        temp_history = temp_history + '\nYOUR MEMORIES FROM A RECENT CONVERSATION:\n'
+    
+        for entry in vars.history_recent:
+            temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
+        
+    if vars.history_current != []:
+        temp_history = temp_history + '\nYOUR MEMORIES FROM THE CONVERSATION TODAY:\n'
+    
+        for entry in vars.history_current:
+            temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
     
     return temp_history
 
@@ -236,8 +249,8 @@ def trim_chat_history():
     total_tokens = get_token_count(assemble_prompt_for_LLM() + vars.instructions + vars.instructions_init + f"{vars.ai_name}:")
 
     while total_tokens >= vars.llm_n_ctx:
-        last_entry_tokens = vars.history[0]['token_length']
-        vars.history.pop()
+        last_entry_tokens = vars.history_current[0]['token_length']
+        vars.history_current.pop()
         total_tokens -= last_entry_tokens 
 
 
@@ -362,35 +375,35 @@ def build_memory():
         else:
             rest_files.append(file)
 
-    # Select one random file from the rest
+    # Select one random file from the rest and recent
     if rest_files:
         random_rest_file = random.choice(rest_files)
     if recent_files:
         random_recent_file = random.choice(recent_files)
 
     # Check available Token count
-    token_used = get_token_count(assemble_prompt_for_LLM() + f"Write a random greeting to {vars.user_name} depending on your current mood.\n{vars.ai_name}:")
+    token_used = get_token_count(assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
     token_budget = vars.llm_n_ctx - token_used
-    today_budget = (token_budget * 70) / 100
+    today_budget = (token_budget * 80) / 100
     recent_budget = (token_budget * 15) / 100
     rest_budget = token_budget - today_budget - recent_budget
-    if today_budget + recent_budget + rest_budget > token_budget:
-        today_budget -= 10
-    # Fill vars.history.extend(memory_to_history(os.path.join(vars.directory_text, random_file)))
+    while today_budget + recent_budget + rest_budget > token_budget:
+        today_budget -= 1
 
     # Construct file paths if needed
     if rest_files:
         mem = memory_to_history(os.path.join(vars.directory_text, random_rest_file), rest_budget)
-        vars.history.extend(mem)
+        vars.history_old.extend(mem)
     if recent_files:
         mem = memory_to_history(os.path.join(vars.directory_text, random_recent_file), recent_budget)
-        vars.history.extend(mem)
+        vars.history_recent.extend(mem)
     if today_file:
         mem = memory_to_history(os.path.join(vars.directory_text, today_file), today_budget)
-        vars.history.extend(mem)
+        vars.history_current.extend(mem)
         
     trim_chat_history()
 
+    print(assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
    
 # COMMANDS
 def check_for_keywords_from_list(word_list, message):

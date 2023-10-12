@@ -11,11 +11,8 @@ Conda:
 
 ```shell
 install_path="D:\AI\env"
-path_to_model="D:\airoboros-l2-7b-2.1.ggmlv3.Q4_K_M"
-
 env_path="$install_path\env"
 webui_path="$install_path\webui"
-model_path="$webui_path\models"
 
 mkdir -p "$install_path" && ^
 cd $install_path && ^
@@ -28,7 +25,6 @@ pip3 install -r requirements.txt && ^
 pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
 pip3 install -U openai-whisper && ^
 pip3 install pyautogui && ^
-move $path_to_model $model_path
 ```
 
 Models I used for testing:

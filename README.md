@@ -1,12 +1,24 @@
 # AIssistant
 
 A LLM assistant for personal computers that can open and close programs, tabs, folders and hold conversation via STT and TTS.
-- Rudimentary Mood System: User and LLMs messages are put through Sentiment Analysis and rated positive or negative, influencing the AIs mood (BARELY TESTED)
+- Rudimentary Mood System: User and LLMs messages are put through sentiment analysis and rated positive or negative, influencing the AIs mood (BARELY TESTED)
 - Rudimentary Longterm-Memory: Based on past chat logs, the LLM fills its context with chats older than 5 days, chats within the last 5 days and the most recent conversation. (UNTESTED)
+- Shortterm-Memory should clean itself before reaching the token maximum
+
+## NOTICE!:
+- I created this for myself in a private capacity and non-commercially. It is not well tested, nor professionally built and I assume no responsibility for any damages caused whatsoever. **USE ON YOUR OWN RISK!!**
+- Expect CRASHES, ERRORS and features NOT working correctly, as this is VERY WIP and dependent on your OS. Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence or two.
+
+Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine but the users transcribed voice input.
+This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
+
+The whole system is setup to work with VirtualCable and VRTuber if you wish for a little AI avatar that animates its mouth to the TTS output. In VRTuber you also need to setup the virtual microphone and possibly change the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/f00a99d99926e7cfc207a599556aefc3d43c634d/scripts/variables.py#L155). Run [device_test.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/device_test.py) to see the IDs of your audio devices.
 
 ## USAGE:
 First you might want to adjust the user_name and ai_name, ai_gender, the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
-Currently implemented functionalities:
+
+**Currently implemented functionalities:**
+
 ### AGAIN
 > The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
 ### GO BACK... (BY ONE)
@@ -66,22 +78,15 @@ Currently implemented functionalities:
 - System Settings
 
 ## TODO:
-- Different colors in Terminal for User Messages and LLM Messages
-- Including date and time into Chat history json
-- Finding better prompts for the currently used LLM
-- Browser Extensions (Chrome and Firefox) for remote control through LLM
+- Add user commands to history so the LLM is informed about them
+- Different colors in terminal for user messages and LLM messages
+- Including date and time into chat history .json
+- Find better prompts for the currently used LLM (Mistral-7b-OpenOrca)
+- Browser extensions (Chrome and Firefox) for remote control through LLM
 - Include an easy option to turn the LLM reply on and off
 - Continue recording the user input and transcribing sentence by sentence. When sending these chunks to the LLM, collect them temporarily until the LLM finished replying.
 All this in parallel with the TTS, which currently blocks the whole loop until it is done speaking.
 - Possibly integrate Open Interpreter and ditch my own execution code completely, if OI integrates well into this program.
-
-## NOTE:
-- Expect CRASHES, ERRORS and features NOT working correctly, as this is VERY WIP and dependent on your OS. Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence or two.
-
-Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine but the users transcribed voice input.
-This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
-
-The whole system is setup to work with VirtualCable and VRTuber if you wish for a little AI avatar that animates its mouth to the TTS output. In VRTuber you also need to setup the virtual microphone and possibly change the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/f00a99d99926e7cfc207a599556aefc3d43c634d/scripts/variables.py#L155). Run [device_test.py])(https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/device_test.py) to see the IDs of your audio devices.
 
 ## REQUIREMENTS:
 Pytorch:
@@ -112,7 +117,8 @@ pip3 install -U openai-whisper && ^
 pip3 install pyautogui
 ```
 
-Models I used for testing:
+*Models I used for testing:*
+
 LLM:
 - https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/blob/main/mistral-7b-openorca.Q4_K_M.gguf
 - https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/resolve/main/config.json
@@ -125,3 +131,6 @@ STT:
 
 TTS:
 - tts_models--en--jenny--jenny (should download automatically once started)
+
+## If you enjoy what I make, consider buying me a coffee for all these sleepless nights coding away :)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/danielbenew)

@@ -113,10 +113,19 @@ if llm_model_file_type == "gguf":
 llm_mood_score = 0
 llm_type_speed = 0.05
 
+# TTS VARS
+AUDIO_DEVICE_ID_VIRTUAL = 8 #8
+AUDIO_DEVICE_ID_SPEAKERS = 6 #6
+tts_model_name = 'tts_models--en--jenny--jenny' #'tts_models--en--jenny--jenny' #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
+tts_model_path = os.path.abspath(os.path.join(directory_tts_model, tts_model_name))
+tts_model_file_path = os.path.abspath(os.path.join(tts_model_path, "model.pth"))
+tts_model_config_file_path = os.path.abspath(os.path.join(tts_model_path, "config.json"))
+tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))
+
 # LLM PROMPT STRINGS
-persona = f"SYSTEM:\n\
+persona = f"\
 You are {ai_name}, a large language model with the name {llm_model_name} and a {ai_gender} persona.\n\
-You are and were created in August 2023.\n\
+You were created in August 2023.\n\
 {user_name} is your human creator.\n\
 You are deployed as {user_name}'s digital AI assistant that runs locally on {his_her} laptop.\n\
 You have a negative, geeky, spiteful and sarcastic personality with a toxic attitude.\n\
@@ -151,12 +160,3 @@ instructions = f"Continue the chat dialogue between you and your human creator {
 history_old = []
 history_recent = []
 history_current = []
-
-# TTS VARS
-AUDIO_DEVICE_ID_VIRTUAL = 8 #8
-AUDIO_DEVICE_ID_SPEAKERS = 6 #6
-tts_model_name = 'tts_models--en--jenny--jenny' #'tts_models--en--jenny--jenny' #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
-tts_model_path = os.path.abspath(os.path.join(directory_tts_model, tts_model_name))
-tts_model_file_path = os.path.abspath(os.path.join(tts_model_path, "model.pth"))
-tts_model_config_file_path = os.path.abspath(os.path.join(tts_model_path, "config.json"))
-tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))

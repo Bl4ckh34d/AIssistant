@@ -221,9 +221,9 @@ def swap_persona():
  
 def assemble_prompt_for_LLM(init):
     if init:
-        prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}:"
+        prompt = f'SYSTEM:\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}:"
     else:
-        prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}:"
+        prompt = f'SYSTEM:\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}:"
 
     return prompt
 

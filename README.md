@@ -2,12 +2,16 @@
 
 A LLM assistant for personal computers that can open and close programs, tabs, folders and hold conversation via STT and TTS.
 
-## INSTALL for usage:
+## REQUIREMENTS:
 Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
 
 Conda:
 - https://docs.conda.io/projects/miniconda/en/latest/ is where you can find the current version of conda. THIS IS REQUIRED for the following install script. Paths also need to be adapted for your environment:
+
+
+## INSTALLATION:
+Copy the following text block as a whole into your terminal and confirm. It SHOULD work.
 
 ```shell
 install_path="D:\AI\env"

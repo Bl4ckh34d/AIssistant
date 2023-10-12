@@ -4,7 +4,18 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - Rudimentary Mood System: User and LLMs messages are put through Sentiment Analysis and rated positive or negative, influencing the AIs mood (BARELY TESTED)
 - Rudimentary Longterm-Memory: Based on past chat logs, the LLM fills its context with chats older than 5 days, chats within the last 5 days and the most recent conversation. (UNTESTED)
 
+TODO:
+- Different colors in Terminal for User Messages and LLM Messages
+- Including date and time into Chat history json
+- Finding better prompts for the currently used LLM
+- Browser Extensions (Chrome and Firefox) for remote control through LLM
+- Include an easy option to turn the LLM reply on and off
+- Continue recording the user input and transcribing sentence by sentence. When sending these chunks to the LLM, collect them temporarily until the LLM finished replying.
+All this in parallel with the TTS, which currently blocks the whole loop until it is done speaking.
+
 NOTE: Expect crashes and errors, features not working and all sorts of bugs, as this is VERY WIP.
+Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine but the users transcribed voice input.
+This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
 
 ## REQUIREMENTS:
 Pytorch:

@@ -89,10 +89,7 @@ allActionsButAgain = [
     "maximise",
     "enlarge",
     "make it fullscreen",
-    "make it full screen",
-    "once more",
-    "again",
-    "another time"
+    "make it full screen"
 ]
 
 # DIRECTIONS
@@ -196,12 +193,15 @@ myComputerList = [
 ]
 
 tabList = [
-    "tab"
+    "tab",
+    "tap"
 ]
 
 browserTabList = [
     "browser tab",
-    "browsertab"
+    "browsertab",
+    "browser tap",
+    "browsertap"
 ]
 
 chromeList = [

@@ -5,10 +5,10 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - Rudimentary Longterm-Memory: Based on past chat logs, the LLM fills its context with chats older than 5 days, chats within the last 5 days and the most recent conversation. (UNTESTED)
 
 ## USAGE:
-
+First you might want to adjust the user_name and ai_name, ai_gender, the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
 Currently implemented functionalities:
 ### AGAIN
-The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
+> The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
 ### SCROLL...
 #### ...UP
 > This should scroll the current active window up a fair bit.
@@ -63,7 +63,6 @@ The word 'again' in a sentence without any of the other keywords will trigger th
 - System Settings
 
 ## TODO:
-
 - Different colors in Terminal for User Messages and LLM Messages
 - Including date and time into Chat history json
 - Finding better prompts for the currently used LLM

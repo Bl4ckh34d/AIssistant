@@ -7,7 +7,7 @@ Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
 
 Conda:
-- https://docs.conda.io/projects/miniconda/en/latest/ is where you can find the current version of conda. THIS IS REQUIRED for the following install script. Paths also need to adapted for your environment:
+- https://docs.conda.io/projects/miniconda/en/latest/ is where you can find the current version of conda. THIS IS REQUIRED for the following install script. Paths also need to be adapted for your environment:
 
 ```shell
 install_path="D:\AI\env"
@@ -32,5 +32,4 @@ move $path_to_model $model_path
 ```
 
 Model:
-- https://huggingface.co/TheBloke/airoboros-l2-7B-gpt4-2.0-GGML/blob/main/airoboros-l2-7b-gpt4-2.0.ggmlv3.q4_K_S.bin
-- https://huggingface.co/TheBloke/airoboros-l2-7B-gpt4-2.0-GGML/blob/main/config.json
+- https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/blob/main/mistral-7b-openorca.Q4_K_M.gguf

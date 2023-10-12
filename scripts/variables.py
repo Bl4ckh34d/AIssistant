@@ -72,9 +72,9 @@ stt_model_task = "transcribe" #translate
 llm_model_name = "mistral-7b-openorca.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #mistral-7b-v0.1.Q4_K_M
 llm_model_file_type = "gguf" #gguf
 
-user_name = 'Daniel'
+user_name = 'User'
 user_gender = 'male'
-ai_name = 'ARIA'
+ai_name = 'AIssistant'
 ai_gender = 'female'
 
 he_she = ''

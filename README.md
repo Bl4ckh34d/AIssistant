@@ -19,35 +19,35 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 
 **Currently implemented functionalities:**
 
-### AGAIN
+#### AGAIN
 > The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
-### GO BACK... (BY ONE)
-#### ...TAB
+#### GO BACK... (BY ONE)
+##### ...TAB
 > This should switch back by one tab
-### SCROLL...
-#### ...UP
+#### SCROLL...
+##### ...UP
 > This should scroll the current active window up a fair bit.
-#### ...DOWN
+##### ...DOWN
 > This should scroll the current active window down a fair bit.
-### GO TO...
+#### GO TO...
 > 'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
-### OPEN...
+#### OPEN...
 > This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
-#### ...NEW FOLDER TAB AT (FOLDER LOCATION)
+##### ...NEW FOLDER TAB AT (FOLDER LOCATION)
 > Opens a new tab in the currently active folder at the requested folder location
-#### ...NEW TAB
+##### ...NEW TAB
 > Opens a new browser or program tab
-### CLOSE...
-#### ...WINDOW/TAB/etc.
+#### CLOSE...
+##### ...WINDOW/TAB/etc.
 > Should close the requested thing
-### SWITCH...
-#### ...WINDOW/TAB
-### MINIMIZE...
+#### SWITCH...
+##### ...WINDOW/TAB
+#### MINIMIZE...
 > Minimizes active window
-### MAXIMIZE...
+#### MAXIMIZE...
 > Maximizes active window
 
-### FOLDER LOCATIONS:
+#### FOLDER LOCATIONS:
 - C Drive
 - D Drive
 - AppData
@@ -56,7 +56,7 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 - Home
 - Downloads
 
-### PROGRAMS:
+#### PROGRAMS:
 - Firefox
 - Firefox (Incognito)
 - Explorer

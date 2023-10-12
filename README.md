@@ -31,5 +31,16 @@ pip3 install pyautogui && ^
 move $path_to_model $model_path
 ```
 
-Model:
+Models I used for testing:
+LLM:
 - https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/blob/main/mistral-7b-openorca.Q4_K_M.gguf
+- https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/resolve/main/config.json
+
+SA:
+- cardiffnlp--twitter-roberta-base-sentiment-latest
+
+STT:
+- whisper (small)
+
+TTS:
+- tts_models--en--jenny--jenny

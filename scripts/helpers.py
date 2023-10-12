@@ -16,9 +16,10 @@ def show_intro():
     print("====================================================================")
 
 def get_token_count(text):
-    text = text.encode('utf-8')
-    llm_embd_inp = (llama_cpp.llama_token * (len(text) + 1))()
-    return llama_cpp.llama_tokenize(vars.llm_ctx, text, llm_embd_inp, len(llm_embd_inp), True)
+    if vars.llm_model_file_type == "gguf":
+        text = text.encode('utf-8')
+        llm_embd_inp = (llama_cpp.llama_token * (len(text) + 1))()
+        return llama_cpp.llama_tokenize(vars.llm_ctx, text, llm_embd_inp, len(llm_embd_inp), True)
 
 def get_current_date():
     current_datetime = datetime.datetime.now()
@@ -218,8 +219,12 @@ def swap_persona():
         
     vars.active_mood = selected_persona
  
-def assemble_prompt_for_LLM():
-    prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + populate_history()
+def assemble_prompt_for_LLM(init):
+    if init:
+        prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}:"
+    else:
+        prompt = f'(Date:{get_current_date()}. Time:{get_current_time()})\n\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}:"
+
     return prompt
 
 # LLM HISTORY
@@ -236,7 +241,7 @@ def populate_history():
     
         for entry in vars.history_recent:
             temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
-        
+                
     if vars.history_current != []:
         temp_history = temp_history + '\nYOUR MEMORIES FROM THE CONVERSATION TODAY:\n'
     
@@ -246,7 +251,7 @@ def populate_history():
     return temp_history
 
 def trim_chat_history():
-    total_tokens = get_token_count(assemble_prompt_for_LLM() + vars.instructions + vars.instructions_init + f"{vars.ai_name}:")
+    total_tokens = get_token_count(assemble_prompt_for_LLM(True))
 
     while total_tokens >= vars.llm_n_ctx:
         last_entry_tokens = vars.history_current[0]['token_length']
@@ -270,30 +275,30 @@ def sentiment_calculation(message):
                 print(f"SENTIMENT ANALYSIS: FEELING: {sentiment[0]['label']} and SCORE: {sentiment[0]['score']}")
         if not vars.silent:
             print(f"TOTAL SCORE: {total_sentiment}")
-            print(f"AI SCORE: {vars.ai_mood_score}")
+            print(f"AI SCORE: {vars.llm_mood_score}")
         if sentiment[0]['label'] == "Neutral":
-            vars.ai_mood_score += total_sentiment * random.gauss(0.1, 0.3)
+            vars.llm_mood_score += total_sentiment * random.gauss(0.1, 0.3)
         else:
-            vars.ai_mood_score += total_sentiment * random.gauss(0.2, 0.5)
+            vars.llm_mood_score += total_sentiment * random.gauss(0.2, 0.5)
         
-        if vars.ai_mood_score > 5:
-            vars.ai_mood_score = 5
-        if vars.ai_mood_score <= 5 and vars.ai_mood_score > 4.5:
+        if vars.llm_mood_score > 5:
+            vars.llm_mood_score = 5
+        if vars.llm_mood_score <= 5 and vars.llm_mood_score > 4.5:
             vars.active_mood = random.choice([vars.happy_mood,vars.horny_mood,vars.neutral_mood,vars.bored_mood])
-        if vars.ai_mood_score <= 4.5 and vars.ai_mood_score > 3:
+        if vars.llm_mood_score <= 4.5 and vars.llm_mood_score > 3:
             vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood,vars.bored_mood])
-        if vars.ai_mood_score <= 3 and vars.ai_mood_score > 2:
+        if vars.llm_mood_score <= 3 and vars.llm_mood_score > 2:
             vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood])
-        if vars.ai_mood_score <= 2 and vars.ai_mood_score > -2:
+        if vars.llm_mood_score <= 2 and vars.llm_mood_score > -2:
             vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood,vars.bored_mood])
-        if vars.ai_mood_score <= -2 and vars.ai_mood_score > -3:
+        if vars.llm_mood_score <= -2 and vars.llm_mood_score > -3:
             vars.active_mood = random.choice([vars.neutral_mood,vars.bored_mood])
-        if vars.ai_mood_score <= -3 and vars.ai_mood_score > -4.5:
+        if vars.llm_mood_score <= -3 and vars.llm_mood_score > -4.5:
             vars.active_mood = random.choice([vars.sad_mood,vars.neutral_mood,vars.bored_mood])
-        if vars.ai_mood_score <= -4.5 and vars.ai_mood_score > -5:
+        if vars.llm_mood_score <= -4.5 and vars.llm_mood_score > -5:
             vars.active_mood = random.choice([vars.sad_mood,vars.angry_mood,vars.neutral_mood,vars.bored_mood])
-        if vars.ai_mood_score < -5:
-            vars.ai_mood_score = -5
+        if vars.llm_mood_score < -5:
+            vars.llm_mood_score = -5
     
     current_time = time.time()
     time_difference = current_time - vars.persona_saved_time
@@ -382,7 +387,7 @@ def build_memory():
         random_recent_file = random.choice(recent_files)
 
     # Check available Token count
-    token_used = get_token_count(assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
+    token_used = get_token_count(assemble_prompt_for_LLM(True) + vars.instructions_init + f"{vars.ai_name}:")
     token_budget = vars.llm_n_ctx - token_used
     today_budget = (token_budget * 80) / 100
     recent_budget = (token_budget * 15) / 100
@@ -402,9 +407,6 @@ def build_memory():
         vars.history_current.extend(mem)
         
     trim_chat_history()
-
-    # Print init prompt
-    # print(assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
    
 # COMMANDS
 def check_for_keywords_from_list(word_list, message):

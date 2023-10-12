@@ -24,7 +24,7 @@ def write_to_history(sender, text):
 def print_to_console(sender, message):
     print("====================================================================")
     print(f"{sender}: " + message)
-    print(f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM())}/{vars.llm_n_ctx})]\n')
+    print(f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM(False))}/{vars.llm_n_ctx})]\n')
 
 def infer(message):
     help.trim_chat_history()
@@ -36,14 +36,7 @@ def infer(message):
         prompt_llm(False)
         
 def prompt_llm(init):
-    if init:
-        # prompt = help.assemble_prompt_for_LLM() + vars.instructions_init + f"\n{vars.ai_name}:"
-        prompt = help.assemble_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:"
-    else:
-        # prompt = help.assemble_prompt_for_LLM() + vars.instructions + f"{vars.ai_name}:"
-        prompt = help.assemble_prompt_for_LLM() + vars.instructions + f"{vars.ai_name}:"
-    
-    # print(prompt)
+    prompt = help.assemble_prompt_for_LLM(init)
     
     llm_output = vars.llm(
         prompt=prompt,
@@ -60,6 +53,7 @@ def prompt_llm(init):
         presence_penalty=vars.llm_presence_penalty,
         repeat_penalty=vars.llm_repeat_penalty
     )
+        
     answer = llm_output["choices"][0]["text"]
     
     # CLEANING UP RESULT

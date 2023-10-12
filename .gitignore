@@ -1,5 +1,6 @@
 env/
 webui/
+firefox_extension/
 recording/audio/*
 recording/audio/.gitkeep
 recording/text/*
@@ -12,3 +13,4 @@ models/stt/*
 !models/stt/.gitkeep
 models/sa/*
 !models/sa/.gitkeep
+INSTALLLIST.txt

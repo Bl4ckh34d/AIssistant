@@ -68,7 +68,7 @@ stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
 # LLM VARS
-llm_model_name = "synthia-7b-v1.2.Q4_K_M" #airoboros-l2-7b-2.2.Q4_K_M
+llm_model_name = "mistral-7b-openorca.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #mistral-7b-v0.1.Q4_K_M
 llm_model_file_type = "gguf" #gguf
 
 user_name = 'Daniel'
@@ -86,7 +86,7 @@ else:
     his_her = 'her'
     he_she = 'she'
 
-llm_n_ctx = 4096
+llm_n_ctx = 8000 #4096
 llm_n_gpu_layers = 20
 llm_max_tokens=300
 llm_stop=[f'{user_name}:',f'{ai_name}:']
@@ -96,25 +96,24 @@ llm_mirostat_eta=0.1
 llm_mirostat_tau=5
 llm_temperature=0.9
 llm_top_p=0.95
+llm_top_k=40
 llm_frequency_penalty=0
 llm_presence_penalty=0
 llm_repeat_penalty=1.2
-llm_top_k=40
 
-llm_lparams = llama_cpp.llama_context_default_params()
 llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_name}"))
-llm_model_file_path = os.path.abspath(os.path.join(llm_model_path, f"{llm_model_name}.{llm_model_file_type}"))
-llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_lparams)
-llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
+if llm_model_file_type == "gguf":
+    llm_model_file_path = os.path.abspath(os.path.join(llm_model_path, f"{llm_model_name}.{llm_model_file_type}")) 
+    llm_lparams = llama_cpp.llama_context_default_params()
+    llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_lparams)
+    llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
+    llm = Llama(model_path=llm_model_file_path, n_ctx=llm_n_ctx ,verbose=False, n_gpu_layers=llm_n_gpu_layers)
 
-llm = Llama(model_path=llm_model_file_path, n_ctx=llm_n_ctx ,verbose=False, n_gpu_layers=llm_n_gpu_layers)
-
-ai_mood_score = 0
-ai_type_speed = 0.05
+llm_mood_score = 0
+llm_type_speed = 0.05
 
 # LLM PROMPT STRINGS
-persona = f"\
-SYSTEM:\n\
+persona = f"SYSTEM:\n\
 You are {ai_name}, a large language model with the name {llm_model_name} and a {ai_gender} persona.\n\
 You are and were created in August 2023.\n\
 {user_name} is your human creator.\n\

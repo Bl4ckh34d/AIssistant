@@ -1,6 +1,10 @@
 # AIssistant
 
 A LLM assistant for personal computers that can open and close programs, tabs, folders and hold conversation via STT and TTS.
+- Rudimentary Mood System: User and LLMs messages are put through Sentiment Analysis and rated positive or negative, influencing the AIs mood (BARELY TESTED)
+- Rudimentary Longterm-Memory: Based on past chat logs, the LLM fills its context with chats older than 5 days, chats within the last 5 days and the most recent conversation. (UNTESTED)
+
+NOTE: Expect crashes and errors, features not working and all sorts of bugs, as this is VERY WIP.
 
 ## REQUIREMENTS:
 Pytorch:

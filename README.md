@@ -12,6 +12,7 @@ TODO:
 - Include an easy option to turn the LLM reply on and off
 - Continue recording the user input and transcribing sentence by sentence. When sending these chunks to the LLM, collect them temporarily until the LLM finished replying.
 All this in parallel with the TTS, which currently blocks the whole loop until it is done speaking.
+- Possibly integrate Open Interpreter and ditch my own execution code completely, if OI integrates well into this program.
 
 NOTE: Expect crashes and errors, features not working and all sorts of bugs, as this is VERY WIP.
 Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine but the users transcribed voice input.

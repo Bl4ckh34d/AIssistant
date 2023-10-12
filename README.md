@@ -79,7 +79,7 @@ All this in parallel with the TTS, which currently blocks the whole loop until i
 Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine but the users transcribed voice input.
 This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
 
-The whole system is setup to work with VirtualCable and VRTuber if you wish for a little AI avatar that animates its mouth to the TTS output. In VRTuber you also need to setup the virtual microphone and possibly change the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/f00a99d99926e7cfc207a599556aefc3d43c634d/scripts/variables.py#L155). Run device_test.py to see the IDs of your audio devices.
+The whole system is setup to work with VirtualCable and VRTuber if you wish for a little AI avatar that animates its mouth to the TTS output. In VRTuber you also need to setup the virtual microphone and possibly change the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/f00a99d99926e7cfc207a599556aefc3d43c634d/scripts/variables.py#L155). Run [device_test.py])(https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/device_test.py) to see the IDs of your audio devices.
 
 ## REQUIREMENTS:
 Pytorch:

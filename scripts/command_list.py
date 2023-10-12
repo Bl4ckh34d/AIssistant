@@ -61,6 +61,11 @@ againList = [
     "another time"
 ]
 
+backList = [
+    "go back",
+    "back"
+]
+
 allActionsButAgain = [
     "type",
     "write",
@@ -102,6 +107,113 @@ downList = [
 ]
 
 # PROGRAMS
+
+allProgramsList = [
+    "window",
+    "firefox",
+    "fire Fox",
+    "fire fox",
+    "fireFox",
+    "browser",
+    "incognito",
+    "private",
+    "in cognito",
+    "explorer",
+    "folder",
+    "my computer",
+    "mycomputer",
+    "c:",
+    "c drive",
+    "drive c",
+    "d:",
+    "d drive",
+    "drive d",
+    "appdata",
+    "app data",
+    "programs",
+    "programs86",
+    "programs 86",
+    "program's 86",
+    "other programs",
+    "user folder",
+    "home folder",
+    "downloads",
+    "download folder",
+    "folder",
+    "directory",
+    "c:",
+    "c drive",
+    "drive c",
+    "d:",
+    "d drive",
+    "drive d",
+    "appdata",
+    "app data",
+    "programs",
+    "programs86",
+    "programs 86",
+    "program's 86",
+    "other programs",
+    "user folder",
+    "home folder",
+    "tab",
+    "tap",
+    "browser tab",
+    "browsertab",
+    "browser tap",
+    "browsertap",
+    "chrome",
+    "vlc",
+    "video player",
+    "mpc",
+    "media player",
+    "keypass",
+    "key pass",
+    "keepass",
+    "kee pass",
+    "keep pass",
+    "steam",
+    "discord",
+    "word",
+    "excel",
+    "exel",
+    "powerpoint",
+    "power point",
+    "notepad++",
+    "notepad plus plus",
+    "notepadplusplus",
+    "vsc",
+    "visual studio",
+    "studio code",
+    "pureref",
+    "pure ref",
+    "audacity",
+    "blender",
+    "stable diffusion",
+    "calculator",
+    "controls",
+    "system settings",
+    "audio settings",
+    "sound settings",
+    "volume settings",
+    "sound devices",
+    "audio devices",
+    "microphone",
+    "speakers",
+    "video settings",
+    "video options",
+    "resolution settings",
+    "display settings",
+    "display options",
+    "graphics card settings",
+    "graphic card settings",
+    "graphic settings",
+    "graphics settings",
+    "desktop settings",
+    "desktop options",
+    "desktop"
+]
+
 windowList = [
     "window"
 ]
@@ -140,7 +252,9 @@ explorerList = [
     "user folder",
     "home folder",
     "downloads",
-    "download folder"
+    "download folder",
+    "MyComputer",
+    "My Computer"
 ]
 
 folderList = [

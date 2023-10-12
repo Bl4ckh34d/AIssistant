@@ -9,6 +9,9 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 Currently implemented functionalities:
 ### AGAIN
 > The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
+### GO BACK... (BY ONE)
+#### ...TAB
+> This should switch back by one tab
 ### SCROLL...
 #### ...UP
 > This should scroll the current active window up a fair bit.

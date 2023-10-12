@@ -5,6 +5,7 @@ from llama_cpp import Llama
 silent = False
 init_pids = psutil.pids()
 comp_pids = psutil.pids()
+executed_commands = 0
 
 # PROCESSES
 chrome = []

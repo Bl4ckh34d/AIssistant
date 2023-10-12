@@ -2,7 +2,7 @@
 
 typingList = [
     "type",
-    "write"
+    "write",
     "enter"
 ]
 
@@ -53,6 +53,46 @@ maximizingList = [
     "enlarge",
     "make it fullscreen",
     "make it full screen"
+]
+
+againList = [
+    "once more",
+    "again",
+    "another time"
+]
+
+allActionsButAgain = [
+    "type",
+    "write",
+    "enter",
+    "find",
+    "Go to",
+    "Goto",
+    "Focus",
+    "Show",
+    "Switch to",
+    "scroll",
+    "open",
+    "start",
+    "create",
+    "close",
+    "shut down",
+    "terminate",
+    "switch",
+    "swap",
+    "change",
+    "minimize",
+    "minimise",
+    "shrink",
+    "hide",
+    "maximize",
+    "maximise",
+    "enlarge",
+    "make it fullscreen",
+    "make it full screen",
+    "once more",
+    "again",
+    "another time"
 ]
 
 # DIRECTIONS

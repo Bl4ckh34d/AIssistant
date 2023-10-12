@@ -4,7 +4,64 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - Rudimentary Mood System: User and LLMs messages are put through Sentiment Analysis and rated positive or negative, influencing the AIs mood (BARELY TESTED)
 - Rudimentary Longterm-Memory: Based on past chat logs, the LLM fills its context with chats older than 5 days, chats within the last 5 days and the most recent conversation. (UNTESTED)
 
-TODO:
+## USAGE:
+
+Currently implemented functionalities:
+### SCROLL...
+#### ...UP
+This should scroll the current active window up a fair bit.
+#### ...DOWN
+This should scroll the current active window down a fair bit.
+### GO TO...
+'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
+### OPEN...
+This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
+#### ...NEW FOLDER TAB AT (FOLDER LOCATION)
+Opens a new tab in the currently active folder at the requested folder location
+#### ...NEW TAB
+Opens a new browser or program tab
+### CLOSE...
+#### ...WINDOW/TAB/etc.
+Should close the requested thing
+### SWITCH...
+#### ...WINDOW/TAB
+### MINIMIZE...
+Minimizes active window
+### MAXIMIZE...
+Maximizes active window
+
+### FOLDER LOCATIONS:
+- C Drive
+- D Drive
+- AppData
+- Programs
+- Programs86
+- Home
+- Downloads
+
+### PROGRAMS:
+- Firefox
+- Firefox (Incognito)
+- Explorer
+- VLC
+- Media Player Classic
+- Keepass
+- Steam
+- Discord
+- MS Word
+- MS Excel
+- MS Powerpoint
+- Notepad++
+- VSC
+- PureRef
+- Audacity
+- Blender
+- Stable Diffusion
+- Calculator
+- System Settings
+
+## TODO:
+
 - Different colors in Terminal for User Messages and LLM Messages
 - Including date and time into Chat history json
 - Finding better prompts for the currently used LLM
@@ -14,7 +71,9 @@ TODO:
 All this in parallel with the TTS, which currently blocks the whole loop until it is done speaking.
 - Possibly integrate Open Interpreter and ditch my own execution code completely, if OI integrates well into this program.
 
-NOTE: Expect crashes and errors, features not working and all sorts of bugs, as this is VERY WIP.
+## NOTE:
+- Expect CRASHES, ERRORS and features NOT working correctly, as this is VERY WIP and dependent on your OS. Adjust the paths in (commands.py)[https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30] to your needs. This script as well as (commands_list.py)[https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py] are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence or two.
+
 Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine but the users transcribed voice input.
 This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
 

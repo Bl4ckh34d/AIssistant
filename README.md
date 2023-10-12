@@ -33,10 +33,10 @@ LLM:
 - https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/resolve/main/config.json
 
 SA:
-- cardiffnlp--twitter-roberta-base-sentiment-latest
+- https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/tree/main
 
 STT:
-- whisper (small)
+- whisper (small) (should download automatically once started)
 
 TTS:
-- tts_models--en--jenny--jenny
+- tts_models--en--jenny--jenny (should download automatically once started)

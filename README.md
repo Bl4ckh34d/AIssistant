@@ -24,7 +24,7 @@ cd "$webui_path" && ^
 pip3 install -r requirements.txt && ^
 pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
 pip3 install -U openai-whisper && ^
-pip3 install pyautogui && ^
+pip3 install pyautogui
 ```
 
 Models I used for testing:

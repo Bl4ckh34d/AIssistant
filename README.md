@@ -7,58 +7,58 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 ## USAGE:
 
 Currently implemented functionalities:
-### SCROLL...
-#### ...UP
-This should scroll the current active window up a fair bit.
-#### ...DOWN
-This should scroll the current active window down a fair bit.
-### GO TO...
-'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
-### OPEN...
-This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
-#### ...NEW FOLDER TAB AT (FOLDER LOCATION)
-Opens a new tab in the currently active folder at the requested folder location
-#### ...NEW TAB
-Opens a new browser or program tab
-### CLOSE...
-#### ...WINDOW/TAB/etc.
-Should close the requested thing
-### SWITCH...
-#### ...WINDOW/TAB
-### MINIMIZE...
-Minimizes active window
-### MAXIMIZE...
-Maximizes active window
+    ### SCROLL...
+        #### ...UP
+            This should scroll the current active window up a fair bit.
+        #### ...DOWN
+            This should scroll the current active window down a fair bit.
+    ### GO TO...
+        'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
+    ### OPEN...
+        This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
+        #### ...NEW FOLDER TAB AT (FOLDER LOCATION)
+            Opens a new tab in the currently active folder at the requested folder location
+        #### ...NEW TAB
+            Opens a new browser or program tab
+    ### CLOSE...
+        #### ...WINDOW/TAB/etc.
+            Should close the requested thing
+    ### SWITCH...
+        #### ...WINDOW/TAB
+    ### MINIMIZE...
+        Minimizes active window
+    ### MAXIMIZE...
+        Maximizes active window
 
-### FOLDER LOCATIONS:
-- C Drive
-- D Drive
-- AppData
-- Programs
-- Programs86
-- Home
-- Downloads
+    ### FOLDER LOCATIONS:
+    - C Drive
+    - D Drive
+    - AppData
+    - Programs
+    - Programs86
+    - Home
+    - Downloads
 
-### PROGRAMS:
-- Firefox
-- Firefox (Incognito)
-- Explorer
-- VLC
-- Media Player Classic
-- Keepass
-- Steam
-- Discord
-- MS Word
-- MS Excel
-- MS Powerpoint
-- Notepad++
-- VSC
-- PureRef
-- Audacity
-- Blender
-- Stable Diffusion
-- Calculator
-- System Settings
+    ### PROGRAMS:
+    - Firefox
+    - Firefox (Incognito)
+    - Explorer
+    - VLC
+    - Media Player Classic
+    - Keepass
+    - Steam
+    - Discord
+    - MS Word
+    - MS Excel
+    - MS Powerpoint
+    - Notepad++
+    - VSC
+    - PureRef
+    - Audacity
+    - Blender
+    - Stable Diffusion
+    - Calculator
+    - System Settings
 
 ## TODO:
 

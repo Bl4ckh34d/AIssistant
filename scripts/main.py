@@ -1,12 +1,13 @@
-import recorder, AI_LLM
+import recorder, AI_LLM, subprocess
 import helpers as help, variables as vars
 
+subprocess.call('cls', shell=True)
 help.show_intro()
 help.build_memory()
 
 print()
 name = input(f"Enter your name: ")
-if name is not "" and name is not " ":
+if name != "" and name != " ":
     vars.user_name = name
 print()
 

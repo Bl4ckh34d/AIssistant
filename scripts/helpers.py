@@ -11,13 +11,13 @@ classifier_sentiment = pipeline("sentiment-analysis", model=vars.sa_model_path, 
 # MISC
 def show_intro():
     print()
-    print("====================================================================")
+    print(Fore.YELLOW + "====================================================================")
     print("\n     _      ___               _         _                     _   ")
     print("    / \    |_ _|  ___   ___  (_)  ___  | |_    __ _   _ __   | |_ ")
     print("   / _ \    | |  / __| / __| | | / __| | __|  / _` | | '_ \  | __|")
     print("  / ___ \   | |  \__ \ \__ \ | | \__ \ | |_  | (_| | | | | | | |_ ")
     print(" /_/   \_\ |___| |___/ |___/ |_| |___/  \__|  \__,_| |_| |_|  \__|\n")
-    print("====================================================================")
+    print("====================================================================" + Style.RESET_ALL)
 
 def get_token_count(text):
     if vars.llm_model_file_type == "gguf":
@@ -226,9 +226,9 @@ def swap_persona():
  
 def assemble_prompt_for_LLM(init):
     if init:
-        prompt = f'System\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}:\n"
+        prompt = f'System\n(Date: {get_current_date()}. Time: {get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}\n"
     else:
-        prompt = f'System\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}:\n"
+        prompt = f'System\n(Date: {get_current_date()}. Time: {get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}\n"
 
     return prompt
 
@@ -239,19 +239,19 @@ def populate_history():
         temp_history = temp_history + '\nYOUR MEMORIES FROM A OLD CONVERSATION:\n'
     
         for entry in vars.history_old:
-            temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
+            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n"
         
     if vars.history_recent != []:
         temp_history = temp_history + '\nYOUR MEMORIES FROM A RECENT CONVERSATION:\n'
     
         for entry in vars.history_recent:
-            temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
+            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n"
                 
     if vars.history_current != []:
         temp_history = temp_history + '\nYOUR MEMORIES FROM THE CONVERSATION TODAY:\n'
     
         for entry in vars.history_current:
-            temp_history = temp_history + f"{entry['sender']}:{entry['message']}\n"
+            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n"
     
     return temp_history
 
@@ -261,8 +261,7 @@ def trim_chat_history():
     while total_tokens >= vars.llm_n_ctx:
         last_entry_tokens = vars.history_current[0]['token_length']
         vars.history_current.pop()
-        total_tokens -= last_entry_tokens 
-
+        total_tokens -= last_entry_tokens
 
 # LLM SENTIMENT ANALYSIS    
 def sentiment_calculation(message):
@@ -284,7 +283,7 @@ def sentiment_calculation(message):
             vars.llm_mood_score = vars.llm_mood_score + sentiment_strength    
             
             if not vars.silent:
-                print(Fore.CYAN + f"CONVERSATION SENTIMENT: {sentiment_strength}" + Style.RESET_ALL)
+                print(Fore.CYAN + f"CONVERSATION SENTIMENT: {sentiment_strength} | MOOD: {sentiment[0]['label']}" + Style.RESET_ALL)
         
         if vars.llm_mood_score > 5:
             vars.llm_mood_score = 5

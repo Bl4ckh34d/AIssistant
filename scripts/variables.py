@@ -156,7 +156,7 @@ active_mood = neutral_mood
 rules = f"\
 You never make up facts about {user_name} or yourself.\n\n"
 instructions_init = f"Write a greeting to {user_name} depending on your current mood and don't use quotation marks.\n"
-instructions = f"Greet {user_name} depending on your last conversation and mood. Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n"
+instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n"
 history_old = []
 history_recent = []
 history_current = []

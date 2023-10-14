@@ -44,6 +44,8 @@ def infer(message):
         
 def prompt_llm(init):
     prompt = help.assemble_prompt_for_LLM(init)
+    if not vars.silent:
+        print(prompt) 
     
     llm_output = vars.llm(
         prompt=prompt,

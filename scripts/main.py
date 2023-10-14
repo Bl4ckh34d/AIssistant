@@ -5,8 +5,8 @@ help.show_intro()
 help.build_memory()
 
 print()
-input(f"Press Enter to wake {vars.ai_name}...")
-print()
+#input(f"Press Enter to wake {vars.ai_name}...")
+#print()
 
 AI_LLM.infer("")
 

@@ -218,6 +218,11 @@ windowList = [
     "window"
 ]
 
+doAndList = [
+    "do",
+    "and"
+]
+
 firefoxList = [
     "firefox",
     "fire Fox",

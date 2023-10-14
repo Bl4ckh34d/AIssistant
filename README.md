@@ -79,7 +79,6 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 - System Settings
 
 ## TODO:
-- Different colors in terminal for user messages and LLM messages
 - Including date and time into chat history .json
 - Find better prompts for the currently used LLM (Mistral-7b-OpenOrca)
 - Browser extensions (Chrome and Firefox) for remote control through LLM

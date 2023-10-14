@@ -39,29 +39,15 @@ def generate_file_path(filetype):
 
 def split_to_sentences(message):
     sentences = []
-    current_sentence = []
-    consecutive_count = 0
-    
-    for char in message:
-        current_sentence.append(char)
-        if char in ('.', '!', '?'):
-            consecutive_count += 1
-        else:
-            consecutive_count = 0
-
-        if consecutive_count > 1:
-            # Remove extra consecutive punctuation from the current sentence
-            current_sentence = current_sentence[:-consecutive_count + 1]
-
-            if sentences:
-                # Add consecutive punctuation to the previous sentence
-                sentences[-1] += ''.join(current_sentence).strip()
-                current_sentence = []
-
-    if current_sentence:
-        sentences.append(''.join(current_sentence).strip())
-
+    sentence_pattern = r'([.!?]+)'
+    chunks = re.split(sentence_pattern, message)
+    sentences = ["".join(s) for s in zip(chunks[::2], chunks[1::2])]
     return sentences
+
+def remove_code_snippets(string):
+    pattern = r'```[\s\S]*?```'
+    clean_text = re.sub(pattern, '', string)
+    return clean_text
 
 def extract_date_from_filename(filename):
     date_str = filename.split('_')[1].split('.')[0]
@@ -271,12 +257,11 @@ def sentiment_calculation(message):
                 total_sentiment += sentiment[0]['score'] - 0.5
             if sentiment[0]['label'] == "negative":
                 total_sentiment -= sentiment[0]['score']
+                
             if not vars.silent:
                 print(f"SENTIMENT ANALYSIS: FEELING: {sentiment[0]['label']} and SCORE: {sentiment[0]['score']}")
-        if not vars.silent:
-            print(f"LAST SENTENCES SCORE: {total_sentiment}")
-            print(f"AI SCORE: {vars.llm_mood_score}")
-        if sentiment[0]['label'] == "Neutral":
+                
+        if sentiment[0]['label'] == "neutral":
             vars.llm_mood_score += total_sentiment * random.gauss(0.1, 0.3)
         else:
             vars.llm_mood_score += total_sentiment * random.gauss(0.2, 0.5)
@@ -299,11 +284,15 @@ def sentiment_calculation(message):
             vars.active_mood = random.choice([vars.sad_mood,vars.angry_mood,vars.neutral_mood,vars.bored_mood])
         if vars.llm_mood_score < -5:
             vars.llm_mood_score = -5
-    
+            
+        if not vars.silent:
+            print(f"TOTAL SCORE: {total_sentiment}")
+    if not vars.silent:
+        print(f"AI SCORE: {vars.llm_mood_score}")
+        
     current_time = time.time()
     time_difference = current_time - vars.persona_saved_time
     if time_difference > vars.persona_current_change_time:
-        
         swap_persona()
         vars.persona_saved_time = time.time()
         vars.persona_current_change_time = random.randint(vars.persona_min_change_time, vars.persona_max_change_time)

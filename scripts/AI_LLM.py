@@ -77,5 +77,8 @@ def prompt_llm(init):
     # SAVING RESPONSE MESSAGE TO LOG FILE
     write_conversation(vars.ai_name, filtered_reply)
     
+    # REMOVE CODE SNIPPETS BEFORE TTS
+    final_reply = help.remove_code_snippets(filtered_reply)
+    
     # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
-    AI_TTS.invoke_text_to_speech(filtered_reply)
+    AI_TTS.invoke_text_to_speech(final_reply)

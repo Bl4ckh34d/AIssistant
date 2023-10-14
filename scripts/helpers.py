@@ -239,19 +239,19 @@ def populate_history():
         temp_history = temp_history + '\nYOUR MEMORIES FROM A OLD CONVERSATION:\n'
     
         for entry in vars.history_old:
-            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n"
+            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n\n"
         
     if vars.history_recent != []:
         temp_history = temp_history + '\nYOUR MEMORIES FROM A RECENT CONVERSATION:\n'
     
         for entry in vars.history_recent:
-            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n"
+            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n\n"
                 
     if vars.history_current != []:
         temp_history = temp_history + '\nYOUR MEMORIES FROM THE CONVERSATION TODAY:\n'
     
         for entry in vars.history_current:
-            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n"
+            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n\n"
     
     return temp_history
 
@@ -274,11 +274,11 @@ def sentiment_calculation(message):
             sentiment = classifier_sentiment(sentence)
             sentiment_strength = 0
             if sentiment[0]['label'] == "positive":
-                sentiment_strength = sentiment[0]['score'] * random.gauss(0.2, 0.5)
+                sentiment_strength = abs(sentiment[0]['score'] * random.gauss(0.2, 0.5))
             if sentiment[0]['label'] == "neutral":
-                sentiment_strength = (sentiment[0]['score'] - 0.5) * random.gauss(0.1, 0.3)
+                sentiment_strength = abs(sentiment[0]['score'] / 2 * random.gauss(0.3, 0.6))
             if sentiment[0]['label'] == "negative":
-                sentiment_strength = (-1) * sentiment[0]['score'] * random.gauss(0.2, 0.5)   
+                sentiment_strength = -(abs(sentiment[0]['score'] * random.gauss(0.2, 0.5)))   
                              
             vars.llm_mood_score = vars.llm_mood_score + sentiment_strength    
             

@@ -6,7 +6,7 @@ help.build_memory()
 
 print()
 name = input(f"Enter your name: ")
-if name is not None:
+if name is not "" and name is not " ":
     vars.user_name = name
 print()
 

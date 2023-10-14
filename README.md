@@ -122,8 +122,8 @@ pip3 install colorama
 *Models I used for testing:*
 
 LLM:
-- https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/blob/main/mistral-7b-openorca.Q4_K_M.gguf
-- https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/resolve/main/config.json
+- https://huggingface.co/TheBloke/dolphin-2.1-mistral-7B-GGUF/resolve/main/dolphin-2.1-mistral-7b.Q4_K_M.gguf
+- https://huggingface.co/TheBloke/dolphin-2.1-mistral-7B-GGUF/resolve/main/config.json
 
 SA:
 - https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/tree/main

@@ -197,21 +197,27 @@ def swap_persona():
         if selected_persona == vars.happy_mood:
             print(Fore.CYAN + f"({vars.ai_name} is happy)\n" + Style.RESET_ALL)
             vars.llm_temperature = 0.9
+            vars.llm_max_tokens = 350
         if selected_persona == vars.sad_mood:
             print(Fore.CYAN + f"({vars.ai_name} is sad)\n" + Style.RESET_ALL)
             vars.llm_temperature = 0.1
+            vars.llm_max_tokens = 50
         if selected_persona == vars.angry_mood:
             print(Fore.CYAN + f"({vars.ai_name} is angry)\n" + Style.RESET_ALL)
             vars.llm_temperature = 1.4
+            vars.llm_max_tokens = 150
         if selected_persona == vars.horny_mood:
             print(Fore.CYAN + f"({vars.ai_name} is aroused)\n" + Style.RESET_ALL)
             vars.llm_temperature = 1.2
+            vars.llm_max_tokens = 200
         if selected_persona == vars.bored_mood:
             print(Fore.CYAN + f"({vars.ai_name} is bored)\n" + Style.RESET_ALL)
             vars.llm_temperature = 0.3
+            vars.llm_max_tokens = 25
         if selected_persona == vars.neutral_mood:
             print(Fore.CYAN + f"({vars.ai_name} is neutral)\n" + Style.RESET_ALL)
             vars.llm_temperature = 0.5
+            vars.llm_max_tokens = 250
         
     if vars.silent is False:
         print(Fore.CYAN + f"LLM_TEMPERATURE: {vars.llm_temperature}" + Style.RESET_ALL)
@@ -278,7 +284,7 @@ def sentiment_calculation(message):
             vars.llm_mood_score = vars.llm_mood_score + sentiment_strength    
             
             if not vars.silent:
-                print(Fore.CYAN + f"SENTIMENT: {sentiment[0]['label']} and STRENGTH: {sentiment[0]['score']}" + Style.RESET_ALL)
+                print(Fore.CYAN + f"CONVERSATION SENTIMENT: {sentiment_strength}" + Style.RESET_ALL)
         
         if vars.llm_mood_score > 5:
             vars.llm_mood_score = 5
@@ -286,11 +292,11 @@ def sentiment_calculation(message):
             vars.active_mood = random.choice([vars.happy_mood,vars.horny_mood,vars.neutral_mood,vars.bored_mood])
         if vars.llm_mood_score <= 4.5 and vars.llm_mood_score > 3:
             vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood,vars.bored_mood])
-        if vars.llm_mood_score <= 3 and vars.llm_mood_score > 2:
+        if vars.llm_mood_score <= 3 and vars.llm_mood_score > 1.5:
             vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood])
-        if vars.llm_mood_score <= 2 and vars.llm_mood_score > -2:
+        if vars.llm_mood_score <= 1.5 and vars.llm_mood_score > -1.5:
             vars.active_mood = random.choice([vars.happy_mood,vars.neutral_mood,vars.bored_mood])
-        if vars.llm_mood_score <= -2 and vars.llm_mood_score > -3:
+        if vars.llm_mood_score <= -1.5 and vars.llm_mood_score > -3:
             vars.active_mood = random.choice([vars.neutral_mood,vars.bored_mood])
         if vars.llm_mood_score <= -3 and vars.llm_mood_score > -4.5:
             vars.active_mood = random.choice([vars.sad_mood,vars.neutral_mood,vars.bored_mood])
@@ -348,8 +354,6 @@ def write_to_longterm_memory(sender, message):
     # Write the updated chat history back to the JSON file
     with open(generate_file_path("json"), 'w', encoding='utf-8') as json_file:
         json.dump(memory, json_file, indent=4)
-
-    print(f"Chat history has been updated and saved to {json_filename}")
 
 def build_memory():
     # Get a list of all JSON files in the specified directory

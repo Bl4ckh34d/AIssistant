@@ -192,24 +192,30 @@ def swap_persona():
     if not vars.silent:
         if selected_persona == vars.happy_mood:
             print(f"({vars.ai_name} is happy)\n")
+            vars.llm_temperature = 0.9
         if selected_persona == vars.sad_mood:
             print(f"({vars.ai_name} is sad)\n")
+            vars.llm_temperature = 0.1
         if selected_persona == vars.angry_mood:
             print(f"({vars.ai_name} is angry)\n")
+            vars.llm_temperature = 1.4
         if selected_persona == vars.horny_mood:
             print(f"({vars.ai_name} is aroused)\n")
+            vars.llm_temperature = 1.2
         if selected_persona == vars.bored_mood:
             print(f"({vars.ai_name} is bored)\n")
+            vars.llm_temperature = 0.3
         if selected_persona == vars.neutral_mood:
             print(f"({vars.ai_name} is neutral)\n")
+            vars.llm_temperature = 0.5
         
     vars.active_mood = selected_persona
  
 def assemble_prompt_for_LLM(init):
     if init:
-        prompt = f'SYSTEM:\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}:"
+        prompt = f'CONTEXT:\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}:"
     else:
-        prompt = f'SYSTEM:\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}:"
+        prompt = f'CONTEXT:\n(Date:{get_current_date()}. Time:{get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}:"
 
     return prompt
 
@@ -248,23 +254,24 @@ def trim_chat_history():
 # LLM SENTIMENT ANALYSIS    
 def sentiment_calculation(message):
     if message != "" and message != " ":
-        total_sentiment = 0
+        
+        if not vars.silent:
+            print(f"AI SENTIMENT BEFORE: {vars.llm_mood_score}")
+            
         for sentence in split_to_sentences(message):
             sentiment = classifier_sentiment(sentence)
+            sentiment_strength = 0
             if sentiment[0]['label'] == "positive":
-                total_sentiment += sentiment[0]['score']
+                sentiment_strength = sentiment[0]['score'] * random.gauss(0.2, 0.5)
             if sentiment[0]['label'] == "neutral":
-                total_sentiment += sentiment[0]['score'] - 0.5
+                sentiment_strength = (sentiment[0]['score'] - 0.5) * random.gauss(0.1, 0.3)
             if sentiment[0]['label'] == "negative":
-                total_sentiment -= sentiment[0]['score']
-                
+                sentiment_strength = (-1) * sentiment[0]['score'] * random.gauss(0.2, 0.5)   
+                             
+            vars.llm_mood_score = vars.llm_mood_score + sentiment_strength    
+            
             if not vars.silent:
-                print(f"SENTIMENT ANALYSIS: FEELING: {sentiment[0]['label']} and SCORE: {sentiment[0]['score']}")
-                
-        if sentiment[0]['label'] == "neutral":
-            vars.llm_mood_score += total_sentiment * random.gauss(0.1, 0.3)
-        else:
-            vars.llm_mood_score += total_sentiment * random.gauss(0.2, 0.5)
+                print(f"SENTIMENT: {sentiment[0]['label']} and STRENGTH: {sentiment[0]['score']}")
         
         if vars.llm_mood_score > 5:
             vars.llm_mood_score = 5
@@ -284,11 +291,9 @@ def sentiment_calculation(message):
             vars.active_mood = random.choice([vars.sad_mood,vars.angry_mood,vars.neutral_mood,vars.bored_mood])
         if vars.llm_mood_score < -5:
             vars.llm_mood_score = -5
-            
-        if not vars.silent:
-            print(f"TOTAL SCORE: {total_sentiment}")
+
     if not vars.silent:
-        print(f"AI SCORE: {vars.llm_mood_score}")
+        print(f"AI SENTIMENT AFTER: {vars.llm_mood_score}")
         
     current_time = time.time()
     time_difference = current_time - vars.persona_saved_time

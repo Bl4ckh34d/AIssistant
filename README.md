@@ -47,6 +47,8 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 > Minimizes active window
 #### MAXIMIZE...
 > Maximizes active window
+#### REFRESH...
+> Same as hitting F5 on the keyboard
 
 #### FOLDER LOCATIONS:
 - C Drive

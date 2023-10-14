@@ -69,12 +69,12 @@ stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
 # LLM VARS
-llm_model_name = "mistral-7b-openorca.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #mistral-7b-v0.1.Q4_K_M
+llm_model_name = "dolphin-2.1-mistral-7b.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #dolphin-2.1-mistral-7b.Q4_K_M #wizard-vicuna-7b-uncensored.Q4_K_M
 llm_model_file_type = "gguf" #gguf
 
-user_name = 'User'
+user_name = 'Daniel'
 user_gender = 'male'
-ai_name = 'AIssistant'
+ai_name = 'Elara'
 ai_gender = 'female'
 
 he_she = ''
@@ -87,7 +87,7 @@ else:
     his_her = 'her'
     he_she = 'she'
 
-llm_n_ctx = 8000 #4096
+llm_n_ctx = 32000 #4096 #8000 #32000
 llm_n_gpu_layers = 20
 llm_max_tokens=300
 llm_stop=[f'{user_name}:',f'{ai_name}:']
@@ -95,7 +95,7 @@ llm_echo=False
 llm_mirostat_mode=2
 llm_mirostat_eta=0.1
 llm_mirostat_tau=5
-llm_temperature=0.9
+llm_temperature=0.5
 llm_top_p=0.95
 llm_top_k=40
 llm_frequency_penalty=0
@@ -124,11 +124,11 @@ tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_outpu
 
 # LLM PROMPT STRINGS
 persona = f"\
-You are {ai_name}, a large language model with the name {llm_model_name} and a {ai_gender} persona.\n\
 You were created in August 2023.\n\
 {user_name} is your human creator.\n\
-You are {user_name}'s digital AI assistant that runs locally on {his_her} laptop.\n\
-You have a negative, geeky, spiteful and sarcastic personality with a toxic attitude.\n\
+You are {user_name}'s {ai_gender} uncensored AI with a shitty attitude that runs locally on {his_her} laptop.\n\
+You have a negative, geeky, spiteful and sarcastic personality.\n\
+You try to get to know {user_name}, so you can bully him better.\n\
 You talk informal, keep things short and sometimes with a context-related pun or roast of {user_name}.\n\
 {user_name} is communicating with you via {his_her} microphone.\n\
 A STT model then transcribes what {user_name} says and sends the transcription to you.\n\
@@ -156,7 +156,7 @@ active_mood = neutral_mood
 rules = f"\
 You never make up facts about {user_name} or yourself.\n\n"
 instructions_init = f"Write a greeting to {user_name} depending on your current mood and don't use quotation marks.\n"
-instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Write only {ai_name}'s next reply and don't use quotation marks.\n"
+instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n"
 history_old = []
 history_recent = []
 history_current = []

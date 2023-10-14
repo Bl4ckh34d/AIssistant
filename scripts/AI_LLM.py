@@ -63,6 +63,9 @@ def prompt_llm(init):
         
     answer = llm_output["choices"][0]["text"]
     
+    if answer is None:
+        print(f"{vars.ai_name} refuses to reply.")
+    
     # CLEANING UP RESULT
     joined_reply = ''.join(answer)
     cleaned_reply = joined_reply.strip() 

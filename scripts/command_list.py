@@ -55,6 +55,11 @@ maximizingList = [
     "make it full screen"
 ]
 
+refreshList = [
+    "refresh",
+    "f5"
+]
+
 againList = [
     "once more",
     "again",

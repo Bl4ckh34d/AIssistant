@@ -76,6 +76,13 @@ def check_for_command(message):
         else:
             print("- - - NO LAST ACTION - - -")
             
+    # REFRESH (TAB)
+    if help.check_for_keywords_from_list(cl.refreshList,message):
+        if vars.executed_commands: 
+            print(f"- - - {help.check_for_keywords_from_list(cl.refreshList,message).upper()} - - -")
+            pyautogui.hotkey('f5')
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.refreshList,message).upper())
+    
     # GO BACK (TAB)
     if help.check_for_keywords_from_list(cl.backList,message) and (help.check_for_keywords_from_list(cl.tabList,message) or help.check_for_keywords_from_list(cl.browserTabList,message)):
         if vars.executed_commands: 

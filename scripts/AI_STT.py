@@ -20,4 +20,6 @@ def transcribe_audio():
     # CHECK FOR USER COMMANDS
     if cmd.check_for_command(cleaned_transcription) == []:
         AI_LLM.infer(cleaned_transcription)
-            
+    else:
+        AI_LLM.write_to_history(vars.user_name, cleaned_transcription)
+        AI_LLM.write_to_history(vars.ai_name, cmd.check_for_command(cleaned_transcription) + " SUCCESSFUL.")

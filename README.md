@@ -79,7 +79,6 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 - System Settings
 
 ## TODO:
-- Add user commands to history so the LLM is informed about them
 - Different colors in terminal for user messages and LLM messages
 - Including date and time into chat history .json
 - Find better prompts for the currently used LLM (Mistral-7b-OpenOrca)
@@ -116,6 +115,7 @@ pip3 install -r requirements.txt && ^
 pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
 pip3 install -U openai-whisper && ^
 pip3 install pyautogui
+pip3 install colorama
 ```
 
 *Models I used for testing:*

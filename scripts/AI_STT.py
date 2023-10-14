@@ -22,4 +22,6 @@ def transcribe_audio():
         AI_LLM.infer(cleaned_transcription)
     else:
         AI_LLM.write_to_history(vars.user_name, cleaned_transcription)
-        AI_LLM.write_to_history(vars.ai_name, cmd.check_for_command(cleaned_transcription) + " SUCCESSFUL.")
+        AI_LLM.print_to_console(vars.user_name, cleaned_transcription)
+        AI_LLM.write_to_history(vars.ai_name, vars.executed_commands[-1] + " SUCCESSFUL.")
+        AI_LLM.print_to_console(vars.ai_name, vars.executed_commands[-1] + " SUCCESSFUL.")

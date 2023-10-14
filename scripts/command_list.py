@@ -217,6 +217,7 @@ allProgramsList = [
 windowList = [
     "window"
 ]
+
 firefoxList = [
     "firefox",
     "fire Fox",

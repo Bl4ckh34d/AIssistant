@@ -1,5 +1,9 @@
 import AI_TTS, re
 import variables as vars, helpers as help
+from colorama import Fore, Back, Style, init
+
+# Initialize colorama
+init()
 
 def write_conversation(sender, message):  
     write_to_file(sender, message)
@@ -23,7 +27,10 @@ def write_to_history(sender, text):
 
 def print_to_console(sender, message):
     print("====================================================================")
-    print(f"{sender}: " + message)
+    if sender == vars.ai_name:
+        print(Fore.YELLOW + f"{sender}: " + message + Style.RESET_ALL)
+    else:
+        print(Fore.GREEN + f"{sender}: " + message + Style.RESET_ALL)
     print(f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM(False))}/{vars.llm_n_ctx})]\n')
 
 def infer(message):

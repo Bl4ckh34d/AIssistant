@@ -84,10 +84,10 @@ def check_for_command(message):
             vars.executed_commands.append(help.check_for_keywords_from_list(cl.backList,message).upper() + " BY ONE TAB")
     
     # FIND FIREFOX EXTENSION (WIP)
-    if help.check_for_keywords_from_list(cl.findList,message):
-        print(f"- - - {help.check_for_keywords_from_list(cl.findList,message).upper()} - - -")
+    #if help.check_for_keywords_from_list(cl.findList,message):
+        #print(f"- - - {help.check_for_keywords_from_list(cl.findList,message).upper()} - - -")
         #asyncio.get_event_loop().run_until_complete(send_command(message))
-        vars.executed_commands.append(help.check_for_keywords_from_list(cl.findList,message).upper())
+        #vars.executed_commands.append(help.check_for_keywords_from_list(cl.findList,message).upper())
         
     # TYPE (WIP)
     if help.check_for_keywords_from_list(cl.typingList,message):
@@ -109,7 +109,7 @@ def check_for_command(message):
         if help.check_for_keywords_from_list(cl.downList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.downList,message).upper()} - - -")
             pyautogui.scroll(-400)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.scrollList,message).upper() + " " + help.check_for_keywords_from_list(cl.downList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.scrollList,message).upper() + " " + help.check_for_keywords_from_list(cl.downList,message).upper())
 
     
     # GO TO
@@ -120,21 +120,21 @@ def check_for_command(message):
         if help.check_for_keywords_from_list(cl.desktopList,message) and help.check_for_keywords_from_list(cl.tabList,message) is None:            
             print(f"- - - {help.check_for_keywords_from_list(cl.desktopList,message).upper()} - - -")
             pyautogui.hotkey('win', 'd')
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.desktopList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.desktopList,message).upper())
 
         
         # EXPLORER
         elif help.check_for_keywords_from_list(cl.explorerList,message) and help.check_for_keywords_from_list(cl.tabList,message) is None:            
             print(f"- - - {help.check_for_keywords_from_list(cl.explorerList,message).upper()} - - -")
             help.focus_pids(vars.folders, "Explorer")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper())
 
             
         # CHROME
         elif help.check_for_keywords_from_list(cl.chromeList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.chromeList,message).upper()} - - -")
             help.focus_pids(vars.chrome, "Chrome")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.chromeList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.chromeList,message).upper())
 
             
         # FIREFOX
@@ -143,104 +143,104 @@ def check_for_command(message):
             if help.check_for_keywords_from_list(cl.incognitoList,message):
                 print(f"- - - {help.check_for_keywords_from_list(cl.incognitoList,message).upper()} - - -")
                 help.focus_pids(vars.firefoxincognito, "Firefox")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.incognitoList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.incognitoList,message).upper())
 
             else:
                 print(f"- - - {help.check_for_keywords_from_list(cl.firefoxList,message).upper()} - - -")
                 help.focus_pids(vars.firefox, "Firefox")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.firefoxList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.firefoxList,message).upper())
 
                 
         # VLC
         elif help.check_for_keywords_from_list(cl.vlcList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.vlcList,message).upper()} - - -")
             help.focus_pids(vars.vlc, "VLC")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.vlcList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.vlcList,message).upper())
 
             
         # MEDIA PLAYER CLASSIC
         elif help.check_for_keywords_from_list(cl.mpcList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.mpcList,message).upper()} - - -")
             help.focus_pids(vars.mpc, "MPC")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.mpcList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.mpcList,message).upper())
             
         # KEEPASS
         elif help.check_for_keywords_from_list(cl.keepassList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.keepassList,message).upper()} - - -")
             help.focus_pids(vars.keepass, "KeePass")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.keepassList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.keepassList,message).upper())
             
         # STEAM
         elif help.check_for_keywords_from_list(cl.steamList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.steamList,message).upper()} - - -")
             help.focus_pids(vars.steam, "Steam")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.steamList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.steamList,message).upper())
             
         # DISCORD
         elif help.check_for_keywords_from_list(cl.discordList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.discordList,message).upper()} - - -")
             help.focus_pids(vars.discord, "Discord")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.discordList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.discordList,message).upper())
 
         # MS WORD
         elif help.check_for_keywords_from_list(cl.wordList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.wordList,message).upper()} - - -")
             help.focus_pids(vars.ms_word, "Winword")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.wordList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.wordList,message).upper())
 
         # MS EXCEL
         elif help.check_for_keywords_from_list(cl.excelList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.excelList,message).upper()} - - -")
             help.focus_pids(vars.ms_excel, "Excel")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.excelList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.excelList,message).upper())
             
         # MS POWERPOINT
         elif help.check_for_keywords_from_list(cl.powerpointList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.powerpointList,message).upper()} - - -")
             help.focus_pids(vars.ms_pp, "Powerpnt")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.powerpointList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.powerpointList,message).upper())
             
         # NOTEPAD++
         elif help.check_for_keywords_from_list(cl.notepadppList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.notepadppList,message).upper()} - - -")
             help.focus_pids(vars.npp, "Notepad++")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.notepadppList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.notepadppList,message).upper())
                
         # VISUAL STUDIO CODE
         elif help.check_for_keywords_from_list(cl.vscList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.vscList,message).upper()} - - -")
             help.focus_pids(vars.vsc, "Code.exe")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.vscList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.vscList,message).upper())
               
         # PUREREF
         elif help.check_for_keywords_from_list(cl.purerefList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.purerefList,message).upper()} - - -")
             help.focus_pids(vars.pureref, "PureRef")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.purerefList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.purerefList,message).upper())
             
         # AUDACITY
         elif help.check_for_keywords_from_list(cl.audacityList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.audacityList,message).upper()} - - -")
             help.focus_pids(vars.audacity, "Audacity")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.audacityList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.audacityList,message).upper())
         
         # BLENDER
         elif help.check_for_keywords_from_list(cl.blenderList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.blenderList,message).upper()} - - -")
             help.focus_pids(vars.blender, "Blender")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.blenderList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.blenderList,message).upper())
             
         # STABLE DIFFUSION
         elif help.check_for_keywords_from_list(cl.stablediffusionList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.stablediffusionList,message).upper()} - - -")
             help.focus_pids(vars.stablediffusion, "Stable Diffusion")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.stablediffusionList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.stablediffusionList,message).upper())
             
         # CALCULATOR
         elif help.check_for_keywords_from_list(cl.calculatorList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.calculatorList,message).upper()} - - -")
             help.focus_pids(vars.calc, "Rechner")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.calculatorList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.gotoList,message).upper() + " " + help.check_for_keywords_from_list(cl.calculatorList,message).upper())
               
     # OPENING
     if help.check_for_keywords_from_list(cl.openingList,message):
@@ -251,137 +251,137 @@ def check_for_command(message):
             # EXPLORER (C Drive)
             if help.check_for_keywords_from_list(cl.cDriveList,message):
                 create_process(vars.folders, "Explorer", cl.cDriveList, message, explorer_path, r"C:")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.cDriveList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.cDriveList,message).upper())
             
             # EXPLORER (D Drive)
             elif help.check_for_keywords_from_list(cl.dDriveList,message):
                 create_process(vars.folders, "Explorer", cl.dDriveList, message, explorer_path, r"D:")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.dDriveList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.dDriveList,message).upper())
 
                 
             # EXPLORER (AppData)
             elif help.check_for_keywords_from_list(cl.appDataList,message):
                 create_process(vars.folders, "Explorer", cl.appDataList, message, explorer_path, home_folder + r"\AppData")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.appDataList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.appDataList,message).upper())
                 
             # EXPLORER (Programs)
             elif help.check_for_keywords_from_list(cl.programsFolderList,message):
                 # EXPLORER (Programs86)
                 if help.check_for_keywords_from_list(cl.programs86FolderList,message):
                     create_process(vars.folders, "Explorer", cl.programs86FolderList, message, explorer_path, program_files_x86_folder)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.programs86FolderList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.programs86FolderList,message).upper())
                 else:
                     create_process(vars.folders, "Explorer", cl.programsFolderList, message, explorer_path, program_files_folder)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.programsFolderList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.programsFolderList,message).upper())
             # EXPLORER (Home)
             elif help.check_for_keywords_from_list(cl.homeFolderList,message):
                 create_process(vars.folders, "Explorer", cl.homeFolderList, message, explorer_path, home_folder)
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.homeFolderList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.homeFolderList,message).upper())
                 
             # EXPLORER (Downloads)
             elif help.check_for_keywords_from_list(cl.downloadFolderList,message):
                 create_process(vars.folders, "Explorer", cl.downloadFolderList, message, explorer_path, download_folder)
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.downloadFolderList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.downloadFolderList,message).upper())
             else:
                 create_process(vars.folders, "Explorer", cl.explorerList, message, explorer_path, my_computer_folder)
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message) + " at " +help.check_for_keywords_from_list(cl.myComputerList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.myComputerList,message).upper())
             
         # CHROME
         elif help.check_for_keywords_from_list(cl.chromeList,message):
             create_process(vars.chrome, "Chrome", cl.chromeList, message, chrome_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.chromeList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.chromeList,message).upper())
         
         # FIREFOX
         elif help.check_for_keywords_from_list(cl.firefoxList,message):
             # FIREFOX INCOGNITO
             if help.check_for_keywords_from_list(cl.incognitoList,message):
                 create_process(vars.firefoxincognito, "Firefox", cl.incognitoList, message, firefox_path, "-private-window")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.incognitoList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.incognitoList,message).upper())
 
             else:
                 create_process(vars.firefox, "Firefox", cl.firefoxList, message, firefox_path, None)   
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.firefoxList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.firefoxList,message).upper())
             
         # VLC
         elif help.check_for_keywords_from_list(cl.vlcList,message):
             create_process(vars.vlc, "VLC", cl.vlcList, message, vlc_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vlcList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vlcList,message).upper())
             
         # MEDIA PLAYER CLASSIC
         elif help.check_for_keywords_from_list(cl.mpcList,message):
             create_process(vars.mpc, "MPC", cl.mpcList, message, mpc_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.mpcList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.mpcList,message).upper())
             
         # KEEPASS
         elif help.check_for_keywords_from_list(cl.keepassList,message):
             create_process(vars.keepass, "KeePass", cl.keepassList, message, keepass_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.keepassList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.keepassList,message).upper())
             
         # STEAM
         elif help.check_for_keywords_from_list(cl.steamList,message):
             create_process(vars.steam, "Steam", cl.steamList, message, steam_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.steamList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.steamList,message).upper())
         
         # DISCORD
         elif help.check_for_keywords_from_list(cl.discordList,message):
             create_process(vars.discord, "Discord", cl.discordList, message, discord_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.discordList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.discordList,message).upper())
             
         # MS WORD
         elif help.check_for_keywords_from_list(cl.wordList,message):
             create_process(vars.ms_word, "Winword", cl.wordList, message, word_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.wordList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.wordList,message).upper())
         
         # MS EXCEL
         elif help.check_for_keywords_from_list(cl.excelList,message):
             create_process(vars.ms_excel, "Excel", cl.excelList, message, excel_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.excelList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.excelList,message).upper())
             
         # MS POWERPOINT
         elif help.check_for_keywords_from_list(cl.powerpointList,message):
             create_process(vars.ms_pp, "Powerpnt", cl.powerpointList, message, powerpoint_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.powerpointList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.powerpointList,message).upper())
         
         # NOTEPAD++
         elif help.check_for_keywords_from_list(cl.notepadppList,message):
             create_process(vars.npp, "Notepad++", cl.notepadppList, message, notepadpp_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.notepadppList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.notepadppList,message).upper())
             
         # VISUAL STUDIO CODE
         elif help.check_for_keywords_from_list(cl.vscList,message):
             create_process(vars.vsc, "Code.exe", cl.vscList, message, vsc_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vscList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vscList,message).upper())
             
         # PUREREF
         elif help.check_for_keywords_from_list(cl.purerefList,message):
             create_process(vars.pureref, "PureRef", cl.purerefList, message, pureref_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.purerefList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.purerefList,message).upper())
         
         # AUDACITY
         elif help.check_for_keywords_from_list(cl.audacityList,message):
             create_process(vars.audacity, "Audacity", cl.audacityList, message, audacity_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.audacityList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.audacityList,message).upper())
         
         # BLENDER
         elif help.check_for_keywords_from_list(cl.blenderList,message):
             create_process(vars.blender, "Blender", cl.blenderList, message, blender_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.blenderList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.blenderList,message).upper())
             
         # STABLE DIFFUSION
         elif help.check_for_keywords_from_list(cl.stablediffusionList,message):
             create_process(vars.stablediffusion, "Stable Diffusion", cl.stablediffusionList, message, stablediffusion_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.stablediffusionList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.stablediffusionList,message).upper())
             
         # CALCULATOR
         elif help.check_for_keywords_from_list(cl.calculatorList,message):
             create_process(vars.calc, "Rechner", cl.calculatorList, message, calculator_path, None)
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.calculatorList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.calculatorList,message).upper())
             
         # SYSTEM SETTINGS
         elif help.check_for_keywords_from_list(cl.controlList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.controlList,message).upper()} - - -")
             subprocess.Popen(["control.exe", "/name", "Microsoft.System"])
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.controlList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.controlList,message).upper())
             
         # AUDIO SETTINGS
         #elif help.check_for_keywords_from_list(cl.audioList,message):
@@ -411,61 +411,61 @@ def check_for_command(message):
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.hotkey('del')
                     pyautogui.typewrite(download_folder, interval=vars.llm_type_speed)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.downloadFolderList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.downloadFolderList,message).upper())
                 elif help.check_for_keywords_from_list(cl.homeFolderList,message):
                     print(f"- - - {help.check_for_keywords_from_list(cl.homeFolderList,message).upper()} - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.hotkey('del')
                     pyautogui.typewrite(home_folder, interval=vars.llm_type_speed)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.homeFolderList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.homeFolderList,message).upper())
                 elif help.check_for_keywords_from_list(cl.programs86FolderList,message):
                     print(f"- - - {help.check_for_keywords_from_list(cl.programs86FolderList,message).upper()} - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.hotkey('del')
                     pyautogui.typewrite(program_files_x86_folder, interval=vars.llm_type_speed)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.programs86FolderList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.programs86FolderList,message).upper())
                 elif help.check_for_keywords_from_list(cl.programsFolderList,message):
                     print(f"- - - {help.check_for_keywords_from_list(cl.programsFolderList,message).upper()} - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.hotkey('del')
                     pyautogui.typewrite(program_files_folder, interval=vars.llm_type_speed)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.programsFolderList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.programsFolderList,message).upper())
                 elif help.check_for_keywords_from_list(cl.appDataList,message):
                     print(f"- - - {help.check_for_keywords_from_list(cl.appDataList,message).upper()} - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.hotkey('del')
                     pyautogui.typewrite(home_folder + r"\AppData", interval=vars.llm_type_speed)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.appDataList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.appDataList,message).upper())
                 elif help.check_for_keywords_from_list(cl.dDriveList,message):
                     print(f"- - - {help.check_for_keywords_from_list(cl.dDriveList,message).upper()} - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.hotkey('del')
                     pyautogui.typewrite(r"D:", interval=vars.llm_type_speed)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.dDriveList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.dDriveList,message).upper())
                 elif help.check_for_keywords_from_list(cl.cDriveList,message):
                     print(f"- - - {help.check_for_keywords_from_list(cl.cDriveList,message).upper()} - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.hotkey('del')
                     pyautogui.typewrite(r"C:", interval=vars.llm_type_speed)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.cDriveList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.cDriveList,message).upper())
                 elif help.check_for_keywords_from_list(cl.myComputerList,message):
                     print(f"- - - {help.check_for_keywords_from_list(cl.myComputerList,message).upper()} - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.press('del')
                     keyboard.write(my_computer_folder)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.myComputerList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.myComputerList,message).upper())
                 else:
                     print(f"- - - MY COMPUTER: - - -")
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.press('del')
                     keyboard.write(my_computer_folder)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message) + " " + help.check_for_keywords_from_list(cl.tabList,message) + " at " + help.check_for_keywords_from_list(cl.myComputerList,message))
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.myComputerList,message).upper())
                 pyautogui.hotkey('enter')
             # BROWSER TAB
             elif help.check_for_keywords_from_list(cl.browserTabList,message) and "Mozilla Firefox" in help.get_current_window_title():
                 print(f"- - - {help.check_for_keywords_from_list(cl.browserTabList,message).upper()} - - -")
                 pyautogui.hotkey('ctrl', 't')
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.browserTabList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.browserTabList,message).upper())
             else:
                 print(f"- - - NOTHING TO CREATE A TAB IN FOCUS - - -")
               
@@ -476,108 +476,108 @@ def check_for_command(message):
         if help.check_for_keywords_from_list(cl.tabList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.tabList,message).upper()} - - -")
             pyautogui.hotkey('ctrl', 'w')
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper())
 
         # EXPLORER
         elif help.check_for_keywords_from_list(cl.explorerList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.explorerList,message).upper()} - - -")
             help.close_pids(vars.folders, "Explorer")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper())
         # CHROME
         elif help.check_for_keywords_from_list(cl.chromeList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.chromeList,message).upper()} - - -")
             help.close_pids(vars.chrome, "Chrome")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.chromeList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.chromeList,message).upper())
         # FIREFOX
         elif help.check_for_keywords_from_list(cl.firefoxList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.firefoxList,message).upper()} - - -")
             if help.check_for_keywords_from_list(cl.incognitoList,message):
                 print(f"- - - {help.check_for_keywords_from_list(cl.incognitoList,message).upper()} - - -")
                 help.close_pids(vars.firefoxincognito, "Firefox")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.incognitoList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.incognitoList,message).upper())
             else:
                 help.close_pids(vars.firefox, "Firefox")
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.firefoxList,message))
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.firefoxList,message).upper())
         # VLC
         elif help.check_for_keywords_from_list(cl.vlcList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.vlcList,message).upper()} - - -")
             help.close_pids(vars.vlc, "VLC")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vlcList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vlcList,message).upper())
         # MEDIA PLAYER CLASSIC
         elif help.check_for_keywords_from_list(cl.mpcList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.mpcList,message).upper()} - - -")
             help.close_pids(vars.mpc, "MPC")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.mpcList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.mpcList,message).upper())
         # KEEPASS
         elif help.check_for_keywords_from_list(cl.keepassList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.keepassList,message).upper()} - - -")
             help.close_pids(vars.keepass, "KeePass")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.keepassList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.keepassList,message).upper())
         # STEAM
         elif help.check_for_keywords_from_list(cl.steamList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.steamList,message).upper()} - - -")
             help.close_pids(vars.steam, "Steam")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.steamList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.steamList,message).upper())
         # DISCORD
         elif help.check_for_keywords_from_list(cl.discordList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.discordList,message).upper()} - - -")
             help.close_pids(vars.discord, "Discord")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.discordList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.discordList,message).upper())
         # MS WORD
         elif help.check_for_keywords_from_list(cl.wordList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.wordList,message).upper()} - - -")
             help.close_pids(vars.ms_word, "Winword")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.wordList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.wordList,message).upper())
         # MS EXCEL
         elif help.check_for_keywords_from_list(cl.excelList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.excelList,message).upper()} - - -")
             help.close_pids(vars.ms_excel, "Excel")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.excelList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.excelList,message).upper())
         # MS POWERPOINT
         elif help.check_for_keywords_from_list(cl.powerpointList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.powerpointList,message).upper()} - - -")
             help.close_pids(vars.ms_pp, "Powerpnt")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.powerpointList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.powerpointList,message).upper())
         # NOTEPAD++
         elif help.check_for_keywords_from_list(cl.notepadppList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.notepadppList,message).upper()} - - -")
             help.close_pids(vars.npp, "Notepad++")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.notepadppList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.notepadppList,message).upper())
         # VISUAL STUDIO CODE
         elif help.check_for_keywords_from_list(cl.vscList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.vscList,message).upper()} - - -")
             help.close_pids(vars.vsc, "Code.exe")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vscList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.vscList,message).upper())
         # PUREREF
         elif help.check_for_keywords_from_list(cl.purerefList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.purerefList,message).upper()} - - -")
             help.close_pids(vars.pureref, "PureRef")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.purerefList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.purerefList,message).upper())
         # AUDACITY
         elif help.check_for_keywords_from_list(cl.audacityList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.audacityList,message).upper()} - - -")
             help.close_pids(vars.audacity, "Audacity")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.audacityList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.audacityList,message).upper())
         # BLENDER
         elif help.check_for_keywords_from_list(cl.blenderList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.blenderList,message).upper()} - - -")
             help.close_pids(vars.blender, "Blender")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.blenderList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.blenderList,message).upper())
         # STABLE DIFFUSION
         elif help.check_for_keywords_from_list(cl.stablediffusionList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.stablediffusionList,message).upper()} - - -")
             help.close_pids(vars.stablediffusion, "Stable Diffusion")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.stablediffusionList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.stablediffusionList,message).upper())
         # CALCULATOR
         elif help.check_for_keywords_from_list(cl.calculatorList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.calculatorList,message).upper()} - - -")
             help.close_pids(vars.calc, "Rechner")
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.calculatorList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.calculatorList,message).upper())
         # WINDOW
         elif help.check_for_keywords_from_list(cl.windowList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.windowList,message).upper()} - - -")
             pyautogui.hotkey('alt', 'f4')
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.windowList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.closingList,message).upper() + " " + help.check_for_keywords_from_list(cl.windowList,message).upper())
             
     # SWITCHING
     if help.check_for_keywords_from_list(cl.switchingList,message) and help.check_for_keywords_from_list(cl.gotoList,message) is None and help.check_for_keywords_from_list(cl.backList,message) is None:
@@ -585,11 +585,11 @@ def check_for_command(message):
         if help.check_for_keywords_from_list(cl.tabList,message):
             print(f"- - - {help.check_for_keywords_from_list(cl.tabList,message).upper()} - - -")
             pyautogui.hotkey('ctrl', 'tab')
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.switchingList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.switchingList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper())
         else:
             print(f"- - - WINDOW - - -")
             pyautogui.hotkey('alt', 'tab')
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.switchingList,message).upper() + " " + help.check_for_keywords_from_list(cl.windowList,message))
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.switchingList,message).upper() + " " + help.check_for_keywords_from_list(cl.windowList,message).upper())
             
     # MINIMIZING
     if help.check_for_keywords_from_list(cl.minimizingList,message):

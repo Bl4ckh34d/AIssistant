@@ -274,7 +274,7 @@ def sentiment_calculation(message):
             if not vars.silent:
                 print(f"SENTIMENT ANALYSIS: FEELING: {sentiment[0]['label']} and SCORE: {sentiment[0]['score']}")
         if not vars.silent:
-            print(f"TOTAL SCORE: {total_sentiment}")
+            print(f"LAST SENTENCES SCORE: {total_sentiment}")
             print(f"AI SCORE: {vars.llm_mood_score}")
         if sentiment[0]['label'] == "Neutral":
             vars.llm_mood_score += total_sentiment * random.gauss(0.1, 0.3)
@@ -436,7 +436,8 @@ def close_pids(pid_list, search_term):
                 if not vars.silent:
                     print(f"No process found with PID {pid}.")
         else:
-            print(f"Process with PID {pid} does not exist.")
+            if not vars.silent:
+                print(f"Process with PID {pid} does not exist.")
             
 def focus_pids(pid_list, search_term):
     gather_pids()

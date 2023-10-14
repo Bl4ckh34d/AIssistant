@@ -5,8 +5,10 @@ help.show_intro()
 help.build_memory()
 
 print()
-#input(f"Press Enter to wake {vars.ai_name}...")
-#print()
+name = input(f"Enter your name: ")
+if name is not None:
+    vars.user_name = name
+print()
 
 AI_LLM.infer("")
 

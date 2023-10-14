@@ -81,9 +81,10 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 - System Settings
 
 ## TODO:
+- Sentiment Score of LLM seems to not work as expected, need to revisit
 - Including date and time into chat history .json
-- Find better prompts for the currently used LLM (Mistral-7b-OpenOrca)
 - Browser extensions (Chrome and Firefox) for remote control through LLM
+- Implement Youtube API / Google API / ChatGPT API
 - Include an easy option to turn the LLM reply on and off
 - Continue recording the user input and transcribing sentence by sentence. When sending these chunks to the LLM, collect them temporarily until the LLM finished replying.
 All this in parallel with the TTS, which currently blocks the whole loop until it is done speaking.
@@ -98,7 +99,7 @@ Conda:
 
 
 ## INSTALLATION:
-Copy the following text block as a whole into your terminal and confirm. It SHOULD work.
+Copy and paste the following snippet as a whole into your terminal and confirm. It SHOULD work.
 
 ```shell
 install_path="D:\AI\env"

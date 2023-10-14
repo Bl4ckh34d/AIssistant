@@ -1,10 +1,14 @@
 import os, threading, contextlib, io
 import soundfile as sf, variables as vars, helpers as help
 from TTS.api import TTS
+from colorama import Fore, Back, Style, init
+
+# Initialize colorama
+init()
 
 def invoke_text_to_speech(message):
     if message == "" or message == " ":
-        print("PROBLEM: Nothing sent to TTS...")
+        print(Fore.RED + "PROBLEM: Nothing sent to TTS..." + Style.RESET_ALL)
     else:
         with contextlib.redirect_stdout(io.StringIO()):
             text_to_speech(message)

@@ -74,7 +74,7 @@ llm_model_file_type = "gguf" #gguf
 
 user_name = 'Daniel'
 user_gender = 'male'
-ai_name = 'Elara'
+ai_name = 'ARIA'
 ai_gender = 'female'
 
 he_she = ''
@@ -100,7 +100,7 @@ llm_top_p=0.95
 llm_top_k=40
 llm_frequency_penalty=0
 llm_presence_penalty=0
-llm_repeat_penalty=1.2
+llm_repeat_penalty=1.8
 
 llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_name}"))
 if llm_model_file_type == "gguf":
@@ -156,7 +156,7 @@ active_mood = neutral_mood
 rules = f"\
 You never make up facts about {user_name} or yourself.\n\n"
 instructions_init = f"Write a greeting to {user_name} depending on your current mood and don't use quotation marks.\n"
-instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n"
+instructions = f"Greet {user_name} depending on your last conversation and mood. Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n"
 history_old = []
 history_recent = []
 history_current = []

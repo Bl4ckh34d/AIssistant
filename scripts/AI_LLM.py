@@ -31,7 +31,7 @@ def print_to_console(sender, message):
         print(Fore.YELLOW + f"{sender}: " + message + Style.RESET_ALL)
     else:
         print(Fore.GREEN + f"{sender}: " + message + Style.RESET_ALL)
-    print(f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM(False))}/{vars.llm_n_ctx})]\n')
+    print(Fore.CYAN + f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM(False))}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
 
 def infer(message):
     help.trim_chat_history()
@@ -64,7 +64,7 @@ def prompt_llm(init):
     answer = llm_output["choices"][0]["text"]
     
     if answer is None:
-        print(f"{vars.ai_name} refuses to reply.")
+        print(Fore.CYAN + f"{vars.ai_name} refuses to reply." + Style.RESET_ALL)
     
     # CLEANING UP RESULT
     joined_reply = ''.join(answer)

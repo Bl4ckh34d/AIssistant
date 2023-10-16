@@ -22,37 +22,39 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 
 ```Start AIssistant.bat```
 
+Enjoy talking to your very own AI Assistant. Tell the AI to open Firefox, close the tab or maximize the window, etc.
+
 **Currently implemented voice commands:**
 
 #### AGAIN
-> The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
+  The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
 #### GO BACK... (BY ONE)
 ##### ...TAB
-> This should switch back by one tab
+  This should switch back by one tab
 #### SCROLL...
 ##### ...UP
-> This should scroll the current active window up a fair bit.
+  This should scroll the current active window up a fair bit.
 ##### ...DOWN
-> This should scroll the current active window down a fair bit.
+  This should scroll the current active window down a fair bit.
 #### GO TO...
-> 'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
+  'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
 #### OPEN...
-> This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
+  This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
 ##### ...NEW FOLDER TAB AT (FOLDER LOCATION)
-> Opens a new tab in the currently active folder at the requested folder location
+  Opens a new tab in the currently active folder at the requested folder location
 ##### ...NEW TAB
-> Opens a new browser or program tab
+  Opens a new browser or program tab
 #### CLOSE...
 ##### ...WINDOW/TAB/etc.
-> Should close the requested thing
+  Should close the requested thing
 #### SWITCH...
 ##### ...WINDOW/TAB
 #### MINIMIZE...
-> Minimizes active window
+  Minimizes active window
 #### MAXIMIZE...
-> Maximizes active window
+  Maximizes active window
 #### REFRESH...
-> Same as hitting F5 on the keyboard
+  Same as hitting F5 on the keyboard
 
 #### FOLDER LOCATIONS:
 - C Drive

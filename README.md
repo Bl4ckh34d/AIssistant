@@ -20,7 +20,7 @@ The whole system is setup to work with VirtualCable and VRTuber if you wish for 
 ## USAGE:
 First you might want to adjust the user_name and ai_name, ai_gender, the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
 
-> Start AIssistant.bat
+´´´Start AIssistant.bat´´´
 
 **Currently implemented voice commands:**
 

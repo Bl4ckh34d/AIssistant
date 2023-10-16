@@ -614,7 +614,8 @@ def check_for_command(message):
     
     if init_commands != vars.executed_commands:
         return True    
-    return False
+    else:
+        return False
         
     # Multisentence Analysis: Split reply into sentences, then find verbs in the sentences and object and formulate command chain.
     # Extension for Firefox to control browser tab content

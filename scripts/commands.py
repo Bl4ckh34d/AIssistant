@@ -597,7 +597,7 @@ def check_for_command(message):
         else:
             print(f"- - - WINDOW - - -")
             pyautogui.hotkey('alt', 'tab')
-            vars.executed_commands.append(help.check_for_keywords_from_list(cl.switchingList,message).upper() + " " + help.check_for_keywords_from_list(cl.windowList,message).upper())
+            vars.executed_commands.append(help.check_for_keywords_from_list(cl.switchingList,message).upper() + " WINDOW")
             
     # MINIMIZING
     if help.check_for_keywords_from_list(cl.minimizingList,message):

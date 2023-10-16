@@ -99,7 +99,7 @@ Conda:
 
 
 ## INSTALLATION:
-Copy and paste the following snippet as a whole into your terminal and confirm. It SHOULD work.
+Adjust the install_path in the following code snipet and copy and paste it into your terminal.
 
 ```shell
 install_path="D:\AI\env"

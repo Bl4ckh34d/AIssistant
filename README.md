@@ -24,67 +24,28 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 
 Enjoy talking to your very own AI Assistant. Tell the AI to open Firefox, close the tab or maximize the window, etc.
 
-**Currently implemented voice commands:**
+**Currently implemented voice commands to trigger actions:**
 
-#### AGAIN
-  The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
-#### GO BACK... (BY ONE)
-##### ...TAB
-  This should switch back by one tab
-#### SCROLL...
-##### ...UP
-  This should scroll the current active window up a fair bit.
-##### ...DOWN
-  This should scroll the current active window down a fair bit.
-#### GO TO...
-  'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
-#### OPEN...
-  This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
-##### ...NEW FOLDER TAB AT (FOLDER LOCATION)
-  Opens a new tab in the currently active folder at the requested folder location
-##### ...NEW TAB
-  Opens a new browser or program tab
-#### CLOSE...
-##### ...WINDOW/TAB/etc.
-  Should close the requested thing
-#### SWITCH...
-##### ...WINDOW/TAB
-#### MINIMIZE...
-  Minimizes active window
-#### MAXIMIZE...
-  Maximizes active window
-#### REFRESH...
-  Same as hitting F5 on the keyboard
+**AGAIN**: The word 'again' in a sentence without any of the other keywords will trigger the last action once more.)
+**GO BACK...** followed by **...TAB**: This should switch back by one tab
+**SCROLL...** followed by **...UP**: This should scroll the current active window up a fair bit.
+**SCROLL...** followed by **...DOWN**: This should scroll the current active window down a fair bit.
+**GO TO...**: This followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
+**OPEN...**: This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
+**...NEW FOLDER TAB AT (FOLDER LOCATION)**: Opens a new tab in the currently active folder at the requested folder location
+**...NEW TAB**: Opens a new browser or program tab
+**CLOSE...** followed by **...WINDOW/TAB/**etc.: This Should close the requested window, tab or process
+**SWITCH...** followed by **..WINDOW/TAB**: Equivalent to pressing ALT + Tab
+**MINIMIZE...**: Minimizes active window
+**MAXIMIZE...**: Maximizes active window
+**REFRESH...**: Same as hitting F5 on the keyboard
 
-#### FOLDER LOCATIONS:
-- C Drive
-- D Drive
-- AppData
-- Programs
-- Programs86
-- Home
-- Downloads
+**FOLDER LOCATIONS**:
+- C Drive, D Drive, AppData, Programs, Programs86, Home, Downloads
 
-#### PROGRAMS:
-- Firefox
-- Firefox (Incognito)
-- Explorer
-- VLC
-- Media Player Classic
-- Keepass
-- Steam
-- Discord
-- MS Word
-- MS Excel
-- MS Powerpoint
-- Notepad++
-- VSC
-- PureRef
-- Audacity
-- Blender
-- Stable Diffusion
-- Calculator
-- System Settings
+**CURRENTLY SUPPORTED PROGRAMS**:
+Firefox/Firefox (Incognito), Explorer, VLC, Media Player Classic, Keepass, Steam, Discord, MS Word, MS Excel, MS Powerpoint, Notepad++,
+VSC, PureRef, Audacity, Blender, Stable Diffusion, Calculator, System Settings
 
 ## TODO:
 - Sentiment Score of LLM seems to not work as expected, need to revisit

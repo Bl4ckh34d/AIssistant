@@ -102,22 +102,36 @@ Conda:
 Copy and paste the following snippet as a whole into your terminal and confirm. It SHOULD work.
 
 ```shell
-install_path="D:\AI\env"
-env_path="$install_path\env"
-webui_path="$install_path\webui"
+# ENVIRONMENT
+conda create -p D:\AI\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
+conda activate D:\AI\env
 
-mkdir -p "$install_path" && ^
-cd $install_path && ^
-conda create -p $env_path python==3.10.11 pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y && ^
-conda activate $env_path && ^
-git clone https://github.com/oobabooga/text-generation-webui && ^
-ren "text-generation-webui" "webui" && ^
-cd "$webui_path" && ^
-pip3 install -r requirements.txt && ^
-pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
-pip3 install -U openai-whisper && ^
-pip3 install pyautogui
-pip3 install colorama
+#conda create -p D:\AI\env python=3.10.11
+#pip install torch -f https://download.pytorch.org/whl/torch_stable.html
+#conda install -c nvidia cuda-python=11.8
+
+
+# LLM
+conda install -c "nvidia/label/cuda-12.2.2" cuda-toolkit
+pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/AVX2/cu118
+pip install numpy==1.22 --force
+
+# TTS
+# CUDA Toolkit: https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_local
+pip install TTS
+
+# STT
+pip install git+https://github.com/openai/whisper.git
+pip install pyaudio sounddevice soundfile
+choco install ffmpeg
+
+# COMMANDS
+pip install pygetwindow pywin32 pyautogui keyboard
+
+# THERE IS A PROBLEM IN THE TTS PACKAGE. THE FOLLOWING NEEEDS TO BE CHANGED FOR THIS TO WORK:
+# replace inside env\lib\site-packages\TTS\api.py the code line 109:
+# with the following line:
+# if self.model_name is not None and "xtts" in self.model_name:
 ```
 
 *Models I used for testing:*

@@ -204,11 +204,11 @@ def swap_persona():
             vars.llm_max_tokens = 50
         if selected_persona == vars.angry_mood:
             print(Fore.CYAN + f"({vars.ai_name} is angry)\n" + Style.RESET_ALL)
-            vars.llm_temperature = 1.4
+            vars.llm_temperature = 1.2
             vars.llm_max_tokens = 150
         if selected_persona == vars.horny_mood:
             print(Fore.CYAN + f"({vars.ai_name} is aroused)\n" + Style.RESET_ALL)
-            vars.llm_temperature = 1.2
+            vars.llm_temperature = 1.1
             vars.llm_max_tokens = 200
         if selected_persona == vars.bored_mood:
             print(Fore.CYAN + f"({vars.ai_name} is bored)\n" + Style.RESET_ALL)

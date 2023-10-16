@@ -87,7 +87,7 @@ else:
     his_her = 'her'
     he_she = 'she'
 
-llm_n_ctx = 32000 #4096 #8000 #32000
+llm_n_ctx = 8000 #4096 #8000 #32000
 llm_n_gpu_layers = 20
 llm_max_tokens=250
 llm_stop=[f'{user_name}:',f'{ai_name}:']
@@ -108,7 +108,7 @@ if llm_model_file_type == "gguf":
     llm_lparams = llama_cpp.llama_context_default_params()
     llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_lparams)
     llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
-    llm = Llama(model_path=llm_model_file_path, n_ctx=llm_n_ctx ,verbose=False, n_gpu_layers=llm_n_gpu_layers)
+    llm = Llama(model_path=llm_model_file_path, n_ctx=llm_n_ctx, verbose=False, n_gpu_layers=llm_n_gpu_layers)
 
 llm_mood_score = 0
 llm_type_speed = 0.05

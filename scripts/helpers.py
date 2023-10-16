@@ -193,37 +193,36 @@ def swap_persona():
     selected_persona = random.choices(persona_descriptions, list(base_weights.values()))[0]
     
     # Print the selected persona description
-    
     if selected_persona == vars.happy_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is happy)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 0.9
-        vars.llm_max_tokens = random.randint(25, 150)
+        vars.llm_temperature = 0.7
+        vars.llm_max_tokens = random.randint(100, 150)
     if selected_persona == vars.sad_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is sad)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.1
-        vars.llm_max_tokens = random.randint(15, 35)
+        vars.llm_max_tokens = random.randint(75, 125)
     if selected_persona == vars.angry_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is angry)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 1.2
-        vars.llm_max_tokens = random.randint(25, 70)
+        vars.llm_temperature = 0.9
+        vars.llm_max_tokens = random.randint(75, 100)
     if selected_persona == vars.horny_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is aroused)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 1.1
-        vars.llm_max_tokens = random.randint(25, 100)
+        vars.llm_temperature = 0.8
+        vars.llm_max_tokens = random.randint(75, 100)
     if selected_persona == vars.bored_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is bored)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.3
-        vars.llm_max_tokens = random.randint(5, 20)
+        vars.llm_max_tokens = random.randint(75, 125)
     if selected_persona == vars.neutral_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is neutral)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.5
-        vars.llm_max_tokens = random.randint(30, 80)
+        vars.llm_max_tokens = random.randint(75, 150)
         
     if vars.silent is False:
         print(Fore.CYAN + f"LLM_TEMPERATURE: {vars.llm_temperature}" + Style.RESET_ALL)
@@ -322,13 +321,7 @@ def sentiment_calculation(message):
 
 
 # LLM MEMORY
-def write_to_longterm_memory(sender, message):
-    # Get the current date in the 'YYYY-MM-DD' format
-    current_date = datetime.datetime.now().strftime('%Y-%m-%d')
-
-    # Construct the filename using the current date
-    json_filename = f"session_{current_date}.json"
-    
+def write_to_longterm_memory(sender, message):  
     # Load existing chat history (if any)
     try:
         with open(generate_file_path("json"), 'r', encoding='utf-8') as json_file:

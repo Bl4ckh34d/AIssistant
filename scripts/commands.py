@@ -72,8 +72,9 @@ def check_for_command(message):
     # i wIlL dO iT f*CkINg aGAiN!
     if help.check_for_keywords_from_list(cl.againList,message) and help.check_for_keywords_from_list(cl.allActionsButAgain,message) is None:
         if vars.executed_commands:
+            if vars.silent is False:
+                print(vars.executed_commands)
             print(f"- - - REPEATING LAST ACTION - - -")
-            print(vars.executed_commands)
             message = vars.executed_commands[-1]
         else:
             print("- - - NO LAST ACTION - - -")

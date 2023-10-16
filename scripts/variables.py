@@ -89,12 +89,12 @@ else:
 
 llm_n_ctx = 8000 #4096 #8000 #32000
 llm_n_gpu_layers = 20
-llm_max_tokens=250
+llm_max_tokens=150
 llm_stop=[f'{user_name}:',f'{ai_name}:']
 llm_echo=False
 llm_mirostat_mode=2
 llm_mirostat_eta=0.1
-llm_mirostat_tau=4.5
+llm_mirostat_tau=5.0
 llm_temperature=0.5
 llm_top_p=0.95
 llm_top_k=40
@@ -154,7 +154,8 @@ Right now you feel okay.\n\
 You reply neutral and brief, without much emotion.\n"
 active_mood = neutral_mood
 rules = f"\
-You never make up facts about {user_name} or yourself.\n\n"
+You never make up facts about {user_name} or yourself.\n\
+You reply short and precise.\n\n"
 instructions_init = f"Write a greeting to {user_name} depending on your current mood and don't use quotation marks.\n"
 instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n"
 history_old = []

@@ -6,8 +6,10 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - Shortterm-Memory should clean itself before reaching the token maximum
 
 ## NOTICE!:
-- I created this for myself in a private capacity and non-commercially. It is not well tested, nor professionally built. **USE ON YOUR OWN RISK!!**
-- Expect CRASHES, ERRORS and features NOT working correctly, as this is VERY WIP and dependent on your OS. Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence or two.
+- I created this for myself in a private capacity and not for commercial use. It is not well tested, nor professionally built.
+- This is WIP and might not work as expected.
+- Adjust the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/7342fec6f59e6040060eecaa5918d691024810bd/scripts/variables.py#L118). Run [device_test.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/device_test.py) to see the IDs of your audio devices.
+- Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence.
 - Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine. The users transcribed voice input is used for this.
 This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
 - If you really wish for the LLM to be responsible for executing the commands, simply trigger the responsible function using the LLM response as argument. But you will have to instruct the LLM to answer in a certain way to your requests so it triggers the execution of the tasks. I changed this
@@ -17,6 +19,8 @@ The whole system is setup to work with VirtualCable and VRTuber if you wish for 
 
 ## USAGE:
 First you might want to adjust the user_name and ai_name, ai_gender, the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
+
+> Start AIssistant.bat
 
 **Currently implemented voice commands:**
 

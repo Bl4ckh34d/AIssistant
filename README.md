@@ -24,7 +24,7 @@ First you might want to adjust the user_name and ai_name, ai_gender, the paths t
 
 Enjoy talking to your very own AI Assistant. Tell the AI to open Firefox, close the tab or maximize the window, etc.
 
-####**Currently implemented voice commands to trigger actions:**
+#### **Currently implemented voice commands to trigger actions:**
 - **AGAIN**: The word 'again' in a sentence without any of the other keywords will trigger the last action once more.)
 - **GO BACK...** followed by **...TAB**: This should switch back by one tab
 - **SCROLL...** followed by **...UP**: This should scroll the current active window up a fair bit.
@@ -39,10 +39,10 @@ Enjoy talking to your very own AI Assistant. Tell the AI to open Firefox, close 
 - **MAXIMIZE...**: Maximizes active window
 - **REFRESH...**: Same as hitting F5 on the keyboard
 
-####**FOLDER LOCATIONS**:
+#### **FOLDER LOCATIONS**:
 C Drive, D Drive, AppData, Programs, Programs86, Home, Downloads
 
-####**CURRENTLY SUPPORTED PROGRAMS**:
+#### **CURRENTLY SUPPORTED PROGRAMS**:
 Firefox, Firefox (Incognito), Explorer, VLC, Media Player Classic, Keepass, Steam, Discord, MS Word, MS Excel, MS Powerpoint, Notepad++,
 VSC, PureRef, Audacity, Blender, Stable Diffusion, Calculator, System Settings
 

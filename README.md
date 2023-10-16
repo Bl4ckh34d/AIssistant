@@ -88,6 +88,11 @@ pip3 install colorama
 
 *Models I used for testing:*
 
+# THERE IS A PROBLEM IN THE TTS PACKAGE. THE FOLLOWING NEEEDS TO BE CHANGED FOR THIS TO WORK:
+# replace inside env\lib\site-packages\TTS\api.py the code line 109:
+# with the following line:
+# if self.model_name is not None and "xtts" in self.model_name:
+
 LLM:
 - https://huggingface.co/TheBloke/dolphin-2.1-mistral-7B-GGUF/resolve/main/dolphin-2.1-mistral-7b.Q4_K_M.gguf
 - https://huggingface.co/TheBloke/dolphin-2.1-mistral-7B-GGUF/resolve/main/config.json

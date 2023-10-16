@@ -6,8 +6,10 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - Shortterm-Memory should clean itself before reaching the token maximum
 
 ## NOTICE!:
-- I created this for myself in a private capacity and non-commercially. It is not well tested, nor professionally built. **USE ON YOUR OWN RISK!!**
-- Expect CRASHES, ERRORS and features NOT working correctly, as this is VERY WIP and dependent on your OS. Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence or two.
+- I created this for myself in a private capacity and not for commercial use. It is not well tested, nor professionally built.
+- This is WIP and might not work as expected.
+- Adjust the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/7342fec6f59e6040060eecaa5918d691024810bd/scripts/variables.py#L118). Run [device_test.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/device_test.py) to see the IDs of your audio devices.
+- Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence.
 - Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine. The users transcribed voice input is used for this.
 This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
 - If you really wish for the LLM to be responsible for executing the commands, simply trigger the responsible function using the LLM response as argument. But you will have to instruct the LLM to answer in a certain way to your requests so it triggers the execution of the tasks. I changed this
@@ -18,67 +20,31 @@ The whole system is setup to work with VirtualCable and VRTuber if you wish for 
 ## USAGE:
 First you might want to adjust the user_name and ai_name, ai_gender, the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
 
-**Currently implemented voice commands:**
+```Start AIssistant.bat```
 
-#### AGAIN
-> The word 'again' in a sentence without any of the other keywords will trigger the last action once more.
-#### GO BACK... (BY ONE)
-##### ...TAB
-> This should switch back by one tab
-#### SCROLL...
-##### ...UP
-> This should scroll the current active window up a fair bit.
-##### ...DOWN
-> This should scroll the current active window down a fair bit.
-#### GO TO...
-> 'Go to' followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
-#### OPEN...
-> This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
-##### ...NEW FOLDER TAB AT (FOLDER LOCATION)
-> Opens a new tab in the currently active folder at the requested folder location
-##### ...NEW TAB
-> Opens a new browser or program tab
-#### CLOSE...
-##### ...WINDOW/TAB/etc.
-> Should close the requested thing
-#### SWITCH...
-##### ...WINDOW/TAB
-#### MINIMIZE...
-> Minimizes active window
-#### MAXIMIZE...
-> Maximizes active window
-#### REFRESH...
-> Same as hitting F5 on the keyboard
+Enjoy talking to your very own AI Assistant. Tell the AI to open Firefox, close the tab or maximize the window, etc.
 
-#### FOLDER LOCATIONS:
-- C Drive
-- D Drive
-- AppData
-- Programs
-- Programs86
-- Home
-- Downloads
+#### **Currently implemented voice commands to trigger actions:**
+- **AGAIN**: The word 'again' in a sentence without any of the other keywords will trigger the last action once more.)
+- **GO BACK...** followed by **...TAB**: This should switch back by one tab
+- **SCROLL...** followed by **...UP**: This should scroll the current active window up a fair bit.
+- **SCROLL...** followed by **...DOWN**: This should scroll the current active window down a fair bit.
+- **GO TO...**: This followed by a process name or folder should bring that folder/process to the foreground if it is currently open.
+- **OPEN...**: This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
+- **...NEW FOLDER TAB AT (FOLDER LOCATION)**: Opens a new tab in the currently active folder at the requested folder location
+- **...NEW TAB**: Opens a new browser or program tab
+- **CLOSE...** followed by **...WINDOW/TAB/**etc.: This Should close the requested window, tab or process
+- **SWITCH...** followed by **..WINDOW/TAB**: Equivalent to pressing ALT + Tab
+- **MINIMIZE...**: Minimizes active window
+- **MAXIMIZE...**: Maximizes active window
+- **REFRESH...**: Same as hitting F5 on the keyboard
 
-#### PROGRAMS:
-- Firefox
-- Firefox (Incognito)
-- Explorer
-- VLC
-- Media Player Classic
-- Keepass
-- Steam
-- Discord
-- MS Word
-- MS Excel
-- MS Powerpoint
-- Notepad++
-- VSC
-- PureRef
-- Audacity
-- Blender
-- Stable Diffusion
-- Calculator
-- System Settings
+#### **FOLDER LOCATIONS**:
+C Drive, D Drive, AppData, Programs, Programs86, Home, Downloads
+
+#### **CURRENTLY SUPPORTED PROGRAMS**:
+Firefox, Firefox (Incognito), Explorer, VLC, Media Player Classic, Keepass, Steam, Discord, MS Word, MS Excel, MS Powerpoint, Notepad++,
+VSC, PureRef, Audacity, Blender, Stable Diffusion, Calculator, System Settings
 
 ## TODO:
 - Sentiment Score of LLM seems to not work as expected, need to revisit
@@ -99,40 +65,31 @@ Conda:
 
 
 ## INSTALLATION:
-Copy and paste the following snippet as a whole into your terminal and confirm. It SHOULD work.
+Adjust the install_path in the following code snipet and copy and paste it into your terminal.
 
 ```shell
-# ENVIRONMENT
-conda create -p D:\AI\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
-conda activate D:\AI\env
+install_path="D:\AI\env"
+env_path="$install_path\env"
+webui_path="$install_path\webui"
 
-#conda create -p D:\AI\env python=3.10.11
-#pip install torch -f https://download.pytorch.org/whl/torch_stable.html
-#conda install -c nvidia cuda-python=11.8
-
-
-# LLM
-conda install -c "nvidia/label/cuda-12.2.2" cuda-toolkit
-pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/AVX2/cu118
-pip install numpy==1.22 --force
-
-# TTS
-# CUDA Toolkit: https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_local
-pip install TTS
-
-# STT
-pip install git+https://github.com/openai/whisper.git
-pip install pyaudio sounddevice soundfile
-choco install ffmpeg
-
-# COMMANDS
-pip install pygetwindow pywin32 pyautogui keyboard
-
-# THERE IS A PROBLEM IN THE TTS PACKAGE. THE FOLLOWING NEEEDS TO BE CHANGED FOR THIS TO WORK:
-# replace inside env\lib\site-packages\TTS\api.py the code line 109:
-# with the following line:
-# if self.model_name is not None and "xtts" in self.model_name:
+mkdir -p "$install_path" && ^
+cd $install_path && ^
+conda create -p $env_path python==3.10.11 pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y && ^
+conda activate $env_path && ^
+git clone https://github.com/oobabooga/text-generation-webui && ^
+ren "text-generation-webui" "webui" && ^
+cd "$webui_path" && ^
+pip3 install -r requirements.txt && ^
+pip3 install click werkzeug pyaudio sounddevice soundfile TTS xformers && ^
+pip3 install -U openai-whisper && ^
+pip3 install pyautogui
+pip3 install colorama
 ```
+
+### THERE IS A PROBLEM IN THE TTS PACKAGE. THE FOLLOWING NEEEDS TO BE CHANGED FOR THIS TO WORK:
+#### replace inside env\lib\site-packages\TTS\api.py the code line 109:
+#### with the following line:
+#### if self.model_name is not None and "xtts" in self.model_name:
 
 *Models I used for testing:*
 

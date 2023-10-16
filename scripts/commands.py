@@ -67,7 +67,8 @@ def create_process(pid_collection, collection_name, word_list, message, path, pa
 
 # EXECUTE COMMAND   
 def check_for_command(message):
-    init_commands = vars.executed_commands  
+    init_commands = vars.executed_commands.copy()
+    
     # i wIlL dO iT f*CkINg aGAiN!
     if help.check_for_keywords_from_list(cl.againList,message) and help.check_for_keywords_from_list(cl.allActionsButAgain,message) is None:
         if vars.executed_commands:
@@ -98,10 +99,10 @@ def check_for_command(message):
         #vars.executed_commands.append(help.check_for_keywords_from_list(cl.findList,message).upper())
         
     # TYPE (WIP)
-    if help.check_for_keywords_from_list(cl.typingList,message):
-        print(f"- - - {help.check_for_keywords_from_list(cl.typingList,message).upper()} - - -")
-        # pyautogui.typewrite(STRING, interval=0.2)
-        vars.executed_commands.append(help.check_for_keywords_from_list(cl.typingList,message).upper())
+    #if help.check_for_keywords_from_list(cl.typingList,message):
+        #print(f"- - - {help.check_for_keywords_from_list(cl.typingList,message).upper()} - - -")
+        #pyautogui.typewrite(STRING, interval=0.2)
+        #vars.executed_commands.append(help.check_for_keywords_from_list(cl.typingList,message).upper())
     
     # SCROLL
     if help.check_for_keywords_from_list(cl.scrollList,message):
@@ -118,7 +119,6 @@ def check_for_command(message):
             print(f"- - - {help.check_for_keywords_from_list(cl.downList,message).upper()} - - -")
             pyautogui.scroll(-400)
             vars.executed_commands.append(help.check_for_keywords_from_list(cl.scrollList,message).upper() + " " + help.check_for_keywords_from_list(cl.downList,message).upper())
-
     
     # GO TO
     if help.check_for_keywords_from_list(cl.gotoList,message):
@@ -604,18 +604,17 @@ def check_for_command(message):
         print(f"- - - {help.check_for_keywords_from_list(cl.minimizingList,message).upper()} - - -")
         pyautogui.hotkey('win', 'down')
         vars.executed_commands.append(help.check_for_keywords_from_list(cl.minimizingList,message).upper() + " WIWNDOW")
-
-            
+         
     # MAXIMIZING
     if help.check_for_keywords_from_list(cl.maximizingList,message):
         print(f"- - - {help.check_for_keywords_from_list(cl.maximizingList,message).upper()} - - -")
         pyautogui.hotkey('win', 'up')
         vars.executed_commands.append(help.check_for_keywords_from_list(cl.maximizingList,message).upper() + " WIWNDOW")
     
-    if init_commands != vars.executed_commands:
-        return True    
-    else:
+    if init_commands == vars.executed_commands:
         return False
+    else:
+        return True
         
     # Multisentence Analysis: Split reply into sentences, then find verbs in the sentences and object and formulate command chain.
     # Extension for Firefox to control browser tab content

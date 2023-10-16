@@ -100,11 +100,6 @@ pip install pygetwindow pywin32 pyautogui keyboard
 # if self.model_name is not None and "xtts" in self.model_name:
 ```
 
-### THERE IS A PROBLEM IN THE TTS PACKAGE. THE FOLLOWING NEEEDS TO BE CHANGED FOR THIS TO WORK:
-#### replace inside env\lib\site-packages\TTS\api.py the code line 109:
-#### with the following line:
-#### if self.model_name is not None and "xtts" in self.model_name:
-
 *Models I used for testing:*
 
 LLM:

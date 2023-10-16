@@ -14,7 +14,7 @@ print()
 
 subprocess.call('cls', shell=True)
 
-AI_LLM.infer("")
+AI_LLM.infer("INIT")
 
 recording = recorder.Recorder()
 recording.listen()

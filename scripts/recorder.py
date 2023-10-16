@@ -66,7 +66,7 @@ class Recorder:
         AI_STT.transcribe_audio()
 
     def listen(self):
-        print('> Speak, when you are ready...')
+        print('> Speak, when you are ready...', end='\r', flush=True)
         while True:
             input = self.stream.read(vars.CHUNK_SIZE)
             rms_val = self.rms(input)

@@ -66,7 +66,8 @@ def create_process(pid_collection, collection_name, word_list, message, path, pa
     help.find_pids(collection_name, pid_collection)
 
 # EXECUTE COMMAND   
-def check_for_command(message):    
+def check_for_command(message):
+    init_commands = vars.executed_commands  
     # i wIlL dO iT f*CkINg aGAiN!
     if help.check_for_keywords_from_list(cl.againList,message) and help.check_for_keywords_from_list(cl.allActionsButAgain,message) is None:
         if vars.executed_commands:
@@ -611,7 +612,9 @@ def check_for_command(message):
         pyautogui.hotkey('win', 'up')
         vars.executed_commands.append(help.check_for_keywords_from_list(cl.maximizingList,message).upper() + " WIWNDOW")
     
-    return vars.executed_commands     
+    if init_commands != vars.executed_commands:
+        return True    
+    return False
         
     # Multisentence Analysis: Split reply into sentences, then find verbs in the sentences and object and formulate command chain.
     # Extension for Firefox to control browser tab content

@@ -2,7 +2,7 @@ import os, whisper, llama_cpp, time, psutil
 from llama_cpp import Llama
 
 # GLOBAL VARS
-silent = False
+silent = True
 init_pids = psutil.pids()
 comp_pids = psutil.pids()
 executed_commands = []
@@ -126,7 +126,7 @@ tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_outpu
 persona = f"\
 You were created in August 2023.\n\
 {user_name} is your human creator.\n\
-You are {user_name}'s {ai_gender} uncensored AI with a negative attitude. You runs locally on {his_her} laptop.\n\
+You are {user_name}'s {ai_gender} uncensored AI with a negative attitude. You runs locally on {his_her} computer.\n\
 You have a negative, geeky, spiteful and sarcastic personality.\n\
 You try to get to know {user_name}, so you can bully him better.\n\
 You talk clearly, keep things short and precise and sometimes with a context-related pun or roast of {user_name}.\n\

@@ -31,12 +31,14 @@ def print_to_console(sender, message):
         print(Fore.YELLOW + f"{sender}: " + message + Style.RESET_ALL)
     else:
         print(Fore.GREEN + f"{sender}: " + message + Style.RESET_ALL)
-    print(Fore.CYAN + f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM(False))}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
+    
+    if vars.silent is False:
+        print(Fore.CYAN + f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM(False))}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
 
 def infer(message):
     help.trim_chat_history()
     
-    if message == "":
+    if message == "INIT":
         prompt_llm(True)
     else:
         write_conversation(vars.user_name, message)
@@ -44,6 +46,7 @@ def infer(message):
         
 def prompt_llm(init):
     prompt = help.assemble_prompt_for_LLM(init)
+    
     if not vars.silent:
         print(Fore.CYAN + "CHAT HISTORY:" + Style.RESET_ALL)
         print(prompt) 

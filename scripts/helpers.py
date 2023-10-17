@@ -407,12 +407,17 @@ def build_memory():
    
 # COMMANDS
 def check_for_keywords_from_list(word_list, message):
-    message_lower = message.lower()
-    for word in word_list:
-        if word.lower() in message_lower:
-            return word
-    return None
-
+    message_lower_cleaned = re.sub(r'[^a-zA-Z\s]', '', message.lower())
+    word_counts = {}  # Dictionary to store word counts
+    word_list_lower = [word.lower() for word in word_list]
+    for word in word_list_lower:
+        count = message_lower_cleaned.count(word.lower())
+        if count > 0:
+            word_counts[word] = count
+    if word_counts:
+        return word_counts
+    else:
+        return None
 
 # PROCESSES
 def gather_pids():
@@ -488,9 +493,7 @@ def find_pids(target_list, search_term):
                     pass
 
         # Find PIDs that contain the keyword in their process name
-        
         matching_pids = [pid for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
-        matching_names = [name for pid, name in pid_name_dict.items() if search_term.lower() in name.lower()]
 
         # Clear the external list and extend it with the matching PIDs
         target_list.clear()

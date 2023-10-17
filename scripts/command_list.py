@@ -2,6 +2,7 @@
 
 typingList = [
     "type",
+    "typing"
     "write",
     "enter"
 ]
@@ -11,11 +12,11 @@ findList = [
 ]
 
 gotoList = [
-    "Go to",
-    "Goto",
-    "Focus",
-    "Show",
-    "Switch to"
+    "go to",
+    "goto",
+    "focus",
+    "show",
+    "switch to"
 ]
 
 scrollList = [
@@ -76,11 +77,11 @@ allActionsButAgain = [
     "write",
     "enter",
     "find",
-    "Go to",
-    "Goto",
-    "Focus",
-    "Show",
-    "Switch to",
+    "go to",
+    "goto",
+    "focus",
+    "show",
+    "switch to",
     "scroll",
     "open",
     "start",
@@ -146,21 +147,6 @@ allProgramsList = [
     "download folder",
     "folder",
     "directory",
-    "c:",
-    "c drive",
-    "drive c",
-    "d:",
-    "d drive",
-    "drive d",
-    "appdata",
-    "app data",
-    "programs",
-    "programs86",
-    "programs 86",
-    "program's 86",
-    "other programs",
-    "user folder",
-    "home folder",
     "tab",
     "tap",
     "browser tab",
@@ -259,13 +245,13 @@ explorerList = [
     "programs86",
     "programs 86",
     "program's 86",
+    "program folder",
+    "program 86",
     "other programs",
     "user folder",
     "home folder",
     "downloads",
-    "download folder",
-    "MyComputer",
-    "My Computer"
+    "download folder"
 ]
 
 folderList = [
@@ -291,14 +277,16 @@ appDataList = [
 ]
 
 programsFolderList = [
-    "programs"
+    "programs",
+    "program folder"
 ]
 
 programs86FolderList = [
     "programs86",
     "programs 86",
     "program's 86",
-    "other programs"
+    "other programs",
+    "program 86"
 ]
 
 homeFolderList = [
@@ -313,8 +301,8 @@ downloadFolderList = [
 ]
 
 myComputerList = [
-    "MyComputer",
-    "My Computer"
+    "mycomputer",
+    "my computer"
 ]
 
 tabList = [

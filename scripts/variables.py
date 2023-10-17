@@ -89,7 +89,7 @@ else:
 
 llm_n_ctx = 8000 #4096 #8000 #32000
 llm_n_gpu_layers = 20
-llm_max_tokens=256
+llm_max_tokens=300
 llm_stop=[f'{user_name}:',f'{ai_name}:']
 llm_echo=False
 llm_mirostat_mode=2

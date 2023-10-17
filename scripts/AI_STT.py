@@ -1,4 +1,4 @@
-import AI_LLM, AI_TTS
+import AI_LLM
 import variables as vars, commands as cmd, helpers as help
 
 
@@ -23,6 +23,3 @@ def transcribe_audio():
     else:
         AI_LLM.write_to_history(vars.user_name, cleaned_transcription)
         AI_LLM.print_to_console(vars.user_name, cleaned_transcription)
-        #AI_LLM.write_to_history(vars.ai_name, "Okay, done.")
-        #AI_LLM.print_to_console(vars.ai_name, "Okay, done.")
-        #AI_TTS.invoke_text_to_speech("Okay, done.")

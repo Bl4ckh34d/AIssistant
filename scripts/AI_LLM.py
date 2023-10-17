@@ -75,19 +75,20 @@ def prompt_llm(init):
     # CLEANING UP RESULT
     joined_reply = ''.join(answer)
     cleaned_reply = joined_reply.strip() 
-    filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
-    
-    # CLEARING OUT EMOJIS, PARENTHESE, ASTERISKS, ETC.
-    filtered_reply = help.filter_text(filtered_reply)
+    #filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
     
     # SENTIMENT ANALYSIS
-    help.sentiment_calculation(filtered_reply)
+    help.sentiment_calculation(cleaned_reply)
     
     # SAVING RESPONSE MESSAGE TO LOG FILE
-    write_conversation(vars.ai_name, filtered_reply)
+    write_conversation(vars.ai_name, cleaned_reply)
     
     # REMOVE CODE SNIPPETS BEFORE TTS
-    final_reply = help.remove_code_snippets(filtered_reply)
+    final_reply = help.remove_code_snippets(cleaned_reply)
+    
+    # CLEARING OUT EMOJIS, PARENTHESE, ASTERISKS, ETC.
+    final_reply = re.sub(r'[^\x00-\x7F]+', '', final_reply)
+    final_reply = help.filter_text(final_reply)
     
     # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
     AI_TTS.invoke_text_to_speech(final_reply)

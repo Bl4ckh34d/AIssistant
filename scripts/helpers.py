@@ -202,27 +202,27 @@ def swap_persona():
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is sad)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.1
-        vars.llm_max_tokens = random.randint(75, 125)
+        vars.llm_max_tokens = random.randint(20, 50)
     if selected_persona == vars.angry_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is angry)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.5
-        vars.llm_max_tokens = random.randint(75, 100)
+        vars.llm_max_tokens = random.randint(25, 70)
     if selected_persona == vars.horny_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is aroused)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.4
-        vars.llm_max_tokens = random.randint(75, 100)
+        vars.llm_max_tokens = random.randint(50, 100)
     if selected_persona == vars.bored_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is bored)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.2
-        vars.llm_max_tokens = random.randint(75, 125)
+        vars.llm_max_tokens = random.randint(5, 25)
     if selected_persona == vars.neutral_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is neutral)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.3
-        vars.llm_max_tokens = random.randint(75, 150)
+        vars.llm_max_tokens = random.randint(75, 120)
         
     if vars.silent is False:
         print(Fore.CYAN + f"LLM_TEMPERATURE: {vars.llm_temperature}" + Style.RESET_ALL)
@@ -309,8 +309,8 @@ def sentiment_calculation(message):
         if vars.llm_mood_score < -5:
             vars.llm_mood_score = -5
 
-    if not vars.silent:
-        print(Fore.CYAN + f"AI SENTIMENT AFTER: {vars.llm_mood_score}" + Style.RESET_ALL)
+        if not vars.silent:
+            print(Fore.CYAN + f"AI SENTIMENT AFTER: {vars.llm_mood_score}" + Style.RESET_ALL)
         
     current_time = time.time()
     time_difference = current_time - vars.persona_saved_time

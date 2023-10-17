@@ -38,7 +38,7 @@ def print_to_console(sender, message):
 def infer(message):
     help.trim_chat_history()
     
-    if message == "INIT":
+    if message == "INITIAL":
         prompt_llm(True)
     else:
         write_conversation(vars.user_name, message)

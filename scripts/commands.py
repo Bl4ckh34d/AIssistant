@@ -293,7 +293,7 @@ def check_for_command(message):
                 vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.downloadFolderList,message).upper())
             else:
                 create_process(vars.folders, "Explorer", cl.explorerList, message, explorer_path, my_computer_folder)
-                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at " +help.check_for_keywords_from_list(cl.myComputerList,message).upper())
+                vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.explorerList,message).upper() + " at 'My Computer'")
             
         # CHROME
         elif help.check_for_keywords_from_list(cl.chromeList,message):
@@ -468,7 +468,7 @@ def check_for_command(message):
                     pyautogui.hotkey('ctrl', 'a')
                     pyautogui.press('del')
                     keyboard.write(my_computer_folder)
-                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at " + help.check_for_keywords_from_list(cl.myComputerList,message).upper())
+                    vars.executed_commands.append(help.check_for_keywords_from_list(cl.openingList,message).upper() + " " + help.check_for_keywords_from_list(cl.folderList,message).upper() + " " + help.check_for_keywords_from_list(cl.tabList,message).upper() + " at 'My Computer'")
                 pyautogui.hotkey('enter')
             # BROWSER TAB
             elif help.check_for_keywords_from_list(cl.browserTabList,message) and "Mozilla Firefox" in help.get_current_window_title():

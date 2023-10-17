@@ -196,7 +196,7 @@ def swap_persona():
     if selected_persona == vars.happy_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is happy)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 0.7
+        vars.llm_temperature = 0.4
         vars.llm_max_tokens = random.randint(100, 150)
     if selected_persona == vars.sad_mood:
         if not vars.silent:
@@ -206,22 +206,22 @@ def swap_persona():
     if selected_persona == vars.angry_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is angry)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 0.9
+        vars.llm_temperature = 0.5
         vars.llm_max_tokens = random.randint(75, 100)
     if selected_persona == vars.horny_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is aroused)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 0.8
+        vars.llm_temperature = 0.4
         vars.llm_max_tokens = random.randint(75, 100)
     if selected_persona == vars.bored_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is bored)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 0.3
+        vars.llm_temperature = 0.2
         vars.llm_max_tokens = random.randint(75, 125)
     if selected_persona == vars.neutral_mood:
         if not vars.silent:
             print(Fore.CYAN + f"({vars.ai_name} is neutral)\n" + Style.RESET_ALL)
-        vars.llm_temperature = 0.5
+        vars.llm_temperature = 0.3
         vars.llm_max_tokens = random.randint(75, 150)
         
     if vars.silent is False:

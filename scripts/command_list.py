@@ -1,4 +1,7 @@
 # ACTIONS
+commandList = [
+    "I command you"
+]
 
 typingList = [
     "type",

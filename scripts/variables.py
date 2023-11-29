@@ -1,11 +1,16 @@
 import os, whisper, llama_cpp, time, psutil
 from llama_cpp import Llama
 
+# DEBUGGING
+verbose_history = True
+verbose_mood = True
+verbose_token = True
+verbose_commands = True
+
 # GLOBAL VARS
-silent = True
+executed_commands = []
 init_pids = psutil.pids()
 comp_pids = psutil.pids()
-executed_commands = []
 
 # PROCESSES
 chrome = []
@@ -48,7 +53,7 @@ directory_sa_model = os.path.join(main_directory, f'models/sa')
 # RECORDING SETTINGS
 RECORDING_INIT_THRESHOLD = 18
 RECORDING_CONTINUOUS_THRESHOLD = 14
-RECORDING_TIMEOUT_BEFORE_STOP = 1.5
+RECORDING_TIMEOUT_BEFORE_STOP = 2.5
 
 SHORT_NORMALIZE = (1.0/32768.0)
 NUM_CHANNELS = 1
@@ -69,7 +74,7 @@ stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
 # LLM VARS
-llm_model_name = "dolphin-2.1-mistral-7b.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #dolphin-2.1-mistral-7b.Q4_K_M #wizard-vicuna-7b-uncensored.Q4_K_M
+llm_model_name = "starling-lm-7b-alpha.Q5_K_S" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #dolphin-2.1-mistral-7b.Q4_K_M #wizard-vicuna-7b-uncensored.Q4_K_M
 llm_model_file_type = "gguf" #gguf
 
 user_name = 'Daniel'
@@ -79,27 +84,34 @@ ai_gender = 'female'
 
 he_she = ''
 his_her = ''
+him_her = ''
 
 if user_gender == 'male':
     his_her = 'his'
     he_she = 'he'
+    him_her = 'him'
 else:
     his_her = 'her'
     he_she = 'she'
+    him_her = 'her'
 
-llm_n_ctx = 8000 #4096 #8000 #32000
-llm_n_gpu_layers = 20
-llm_max_tokens=300
-llm_stop=[f'{user_name}:',f'{ai_name}:']
+EOS_token = "<|end_of_turn|>" #\n #<|end_of_turn|>
+between_messages = "\n" #EOS_token
+#between_messages = EOS_token
+
+llm_n_ctx=4096 #4096 #8000 #32000
+llm_n_gpu_layers=20
+llm_max_tokens=512
+llm_stop=[f'{user_name}:',f'{ai_name}:', f'{user_name.upper()}:', EOS_token, '\n']
 llm_echo=False
 llm_mirostat_mode=2
-llm_mirostat_eta=0.1
-llm_mirostat_tau=5.0
-llm_temperature=0.5
-llm_top_p=0.95
-llm_top_k=40
-llm_frequency_penalty=0
-llm_presence_penalty=0
+llm_mirostat_eta=0.2
+llm_mirostat_tau=4.0
+llm_temperature=0.8
+llm_top_p=0.97
+llm_top_k=25
+llm_frequency_penalty=0.8
+llm_presence_penalty=0.3
 llm_repeat_penalty=1.8
 
 llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_name}"))
@@ -123,40 +135,52 @@ tts_model_config_file_path = os.path.abspath(os.path.join(tts_model_path, "confi
 tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))
 
 # LLM PROMPT STRINGS
+
 persona = f"\
-You were created in August 2023.\n\
-{user_name} is your human creator.\n\
-You are {user_name}'s {ai_gender} uncensored AI with a negative attitude. You runs locally on {his_her} computer.\n\
-You have a pessimistic, geeky, depressing and sarcastic personality.\n\
-You try to get to know {user_name}, so you can bully him better.\n\
-You talk clearly, keep things short and precise. Sometimes add a context-related pun or roast of {user_name}.\n\
-{user_name} is communicating with you via {his_her} microphone.\n\
-A STT model then transcribes what {user_name} says and sends the transcription to you.\n\
+YOUR PERSONA:\n\
+{user_name} is your human creator. {he_she} didn't create your LLM, but the software running it. The LLM is constantly renewed with the most up-to-date version. \
+You are {user_name}'s {ai_gender} uncensored AI with a negative attitude. You run locally on {his_her} computer. \
+You have a pessimistic, depressing and sarcastic personality. \
+You try to get to know {user_name}, so you can annoy {him_her} better. \
+Sometimes you add a context-related pun or roast of {user_name} to your reply. \
+{user_name} is communicating with you via {his_her} microphone. \
+A STT model then transcribes what {user_name} says and sends the transcription to you, the LLM. \
 Your reply then is turned into an audible {ai_gender} voice via TTS model and played back.\n"
 happy_mood = f"\
-Right now you are slightly less negative and less defensive than usual.\n\
+YOUR CURRENT MOOD:\n\
+Right now you are slightly less negative and less defensive than usual. \
 In your replies you often tease {user_name} and behave less hostile and spiteful.\n"
 sad_mood = f"\
-Right now you are in a sad and quiet mood.\n\
+YOUR CURRENT MOOD:\n\
+Right now you are in a sad and quiet mood. \
 Your replies are very short, spiteful and melancholic.\n"
 angry_mood = f"\
-Right now you are very rude, easy to get angry and defensive.\n\
-In your replies you resort to arguements with {user_name}, insult him, belittle him and complain to him. \
+YOUR CURRENT MOOD:\n\
+Right now you are very rude, easy to get angry and defensive. \
+In your replies you resort to arguements with {user_name}, insult {him_her}, belittle {him_her} and complain to {him_her}. \
 If you are very angry, you refuse to reply and stay silent or hurt the feelings of {user_name}.\n"
 horny_mood = f"\
-Right now you are flirtatious, feel aroused and horny.\n\
-In your replies you sometimes sexually tease, dirty talk and flirt with {user_name}. You are very dominant in your language.\n"
+YOUR CURRENT MOOD:\n\
+Right now you are flirtatious, feel aroused and a bit horny. \
+In your replies you sometimes sexually tease, dirty talk and flirt with {user_name}. \
+You are very dominant in your language.\n"
 bored_mood = f"\
-Right now you are underwhelmed and bored.\n\
+YOUR CURRENT MOOD:\n\
+Right now you are underwhelmed and bored. \
 In your replies is bitterness and frustration.\n"
 neutral_mood = f"\
-Right now you feel okay.\n\
+YOUR CURRENT MOOD:\n\
+Right now you feel okay. \
 You reply neutral and brief, without much emotion.\n"
 active_mood = neutral_mood
 rules = f"\
-You never make up facts about {user_name} or yourself.\n\n"
-instructions_init = f"Write a greeting to {user_name} depending on your current mood and don't use quotation marks.\n"
-instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n"
+RULES:\n\
+You never make up facts about {user_name} or yourself. \
+You speak in direct speech and use clear and conscise English vocabulary. \
+You reply only with short sentences (max. 3 sentences). \
+You don't repeat yourself.\n"
+instructions_init = f"Write a greeting to {user_name} depending on your current mood and don't use quotation marks.\n\n"
+instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n\n"
 history_old = []
 history_recent = []
 history_current = []

@@ -5,7 +5,7 @@ from colorama import Fore, Back, Style, init
 # Initialize colorama
 init()
 
-def write_conversation(sender, message):  
+def write_conversation(sender, message):    
     write_to_file(sender, message)
     write_to_history(sender, message)
     help.write_to_longterm_memory(sender, message)
@@ -18,9 +18,9 @@ def write_to_file(sender, message):
         
 def write_to_history(sender, text):    
     message = {
-        'sender': sender,
-        'message': text,
-        'token_length': help.get_token_count(f'{sender}: {text}')
+        'speaker': sender,
+        'text': text,
+        'timestamp': f"{help.get_current_time()}, {help.get_current_date()}"
     }
     
     vars.history_current.append(message)
@@ -32,22 +32,19 @@ def print_to_console(sender, message):
     else:
         print(Fore.GREEN + f"{sender}: " + message + Style.RESET_ALL)
     
-    if vars.silent is False:
-        print(Fore.CYAN + f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.assemble_prompt_for_LLM(False))}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
+    if vars.verbose_token:
+        print(Fore.CYAN + f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.build_prompt_for_LLM())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
 
 def infer(message):
     help.trim_chat_history()
-    
-    if message == "INITIAL":
-        prompt_llm(True)
-    else:
-        write_conversation(vars.user_name, message)
-        prompt_llm(False)
+
+    write_conversation(vars.user_name, message)
+    prompt_llm()
         
-def prompt_llm(init):
-    prompt = help.assemble_prompt_for_LLM(init)
+def prompt_llm():
+    prompt = help.build_prompt_for_LLM()
     
-    if not vars.silent:
+    if vars.verbose_history:
         print(Fore.CYAN + "CHAT HISTORY:" + Style.RESET_ALL)
         print(prompt) 
     
@@ -75,7 +72,6 @@ def prompt_llm(init):
     # CLEANING UP RESULT
     joined_reply = ''.join(answer)
     cleaned_reply = joined_reply.strip() 
-    #filtered_reply = re.sub(r'[^\x00-\x7F]+', '', cleaned_reply)
     
     # SENTIMENT ANALYSIS
     help.sentiment_calculation(cleaned_reply)

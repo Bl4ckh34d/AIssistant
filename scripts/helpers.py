@@ -70,46 +70,53 @@ def memory_to_history(json_f, token_budget):
 
             # Check if there's only one message in this entry
             if len(messages) == 1:
-                sender = messages[0]['speaker']
+                speaker = messages[0]['speaker']
                 text = messages[0]['text']
-                token_length = messages[0]['token']
+                timestamp = messages[0]['timestamp']
 
                 # Create a message dictionary for the single message
                 message = {
-                    'sender': sender,
-                    'message': text,
-                    'token_length': token_length
+                    'speaker': speaker,
+                    'text': text,
+                    'timestamp': timestamp
                 }
 
                 # Append the single message entry to your list variable
+                token_length = get_token_count(message)
                 if token_budget >= token_length:  
                     message_list.append(message)
                 token_budget = token_budget - token_length
             else:
                 # Assuming there are always two messages when there's more than one
                 for i in range(0, len(messages), 2):
-                    sender1 = messages[i]['speaker']
+                    speaker1 = messages[i]['speaker']
                     text1 = messages[i]['text']
-                    token_length1 = messages[i]['token']
-
-                    sender2 = messages[i + 1]['speaker']
+                    timestamp1 = messages[i]['timestamp']
+                    token_length1 = get_token_count(build_message_title(speaker1, timestamp1) + build_message_body(text1))
+                    
+                    speaker2 = messages[i + 1]['speaker']
                     text2 = messages[i + 1]['text']
-                    token_length2 = messages[i + 1]['token']
-
+                    timestamp2 = messages[i + 1]['timestamp']
+                    token_length2 = get_token_count(get_token_count(build_message_title(speaker2, timestamp2) + build_message_body(text2)))
+                    
                     # Create message dictionaries for both pairs
-                    message = {
-                        'sender': sender1,
-                        'message': text1,
-                        'token_length': token_length1
-                    }
-                    message_list.append(message)
-                    message = {
-                        'sender': sender2,
-                        'message': text2,
-                        'token_length': token_length2
-                    }
-                    message_list.append(message)
-                    token_budget = token_budget - token_length2 - token_length1
+                    
+                    token_length = token_length1 + token_length2
+                    if token_budget >= token_length:                      
+                        message = {
+                            'speaker': speaker1,
+                            'text': text1,
+                            'timestamp': timestamp1
+                        }
+                        message_list.append(message)
+                        
+                        message = {
+                            'speaker': speaker2,
+                            'text': text2,
+                            'timestamp': timestamp2
+                        }
+                        message_list.append(message)
+                    token_budget = token_budget - token_length
 
     return message_list
 
@@ -143,7 +150,7 @@ def play_audio(data, fs, device_id):
     sd.wait()
     
     
-# LLM PROMPT
+# LLM PERSONA
 def swap_persona():
     # Define the persona descriptions
     persona_descriptions = [
@@ -194,68 +201,81 @@ def swap_persona():
     
     # Print the selected persona description
     if selected_persona == vars.happy_mood:
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"({vars.ai_name} is happy)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.4
     if selected_persona == vars.sad_mood:
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"({vars.ai_name} is sad)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.1
     if selected_persona == vars.angry_mood:
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"({vars.ai_name} is angry)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.5
     if selected_persona == vars.horny_mood:
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"({vars.ai_name} is aroused)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.4
     if selected_persona == vars.bored_mood:
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"({vars.ai_name} is bored)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.2
     if selected_persona == vars.neutral_mood:
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"({vars.ai_name} is neutral)\n" + Style.RESET_ALL)
         vars.llm_temperature = 0.3
         
-    if vars.silent is False:
+    if vars.verbose_mood:
         print(Fore.CYAN + f"LLM_TEMPERATURE: {vars.llm_temperature}" + Style.RESET_ALL)
         
     vars.active_mood = selected_persona
- 
-def assemble_prompt_for_LLM(init):
-    if init:
-        prompt = f'System\n(Date: {get_current_date()}. Time: {get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions_init + f"{vars.ai_name}\n"
-    else:
-        prompt = f'System\n(Date: {get_current_date()}. Time: {get_current_time()})\n' + vars.persona + vars.active_mood + vars.rules + populate_history() + vars.instructions + f"{vars.ai_name}\n"
 
+# LLM PROMPT 
+def build_message_title(speaker, timestamp):
+    title = f"{speaker} ({timestamp})\n"
+    return title
+    
+def build_message_body(text):
+    body = f"{text}\n\n"
+    return body
+
+def build_title_for_LLM_prompt():
+    title = f'(Date: {get_current_date()}. Time: {get_current_time()})\n'
+    return title
+
+def build_title_for_LLM_prompt():
+    body = vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + vars.between_messages + f"{vars.ai_name}:\n"
+    return body
+
+def build_prompt_for_LLM():
+    prompt = build_title_for_LLM_prompt() + build_title_for_LLM_prompt()
     return prompt
 
 # LLM HISTORY
 def populate_history():
     temp_history = ""
     if vars.history_old != []:
-        temp_history = temp_history + '\nYOUR MEMORIES FROM A OLD CONVERSATION:\n'
+        temp_history = temp_history + 'YOUR MEMORIES FROM A OLD CONVERSATION:\n\n'
     
         for entry in vars.history_old:
-            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n\n"
+            temp_history = temp_history + build_message_title(entry) + build_message_body(entry)
         
     if vars.history_recent != []:
-        temp_history = temp_history + '\nYOUR MEMORIES FROM A RECENT CONVERSATION:\n'
+        temp_history = temp_history + 'YOUR MEMORIES FROM A RECENT CONVERSATION:\n\n'
     
         for entry in vars.history_recent:
-            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n\n"
+            temp_history = temp_history + build_message_title(entry) + build_message_body(entry)
                 
     if vars.history_current != []:
-        temp_history = temp_history + '\nYOUR MEMORIES FROM THE CONVERSATION TODAY:\n'
+        temp_history = temp_history + 'YOUR MEMORIES FROM THE CONVERSATION TODAY:\n\n'
     
         for entry in vars.history_current:
-            temp_history = temp_history + f"{entry['sender']}\n{entry['message']}\n\n"
+            temp_history = temp_history + build_message_title(entry) + build_message_body(entry)
     
     return temp_history
 
 def trim_chat_history():
-    total_tokens = get_token_count(assemble_prompt_for_LLM(True))
+    total_tokens = get_token_count(build_prompt_for_LLM(True))
 
     while total_tokens >= vars.llm_n_ctx:
         last_entry_tokens = vars.history_current[0]['token_length']
@@ -266,7 +286,7 @@ def trim_chat_history():
 def sentiment_calculation(message):
     if message != "" and message != " ":
         
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"AI SENTIMENT BEFORE: {vars.llm_mood_score}" + Style.RESET_ALL)
             
         for sentence in split_to_sentences(message):
@@ -281,7 +301,7 @@ def sentiment_calculation(message):
                              
             vars.llm_mood_score = vars.llm_mood_score + sentiment_strength    
             
-            if not vars.silent:
+            if vars.verbose_mood:
                 print(Fore.CYAN + f"CONVERSATION SENTIMENT: {sentiment_strength} | MOOD: {sentiment[0]['label']}" + Style.RESET_ALL)
         
         if vars.llm_mood_score > 5:
@@ -303,7 +323,7 @@ def sentiment_calculation(message):
         if vars.llm_mood_score < -5:
             vars.llm_mood_score = -5
 
-        if not vars.silent:
+        if vars.verbose_mood:
             print(Fore.CYAN + f"AI SENTIMENT AFTER: {vars.llm_mood_score}" + Style.RESET_ALL)
         
     current_time = time.time()
@@ -331,7 +351,8 @@ def write_to_longterm_memory(sender, message):
                 {
                     "speaker": sender,
                     "text": message,
-                    "token": get_token_count(f"{sender}: {message}")
+                    "token": get_token_count(f"{sender}: {message}"),
+                    "timestamp": f"{get_current_time()}, {get_current_date()}"
                 }
             ]
         })
@@ -340,7 +361,8 @@ def write_to_longterm_memory(sender, message):
         memory[-1]['message'].append({
             "speaker": sender,
             "text": message,
-            "token": get_token_count(f"{sender}: {message}")
+            "token": get_token_count(f"{sender}: {message}"),
+            "timestamp": f"{get_current_time()}, {get_current_date()}"
         })
     
     # Write the updated chat history back to the JSON file
@@ -384,7 +406,7 @@ def build_memory():
         random_recent_file = random.choice(recent_files)
 
     # Check available Token count
-    token_used = get_token_count(assemble_prompt_for_LLM(True) + vars.instructions_init + f"{vars.ai_name}:")
+    token_used = get_token_count(build_prompt_for_LLM(True) + vars.instructions_init + f"{vars.ai_name}:")
     token_budget = vars.llm_n_ctx - token_used
     today_budget = (token_budget * 80) / 100
     recent_budget = (token_budget * 15) / 100
@@ -432,13 +454,13 @@ def close_pids(pid_list, search_term):
                 # Terminate the process
                 process = psutil.Process(pid)
                 process.terminate()
-                if not vars.silent:
+                if vars.verbose_commands:
                     print(f"Process with PID {pid} has been terminated.")
             except psutil.NoSuchProcess:
-                if not vars.silent:
+                if vars.verbose_commands:
                     print(f"No process found with PID {pid}.")
         else:
-            if not vars.silent:
+            if vars.verbose_commands:
                 print(f"Process with PID {pid} does not exist.")
             
 def focus_pids(pid_list, search_term):

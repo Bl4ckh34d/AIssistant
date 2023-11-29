@@ -82,7 +82,7 @@ def memory_to_history(json_f, token_budget):
                 }
 
                 # Append the single message entry to your list variable
-                token_length = get_token_count(message)
+                token_length = get_token_count(build_message_title(message[speaker], message[timestamp]) + build_message_body(message[text]))
                 if token_budget >= token_length:  
                     message_list.append(message)
                 token_budget = token_budget - token_length
@@ -239,16 +239,20 @@ def build_message_body(text):
     body = f"{text}\n\n"
     return body
 
-def build_title_for_LLM_prompt():
-    title = f'(Date: {get_current_date()}. Time: {get_current_time()})\n'
-    return title
+def construct_message(speaker, text, timestamp):
+    message = build_message_title(speaker, timestamp) + build_message_body(text)
+    return message
 
 def build_title_for_LLM_prompt():
+    title = f'(Current Date: {get_current_date()})\n'
+    return title
+
+def build_body_for_LLM_prompt():
     body = vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + vars.between_messages + f"{vars.ai_name}:\n"
     return body
 
-def build_prompt_for_LLM():
-    prompt = build_title_for_LLM_prompt() + build_title_for_LLM_prompt()
+def construct_prompt_for_LLM():
+    prompt = build_title_for_LLM_prompt() + build_body_for_LLM_prompt()
     return prompt
 
 # LLM HISTORY
@@ -258,24 +262,24 @@ def populate_history():
         temp_history = temp_history + 'YOUR MEMORIES FROM A OLD CONVERSATION:\n\n'
     
         for entry in vars.history_old:
-            temp_history = temp_history + build_message_title(entry) + build_message_body(entry)
+            temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
         
     if vars.history_recent != []:
         temp_history = temp_history + 'YOUR MEMORIES FROM A RECENT CONVERSATION:\n\n'
     
         for entry in vars.history_recent:
-            temp_history = temp_history + build_message_title(entry) + build_message_body(entry)
+            temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
                 
     if vars.history_current != []:
         temp_history = temp_history + 'YOUR MEMORIES FROM THE CONVERSATION TODAY:\n\n'
     
         for entry in vars.history_current:
-            temp_history = temp_history + build_message_title(entry) + build_message_body(entry)
+            temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
     
     return temp_history
 
 def trim_chat_history():
-    total_tokens = get_token_count(build_prompt_for_LLM(True))
+    total_tokens = get_token_count(construct_prompt_for_LLM())
 
     while total_tokens >= vars.llm_n_ctx:
         last_entry_tokens = vars.history_current[0]['token_length']
@@ -406,7 +410,7 @@ def build_memory():
         random_recent_file = random.choice(recent_files)
 
     # Check available Token count
-    token_used = get_token_count(build_prompt_for_LLM(True) + vars.instructions_init + f"{vars.ai_name}:")
+    token_used = get_token_count(construct_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
     token_budget = vars.llm_n_ctx - token_used
     today_budget = (token_budget * 80) / 100
     recent_budget = (token_budget * 15) / 100

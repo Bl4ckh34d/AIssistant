@@ -5,27 +5,27 @@ from colorama import Fore, Back, Style, init
 # Initialize colorama
 init()
 
-def write_conversation(sender, message):    
-    write_to_file(sender, message)
+def write_conversation(sender, message, timestamp):    
+    write_to_file(sender, message, timestamp)
     write_to_history(sender, message)
     help.write_to_longterm_memory(sender, message)
     help.trim_chat_history() 
-    print_to_console(sender, message)
+    print_to_console(sender, message, timestamp)
 
-def write_to_file(sender, message):
+def write_to_file(sender, message, timestamp):
     with open(help.generate_file_path("txt"), 'a', encoding="utf-8") as file:
-        file.write(f"{sender}: {message}\n") #f"({helpers.get_current_time()}) {sender}: {message}\n"
+        file.write(f"{help.construct_message(sender, message, timestamp)}\n\n")
         
 def write_to_history(sender, text):    
     message = {
         'speaker': sender,
         'text': text,
-        'timestamp': f"{help.get_current_time()}, {help.get_current_date()}"
+        'timestamp': f"{help.get_current_time()}"
     }
     
     vars.history_current.append(message)
 
-def print_to_console(sender, message):
+def print_to_console(sender, message, timestamp):
     print("====================================================================")
     if sender == vars.ai_name:
         print(Fore.YELLOW + f"{sender}: " + message + Style.RESET_ALL)
@@ -33,16 +33,16 @@ def print_to_console(sender, message):
         print(Fore.GREEN + f"{sender}: " + message + Style.RESET_ALL)
     
     if vars.verbose_token:
-        print(Fore.CYAN + f'[Tokens: {help.get_token_count(f"{sender}: {message}")} ({help.get_token_count(help.build_prompt_for_LLM())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
+        print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(sender, message, timestamp))} ({help.get_token_count(help.construct_prompt_for_LLM())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
 
-def infer(message):
+def infer(message, timestamp):
     help.trim_chat_history()
 
-    write_conversation(vars.user_name, message)
-    prompt_llm()
+    write_conversation(vars.user_name, message, timestamp)
+    prompt_llm(timestamp)
         
-def prompt_llm():
-    prompt = help.build_prompt_for_LLM()
+def prompt_llm(timestamp):
+    prompt = help.construct_prompt_for_LLM()
     
     if vars.verbose_history:
         print(Fore.CYAN + "CHAT HISTORY:" + Style.RESET_ALL)
@@ -77,7 +77,7 @@ def prompt_llm():
     help.sentiment_calculation(cleaned_reply)
     
     # SAVING RESPONSE MESSAGE TO LOG FILE
-    write_conversation(vars.ai_name, cleaned_reply)
+    write_conversation(vars.ai_name, cleaned_reply, timestamp)
     
     # REMOVE CODE SNIPPETS BEFORE TTS
     final_reply = help.remove_code_snippets(cleaned_reply)

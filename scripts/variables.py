@@ -2,10 +2,10 @@ import os, whisper, llama_cpp, time, psutil
 from llama_cpp import Llama
 
 # DEBUGGING
-verbose_history = True
-verbose_mood = True
-verbose_token = True
-verbose_commands = True
+verbose_history = False
+verbose_mood = False
+verbose_token = False
+verbose_commands = False
 
 # GLOBAL VARS
 executed_commands = []
@@ -102,14 +102,14 @@ between_messages = "\n" #EOS_token
 llm_n_ctx=4096 #4096 #8000 #32000
 llm_n_gpu_layers=20
 llm_max_tokens=512
-llm_stop=[f'{user_name}:',f'{ai_name}:', f'{user_name.upper()}:', EOS_token, '\n']
+llm_stop=[f'{user_name}:',f'{ai_name}:', f'{user_name.upper()}:', EOS_token]
 llm_echo=False
 llm_mirostat_mode=2
 llm_mirostat_eta=0.2
 llm_mirostat_tau=4.0
 llm_temperature=0.8
 llm_top_p=0.97
-llm_top_k=25
+llm_top_k=35
 llm_frequency_penalty=0.8
 llm_presence_penalty=0.3
 llm_repeat_penalty=1.8

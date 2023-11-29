@@ -14,3 +14,4 @@ models/stt/*
 models/sa/*
 !models/sa/.gitkeep
 INSTALLLIST.txt
+scripts/reader.py

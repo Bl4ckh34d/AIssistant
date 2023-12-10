@@ -1,4 +1,4 @@
-import datetime, time, llama_cpp, random, re, json, os, psutil, win32gui, win32con, win32process, pyautogui
+import datetime, time, llama_cpp, random, re, json, os, psutil, win32gui, win32con, win32process, pyautogui, subprocess, pyaudio
 import sounddevice as sd, variables as vars
 from transformers import pipeline
 from colorama import Fore, Back, Style, init
@@ -8,8 +8,9 @@ init()
 
 classifier_sentiment = pipeline("sentiment-analysis", model=vars.sa_model_path, tokenizer=vars.sa_model_path)
 
-# MISC
-def show_intro():
+# SETUP
+def setup_user_name():
+    subprocess.call('cls', shell=True)
     print()
     print(Fore.YELLOW + "====================================================================")
     print("\n     _      ___               _         _                     _   ")
@@ -18,6 +19,54 @@ def show_intro():
     print("  / ___ \   | |  \__ \ \__ \ | | \__ \ | |_  | (_| | | | | | | |_ ")
     print(" /_/   \_\ |___| |___/ |___/ |_| |___/  \__|  \__,_| |_| |_|  \__|\n")
     print("====================================================================" + Style.RESET_ALL)
+    print()
+    name = input("Enter your " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + ": ")
+    if name != "" and name != " ":
+        vars.user_name = name
+    
+    subprocess.call('cls', shell=True)
+
+def setup_audio_input():
+    print(Fore.MAGENTA + "\nAvailable Audio Input Devices:" + Style.RESET_ALL)
+    print()
+    
+    p = pyaudio.PyAudio()
+    device_ids = []
+    for i in range(p.get_device_count()):
+        device_info = p.get_device_info_by_index(i)
+        if device_info['maxInputChannels'] > 0:
+            print("ID: " + Fore.MAGENTA + f"{device_info['index']}" + Style.RESET_ALL + f", Name: {device_info['name']}")
+            device_ids.append(device_info['index'])
+    p.terminate()
+    print()
+    audio_device = input(f"Enter your prefered " + Fore.MAGENTA + "AUDIO INPUT DEVICE ID" + Style.RESET_ALL + ": ")
+    if audio_device.isdigit() and audio_device in device_ids:
+        vars.AUDIO_INPUT_DEVICE_ID = int(audio_device)
+    else:
+        vars.AUDIO_INPUT_DEVICE_ID = device_ids[0]
+    
+    subprocess.call('cls', shell=True)
+    
+def setup_audio_output():
+    print(Fore.MAGENTA + "\nAvailable Audio Output Devices:" + Style.RESET_ALL)
+    print()
+    
+    p = pyaudio.PyAudio()
+    device_ids = []
+    for i in range(p.get_device_count()):
+        device_info = p.get_device_info_by_index(i)
+        if device_info['maxOutputChannels'] > 0:
+            print("ID: " + Fore.MAGENTA + f"{device_info['index']}" + Style.RESET_ALL + f", Name: {device_info['name']}")
+            device_ids.append(device_info['index'])
+    p.terminate()
+    print()
+    audio_device = input(f"Enter your prefered " + Fore.MAGENTA + "AUDIO OUTPUT DEVICE ID" + Style.RESET_ALL + ": ")
+    if audio_device.isdigit() and audio_device in device_ids:
+        vars.AUDIO_OUTPUT_DEVICE_ID = int(audio_device)
+    else:
+        vars.AUDIO_OUTPUT_DEVICE_ID = device_ids[0]
+    
+    subprocess.call('cls', shell=True)
 
 def get_token_count(text):
     if vars.llm_model_file_type == "gguf":
@@ -31,9 +80,16 @@ def get_current_date():
     formatted_date = current_datetime.strftime("%B %d, %Y").replace(' 0', ' ').replace(f' {day},', f' {day}{"th" if 4 <= day % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")},')
     return formatted_date
 
+def get_current_timezone():
+    now = datetime.datetime.now()
+    local_offset = now.astimezone().utcoffset()
+    formatted_offset = local_offset.total_seconds() // 3600
+    formatted_offset = f"UTC{'+' if formatted_offset >= 0 else ''}{int(formatted_offset)}"
+    return formatted_offset
+
 def get_current_time():
     current_datetime = datetime.datetime.now()
-    formatted_time = current_datetime.strftime("%H:%M:%S")
+    formatted_time = current_datetime.strftime("%H:%M:%S") + " " + get_current_timezone()
     return formatted_time
 
 def generate_file_path(filetype):
@@ -41,11 +97,20 @@ def generate_file_path(filetype):
     formatted_datetime = current_datetime.strftime("%Y-%m-%d")
     return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
-def split_to_sentences(message):
-    sentences = []
-    sentence_pattern = r'(?<=[.!?…])\s+' #r'([.!?]+)'
-    chunks = re.split(sentence_pattern, message)
-    sentences = ["".join(s) for s in zip(chunks[::2], chunks[1::2])]
+def split_reply_to_chunks(message):
+    chunk_pattern = r'(?<=[.!?,-](?!\w))+(?:\s|,)+'
+    chunks = re.split(chunk_pattern, message)
+    chunks = [chunk.strip() for chunk in re.split(chunk_pattern, message) if chunk.strip()]
+    if vars.verbose_tts:
+        print(chunks)
+    return chunks
+
+def split_message_to_sentences(message):
+    sentence_pattern = r'(?<=[.!?]) +'
+    sentences = re.split(sentence_pattern, message)
+    sentences = [sentence.strip() for sentence in re.split(sentence_pattern, message) if sentence.strip()]
+    if vars.verbose_tts:
+        print(sentences)
     return sentences
 
 def remove_code_snippets(string):
@@ -129,26 +194,40 @@ def filter_text(input_text):
                                u"\U0001F700-\U0001F77F"  # Alchemical symbols
                                u"\U0001F780-\U0001F7FF"  # Geometric shapes
                                u"\U0001F800-\U0001F8FF"  # Supplemental symbols & pictographs
-                               "]+", flags=re.UNICODE) 
-    
+                               "]+", flags=re.UNICODE)
+    # Define a regular expression pattern for smileys
+    smiley_pattern = re.compile(r"(:\)|:\(|;\)|:D|:P|:\||B\)|:-\*|:-O)")    
     text_in_asterisks_pattern = re.compile(r'\*([^*]+)\*')
     text_in_parentheses_pattern = re.compile(r'\(([^)]+)\)')
     hashtag_pattern = re.compile(r'#\w+')
-    
+    http_pattern = re.compile(r'https?://\S+')
+    # Define a regular expression pattern to match consecutive capital letters
+    capital_letters_pattern = re.compile(r'(?<=[a-z])(?=[A-Z])')
+
     # Remove emojis, text in asterisks, and hashtags from the input text
     filtered_text = emoji_pattern.sub('', input_text)
     filtered_text = text_in_asterisks_pattern.sub('', filtered_text)
     filtered_text = text_in_parentheses_pattern.sub('', filtered_text)
     filtered_text = hashtag_pattern.sub('', filtered_text)
+    filtered_text = http_pattern.sub('', filtered_text)
+    filtered_text = smiley_pattern.sub('-', filtered_text)
+    filtered_text = capital_letters_pattern.sub(' ', filtered_text)
+    
+    # Replace backticks with single quotes
+    filtered_text = filtered_text.replace("`", "\'")
+    filtered_text = filtered_text.replace("`a", "'t")
+    filtered_text = filtered_text.replace("```", "")
+    # Replace ellipsis with full stops
+    filtered_text = filtered_text.replace("…", "...")
+    # Remove single asterisks
+    filtered_text = filtered_text.replace("*", "")
     
     return filtered_text
 
-
 # AUDIO    
-def play_audio(data, fs, device_id):
-    sd.play(data, fs, device=device_id)
+def play_audio(data, fs):
+    sd.play(data, fs, device=vars.AUDIO_OUTPUT_DEVICE_ID)
     sd.wait()
-    
     
 # LLM PERSONA
 def swap_persona():
@@ -293,7 +372,7 @@ def sentiment_calculation(message):
         if vars.verbose_mood:
             print(Fore.CYAN + f"AI SENTIMENT BEFORE: {vars.llm_mood_score}" + Style.RESET_ALL)
             
-        for sentence in split_to_sentences(message):
+        for sentence in split_message_to_sentences(message):
             sentiment = classifier_sentiment(sentence)
             sentiment_strength = 0
             if sentiment[0]['label'] == "positive":

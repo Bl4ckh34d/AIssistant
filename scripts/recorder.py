@@ -24,7 +24,8 @@ class Recorder:
                                   rate=vars.HZ_RATE,
                                   input=True,
                                   output=True,
-                                  frames_per_buffer=vars.CHUNK_SIZE)
+                                  frames_per_buffer=vars.CHUNK_SIZE,
+                                  input_device_index=vars.AUDIO_INPUT_DEVICE_ID)
 
     def record(self):
         rec = []

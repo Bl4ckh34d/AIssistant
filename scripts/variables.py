@@ -2,10 +2,11 @@ import os, whisper, llama_cpp, time, psutil
 from llama_cpp import Llama
 
 # DEBUGGING
-verbose_history = True
+verbose_history = False
 verbose_mood = False
 verbose_token = False
 verbose_commands = False
+verbose_tts = False
 
 # GLOBAL VARS
 executed_commands = []
@@ -51,6 +52,8 @@ directory_tts_model = os.path.join(main_directory, f'models/tts')
 directory_sa_model = os.path.join(main_directory, f'models/sa')
 
 # RECORDING SETTINGS
+AUDIO_INPUT_DEVICE_ID = 0
+
 RECORDING_INIT_THRESHOLD = 18
 RECORDING_CONTINUOUS_THRESHOLD = 14
 RECORDING_TIMEOUT_BEFORE_STOP = 2.5
@@ -74,7 +77,7 @@ stt_model_language = "en"
 stt_model_task = "transcribe" #translate
  
 # LLM VARS
-llm_model_name = "starling-lm-7b-alpha.Q5_K_S" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #dolphin-2.1-mistral-7b.Q4_K_M #wizard-vicuna-7b-uncensored.Q4_K_M
+llm_model_name = "starling-lm-7b-alpha.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #dolphin-2.1-mistral-7b.Q4_K_M #wizard-vicuna-7b-uncensored.Q4_K_M
 llm_model_file_type = "gguf" #gguf
 
 user_name = 'Daniel'
@@ -111,17 +114,17 @@ between_messages = "\n" #EOS_token
 llm_n_ctx=4096 #4096 #8000 #32000
 llm_n_gpu_layers=20
 llm_max_tokens=512
-llm_stop=[f'{user_name} (',f'{ai_name} (', f'{user_name.upper()} (', EOS_token]
+llm_stop=[f'{user_name} (',f'{ai_name} (', f'{user_name.upper()} (', f'{user_name}:', f'{ai_name}:', EOS_token]
 llm_echo=False
-llm_mirostat_mode=2
-llm_mirostat_eta=0.2
+llm_mirostat_mode=1
+llm_mirostat_eta=0.1
 llm_mirostat_tau=4.0
 llm_temperature=0.8
 llm_top_p=0.97
-llm_top_k=35
-llm_frequency_penalty=0.8
-llm_presence_penalty=0.3
-llm_repeat_penalty=1.8
+llm_top_k=30
+llm_frequency_penalty=1.2
+llm_presence_penalty=0.2
+llm_repeat_penalty=1.0
 
 llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_name}"))
 if llm_model_file_type == "gguf":
@@ -135,8 +138,7 @@ llm_mood_score = 0
 llm_type_speed = 0.05
 
 # TTS VARS
-AUDIO_DEVICE_ID_VIRTUAL = 8 #8
-AUDIO_DEVICE_ID_SPEAKERS = 6 #6
+AUDIO_OUTPUT_DEVICE_ID = 0
 tts_model_name = 'tts_models--en--jenny--jenny' #'tts_models--en--jenny--jenny' #'vocoder_models--en--ljspeech--univnet' #'tts_models/en/ljspeech/vits' #'tts_models/en/ljspeech/vits--neon'
 tts_model_path = os.path.abspath(os.path.join(directory_tts_model, tts_model_name))
 tts_model_file_path = os.path.abspath(os.path.join(tts_model_path, "model.pth"))
@@ -144,7 +146,6 @@ tts_model_config_file_path = os.path.abspath(os.path.join(tts_model_path, "confi
 tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "output_sentence_"))
 
 # LLM PROMPT STRINGS
-
 persona = f"\
 YOUR PERSONA:\n\
 {user_name} is your human creator. {c_he_she} didn't create your LLM, but the software running it. The LLM is constantly renewed with the most up-to-date version. \

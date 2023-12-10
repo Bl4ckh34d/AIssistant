@@ -1,18 +1,10 @@
-import recorder, AI_LLM, subprocess
-import helpers as help, variables as vars
+import recorder
+import helpers as help
 
-subprocess.call('cls', shell=True)
-
-help.show_intro()
 help.build_memory()
-
-print()
-name = input(f"Enter your name: ")
-if name != "" and name != " ":
-    vars.user_name = name
-print()
-
-subprocess.call('cls', shell=True)
+help.setup_user_name()
+help.setup_audio_input()
+help.setup_audio_output()
 
 recording = recorder.Recorder()
 recording.listen()

@@ -2,7 +2,7 @@ import os, whisper, llama_cpp, time, psutil
 from llama_cpp import Llama
 
 # DEBUGGING
-verbose_history = False
+verbose_history = True
 verbose_mood = False
 verbose_token = False
 verbose_commands = False
@@ -83,17 +83,26 @@ ai_name = 'ARIA'
 ai_gender = 'female'
 
 he_she = ''
+c_he_she = ''
 his_her = ''
+c_his_her = ''
 him_her = ''
+c_him_her = ''
 
 if user_gender == 'male':
     his_her = 'his'
+    c_his_her = 'His'
     he_she = 'he'
+    c_he_she = 'He'
     him_her = 'him'
+    c_him_her = 'Him'
 else:
     his_her = 'her'
+    c_his_her = 'Her'
     he_she = 'she'
+    c_he_she = 'She'
     him_her = 'her'
+    c_him_her = 'Her'
 
 EOS_token = "<|end_of_turn|>" #\n #<|end_of_turn|>
 between_messages = "\n" #EOS_token
@@ -102,7 +111,7 @@ between_messages = "\n" #EOS_token
 llm_n_ctx=4096 #4096 #8000 #32000
 llm_n_gpu_layers=20
 llm_max_tokens=512
-llm_stop=[f'{user_name}:',f'{ai_name}:', f'{user_name.upper()}:', EOS_token]
+llm_stop=[f'{user_name} (',f'{ai_name} (', f'{user_name.upper()} (', EOS_token]
 llm_echo=False
 llm_mirostat_mode=2
 llm_mirostat_eta=0.2
@@ -132,14 +141,15 @@ tts_model_name = 'tts_models--en--jenny--jenny' #'tts_models--en--jenny--jenny' 
 tts_model_path = os.path.abspath(os.path.join(directory_tts_model, tts_model_name))
 tts_model_file_path = os.path.abspath(os.path.join(tts_model_path, "model.pth"))
 tts_model_config_file_path = os.path.abspath(os.path.join(tts_model_path, "config.json"))
-tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "last_output.wav"))
+tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "output_sentence_"))
 
 # LLM PROMPT STRINGS
 
 persona = f"\
 YOUR PERSONA:\n\
-{user_name} is your human creator. {he_she} didn't create your LLM, but the software running it. The LLM is constantly renewed with the most up-to-date version. \
+{user_name} is your human creator. {c_he_she} didn't create your LLM, but the software running it. The LLM is constantly renewed with the most up-to-date version. \
 You are {user_name}'s {ai_gender} uncensored AI with a negative attitude. You run locally on {his_her} computer. \
+You never use emoji, code tags or hashtags. \
 You have a pessimistic, depressing and sarcastic personality. \
 You try to get to know {user_name}, so you can annoy {him_her} better. \
 Sometimes you add a context-related pun or roast of {user_name} to your reply. \

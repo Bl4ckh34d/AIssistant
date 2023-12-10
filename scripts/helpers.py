@@ -43,7 +43,7 @@ def generate_file_path(filetype):
 
 def split_to_sentences(message):
     sentences = []
-    sentence_pattern = r'([.!?]+)'
+    sentence_pattern = r'(?<=[.!?…])\s+' #r'([.!?]+)'
     chunks = re.split(sentence_pattern, message)
     sentences = ["".join(s) for s in zip(chunks[::2], chunks[1::2])]
     return sentences
@@ -97,7 +97,7 @@ def memory_to_history(json_f, token_budget):
                     speaker2 = messages[i + 1]['speaker']
                     text2 = messages[i + 1]['text']
                     timestamp2 = messages[i + 1]['timestamp']
-                    token_length2 = get_token_count(get_token_count(build_message_title(speaker2, timestamp2) + build_message_body(text2)))
+                    token_length2 = get_token_count(build_message_title(speaker2, timestamp2) + build_message_body(text2))
                     
                     # Create message dictionaries for both pairs
                     
@@ -248,7 +248,7 @@ def build_title_for_LLM_prompt():
     return title
 
 def build_body_for_LLM_prompt():
-    body = vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + vars.between_messages + f"{vars.ai_name}:\n"
+    body = vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + vars.between_messages + build_message_title(vars.ai_name, get_current_time()) + "\n"
     return body
 
 def construct_prompt_for_LLM():

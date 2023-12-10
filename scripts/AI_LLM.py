@@ -28,9 +28,9 @@ def write_to_history(sender, text):
 def print_to_console(sender, message, timestamp):
     print("====================================================================")
     if sender == vars.ai_name:
-        print(Fore.YELLOW + f"{sender}: " + message + Style.RESET_ALL)
+        print(Fore.YELLOW + f"{sender} ({timestamp})" + message + Style.RESET_ALL)
     else:
-        print(Fore.GREEN + f"{sender}: " + message + Style.RESET_ALL)
+        print(Fore.GREEN + f"{sender} ({timestamp})" + message + Style.RESET_ALL)
     
     if vars.verbose_token:
         print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(sender, message, timestamp))} ({help.get_token_count(help.construct_prompt_for_LLM())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)

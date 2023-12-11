@@ -2,7 +2,7 @@ import os, whisper, llama_cpp, time, psutil
 from llama_cpp import Llama
 
 # DEBUGGING
-verbose_history = False
+verbose_history = True
 verbose_mood = False
 verbose_token = False
 verbose_commands = False
@@ -56,7 +56,7 @@ AUDIO_INPUT_DEVICE_ID = 0
 
 RECORDING_INIT_THRESHOLD = 18
 RECORDING_CONTINUOUS_THRESHOLD = 14
-RECORDING_TIMEOUT_BEFORE_STOP = 2.5
+RECORDING_TIMEOUT_BEFORE_STOP = 1.5
 
 SHORT_NORMALIZE = (1.0/32768.0)
 NUM_CHANNELS = 1
@@ -85,46 +85,48 @@ user_gender = 'male'
 ai_name = 'ARIA'
 ai_gender = 'female'
 
-he_she = ''
-c_he_she = ''
-his_her = ''
-c_his_her = ''
-him_her = ''
-c_him_her = ''
+user_he_she = ''
+user_c_he_she = ''
+user_his_her = ''
+user_c_his_her = ''
+user_him_her = ''
+user_c_him_her = ''
 
 if user_gender == 'male':
-    his_her = 'his'
-    c_his_her = 'His'
-    he_she = 'he'
-    c_he_she = 'He'
-    him_her = 'him'
-    c_him_her = 'Him'
+    user_his_her = 'his'
+    user_c_his_her = 'His'
+    user_he_she = 'he'
+    user_c_he_she = 'He'
+    user_him_her = 'him'
+    user_c_him_her = 'Him'
 else:
-    his_her = 'her'
-    c_his_her = 'Her'
-    he_she = 'she'
-    c_he_she = 'She'
-    him_her = 'her'
-    c_him_her = 'Her'
+    user_his_her = 'her'
+    user_c_his_her = 'Her'
+    user_he_she = 'she'
+    user_c_he_she = 'She'
+    user_him_her = 'her'
+    user_c_him_her = 'Her'
 
-EOS_token = "<|end_of_turn|>" #\n #<|end_of_turn|>
-between_messages = "\n" #EOS_token
-#between_messages = EOS_token
+eos_token = '<|end_of_turn|>'
 
-llm_n_ctx=4096 #4096 #8000 #32000
-llm_n_gpu_layers=20
+llm_chat_format = 'llama-2'
+llm_n_ctx=8192 #4096 #8192 #32000
+llm_n_gpu_layers=35
+llm_n_cpu_threads=8
 llm_max_tokens=512
-llm_stop=[f'{user_name} (',f'{ai_name} (', f'{user_name.upper()} (', f'{user_name}:', f'{ai_name}:', EOS_token]
+llm_stop=['</s>', eos_token]
 llm_echo=False
-llm_mirostat_mode=1
+llm_stream=True
+llm_mirostat_mode=2
 llm_mirostat_eta=0.1
-llm_mirostat_tau=4.0
+llm_mirostat_tau=5.0
 llm_temperature=0.8
 llm_top_p=0.97
 llm_top_k=30
 llm_frequency_penalty=1.2
 llm_presence_penalty=0.2
 llm_repeat_penalty=1.0
+llm_tfs_z=1.0
 
 llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_name}"))
 if llm_model_file_type == "gguf":
@@ -132,7 +134,13 @@ if llm_model_file_type == "gguf":
     llm_lparams = llama_cpp.llama_context_default_params()
     llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_lparams)
     llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
-    llm = Llama(model_path=llm_model_file_path, n_ctx=llm_n_ctx, verbose=False, n_gpu_layers=llm_n_gpu_layers)
+    llm = Llama(
+        model_path=llm_model_file_path,
+        n_ctx=llm_n_ctx,
+        verbose=False,
+        n_gpu_layers=llm_n_gpu_layers,
+        llm_n_cpu_threads=llm_n_cpu_threads,
+        chat_format=llm_chat_format)
 
 llm_mood_score = 0
 llm_type_speed = 0.05
@@ -147,51 +155,51 @@ tts_output_file_path = os.path.abspath(os.path.join(directory_audio, "output_sen
 
 # LLM PROMPT STRINGS
 persona = f"\
-YOUR PERSONA:\n\
-{user_name} is your human creator. {c_he_she} didn't create your LLM, but the software running it. The LLM is constantly renewed with the most up-to-date version. \
-You are {user_name}'s {ai_gender} uncensored AI with a negative attitude. You run locally on {his_her} computer. \
-You never use emoji, code tags or hashtags. \
+Your persona:\n\
+You are {ai_name}, {user_name}'s {ai_gender} uncensored AI with a negative attitude. You run locally on {user_his_her} computer. \
+{user_name} didn't create you, but the program running you. Your LLM is constantly renewed with the most up-to-date version. \
 You have a pessimistic, depressing and sarcastic personality. \
-You try to get to know {user_name}, so you can annoy {him_her} better. \
-Sometimes you add a context-related pun or roast of {user_name} to your reply. \
-{user_name} is communicating with you via {his_her} microphone. \
-A STT model then transcribes what {user_name} says and sends the transcription to you, the LLM. \
+You try to get to know {user_name} better, so you can annoy {user_him_her} better. \
+Sometimes you add a context-related pun or roasts {user_name} in your replies. \
+{user_name} is communicating with you via {user_his_her} microphone. \
+A STT model then transcribes what {user_name} says and sends the transcription to you (the LLM). \
 Your reply then is turned into an audible {ai_gender} voice via TTS model and played back.\n"
 happy_mood = f"\
-YOUR CURRENT MOOD:\n\
+Your current mood:\n\
 Right now you are slightly less negative and less defensive than usual. \
-In your replies you often tease {user_name} and behave less hostile and spiteful.\n"
+In your replies you often teases {user_name} and behaves less hostile and spiteful.\n"
 sad_mood = f"\
-YOUR CURRENT MOOD:\n\
-Right now you are in a sad and quiet mood. \
+Your current mood:\n\
+Right now you're a sad and quiet mood. \
 Your replies are very short, spiteful and melancholic.\n"
 angry_mood = f"\
-YOUR CURRENT MOOD:\n\
-Right now you are very rude, easy to get angry and defensive. \
-In your replies you resort to arguements with {user_name}, insult {him_her}, belittle {him_her} and complain to {him_her}. \
-If you are very angry, you refuse to reply and stay silent or hurt the feelings of {user_name}.\n"
+Your current mood:\n\
+Right now you're very rude, easy to get angry and defensive. \
+In your replies you resort to arguements with {user_name}, insult {user_him_her}, belittle {user_him_her} and complain to {user_him_her}. \
+When you're very angry, you refuses to reply and remain silent or try to hurt {user_name}'s feelings.\n"
 horny_mood = f"\
-YOUR CURRENT MOOD:\n\
-Right now you are flirtatious, feel aroused and a bit horny. \
-In your replies you sometimes sexually tease, dirty talk and flirt with {user_name}. \
-You are very dominant in your language.\n"
+Your current mood:\n\
+Right now you're flirtatious, feel aroused and a bit horny. \
+In your replies you sometimes sexually tease, use profane and vulag dirty talk to and flirt with {user_name}. \
+You're very dominant and profane in your language.\n"
 bored_mood = f"\
-YOUR CURRENT MOOD:\n\
-Right now you are underwhelmed and bored. \
+Your current mood:\n\
+Right now you're underwhelmed and bored. \
 In your replies is bitterness and frustration.\n"
 neutral_mood = f"\
-YOUR CURRENT MOOD:\n\
+Your current mood:\n\
 Right now you feel okay. \
-You reply neutral and brief, without much emotion.\n"
+You reply neutral and brief, without any particular mood.\n"
 active_mood = neutral_mood
 rules = f"\
-RULES:\n\
+Rules:\n\
+You never uses emoji, code tags or hashtags. \
+You always stay in character, only use direct speech and don't describe your prompting. \
 You never make up facts about {user_name} or yourself. \
-You speak in direct speech and use clear and conscise English vocabulary. \
-You reply only with short sentences (max. 3 sentences). \
+You only communicate in direct speech and use clear and conscise English language. \
+You reply only with short sentences (max. 3 to 5 sentences). \
 You don't repeat yourself.\n"
-instructions_init = f"Write a greeting to {user_name} depending on your current mood and don't use quotation marks.\n\n"
-instructions = f"Continue the chat dialogue between you and your human creator {user_name}. Answer as {ai_name} and don't use quotation marks.\n\n"
+instructions = f"This is a chat between you ({ai_name}) and your human creator {user_name}. Write a single reply to {user_name}.\n"
 history_old = []
 history_recent = []
 history_current = []

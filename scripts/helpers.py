@@ -12,7 +12,7 @@ classifier_sentiment = pipeline("sentiment-analysis", model=vars.sa_model_path, 
 def setup_user_name():
     subprocess.call('cls', shell=True)
     print()
-    print(Fore.YELLOW + "====================================================================")
+    print(Fore.MAGENTA + "====================================================================")
     print("\n     _      ___               _         _                     _   ")
     print("    / \    |_ _|  ___   ___  (_)  ___  | |_    __ _   _ __   | |_ ")
     print("   / _ \    | |  / __| / __| | | / __| | __|  / _` | | '_ \  | __|")
@@ -98,7 +98,7 @@ def generate_file_path(filetype):
     return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
 def split_reply_to_chunks(message):
-    chunk_pattern = r'(?<=[.!?,-](?!\w))+(?:\s|,)+'
+    chunk_pattern = r'(?<=[.!?:-](?!\w))+'
     chunks = re.split(chunk_pattern, message)
     chunks = [chunk.strip() for chunk in re.split(chunk_pattern, message) if chunk.strip()]
     if vars.verbose_tts:
@@ -112,11 +112,6 @@ def split_message_to_sentences(message):
     if vars.verbose_tts:
         print(sentences)
     return sentences
-
-def remove_code_snippets(string):
-    pattern = r'```[\s\S]*?```'
-    clean_text = re.sub(pattern, '', string)
-    return clean_text
 
 def extract_date_from_filename(filename):
     date_str = filename.split('_')[1].split('.')[0]
@@ -147,7 +142,7 @@ def memory_to_history(json_f, token_budget):
                 }
 
                 # Append the single message entry to your list variable
-                token_length = get_token_count(build_message_title(message[speaker], message[timestamp]) + build_message_body(message[text]))
+                token_length = get_token_count(build_message_title(speaker, timestamp) + build_message_body(text))
                 if token_budget >= token_length:  
                     message_list.append(message)
                 token_budget = token_budget - token_length
@@ -186,6 +181,10 @@ def memory_to_history(json_f, token_budget):
     return message_list
 
 def filter_text(input_text):
+    
+    input_text = ''.join(input_text)
+    input_text = input_text.strip() 
+    
     # Define regular expressions to match emojis and *wink*
     emoji_pattern = re.compile("["
                                u"\U0001F600-\U0001F64F"  # Emojis
@@ -221,6 +220,12 @@ def filter_text(input_text):
     filtered_text = filtered_text.replace("…", "...")
     # Remove single asterisks
     filtered_text = filtered_text.replace("*", "")
+    # Too much love isn't healthy
+    filtered_text = filtered_text.replace("<3", "I love you!")
+    # Replace HTML break line tag with string break line.
+    filtered_text = filtered_text.replace("<br>", "\n")
+    # Remove EOS Token
+    filtered_text = filtered_text.replace(vars.eos_token,"")
     
     return filtered_text
 
@@ -322,35 +327,31 @@ def construct_message(speaker, text, timestamp):
     message = build_message_title(speaker, timestamp) + build_message_body(text)
     return message
 
-def build_title_for_LLM_prompt():
-    title = f'(Current Date: {get_current_date()})\n'
-    return title
+def build_system_prompt():
+    system_prompt = vars.persona + vars.active_mood + vars.rules + vars.instructions
+    return system_prompt
 
-def build_body_for_LLM_prompt():
-    body = vars.persona + vars.active_mood + vars.rules + vars.instructions + populate_history() + vars.between_messages + build_message_title(vars.ai_name, get_current_time()) + "\n"
-    return body
-
-def construct_prompt_for_LLM():
-    prompt = build_title_for_LLM_prompt() + build_body_for_LLM_prompt()
-    return prompt
+def build_user_prompt():
+    user_prompt = populate_history() + vars.eos_token + "\n" + build_message_title(vars.ai_name, get_current_time()) + "\n"
+    return user_prompt
 
 # LLM HISTORY
 def populate_history():
     temp_history = ""
     if vars.history_old != []:
-        temp_history = temp_history + 'YOUR MEMORIES FROM A OLD CONVERSATION:\n\n'
+        temp_history = temp_history + 'Your memories from an old conversation:\n\n'
     
         for entry in vars.history_old:
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
         
     if vars.history_recent != []:
-        temp_history = temp_history + 'YOUR MEMORIES FROM A RECENT CONVERSATION:\n\n'
+        temp_history = temp_history + 'Your memories from a recent conversation:\n\n'
     
         for entry in vars.history_recent:
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
                 
     if vars.history_current != []:
-        temp_history = temp_history + 'YOUR MEMORIES FROM THE CONVERSATION TODAY:\n\n'
+        temp_history = temp_history + 'Your memories from todays conversation:\n\n'
     
         for entry in vars.history_current:
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
@@ -358,7 +359,7 @@ def populate_history():
     return temp_history
 
 def trim_chat_history():
-    total_tokens = get_token_count(construct_prompt_for_LLM())
+    total_tokens = get_token_count(build_system_prompt() + build_user_prompt())
 
     while total_tokens >= vars.llm_n_ctx:
         last_entry_tokens = vars.history_current[0]['token_length']
@@ -489,7 +490,7 @@ def build_memory():
         random_recent_file = random.choice(recent_files)
 
     # Check available Token count
-    token_used = get_token_count(construct_prompt_for_LLM() + vars.instructions_init + f"{vars.ai_name}:")
+    token_used = get_token_count(build_system_prompt() + build_user_prompt())
     token_budget = vars.llm_n_ctx - token_used
     today_budget = (token_budget * 80) / 100
     recent_budget = (token_budget * 15) / 100

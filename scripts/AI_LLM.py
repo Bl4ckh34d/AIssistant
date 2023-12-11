@@ -1,20 +1,61 @@
-import AI_TTS, re
-import variables as vars, helpers as help
+import re, threading, queue, os, sys
+import soundfile as sf, sounddevice as sd, variables as vars, helpers as help
+from TTS.api import TTS
 from colorama import Fore, Back, Style, init
 
 # Initialize colorama
 init()
 
-def write_conversation(sender, message, timestamp):    
+# Initialize TTS
+tts = TTS(model_path=vars.tts_model_file_path, config_path=vars.tts_model_config_file_path, progress_bar=False).to("cuda")
+os.environ["TOKENIZERS_PARALLELISM"] = "True"
+
+# Queue for managing playback
+playback_queue = queue.Queue()
+playback_lock = threading.Lock()  # Lock for synchronization
+
+def play_audio_from_queue():
+    while True:
+        audio_file = playback_queue.get()
+        data, fs = sf.read(audio_file)
+        
+        with playback_lock:  # Acquire the lock
+            sd.play(data, fs, device=vars.AUDIO_OUTPUT_DEVICE_ID)
+            sd.wait()
+            os.remove(audio_file)
+            playback_queue.task_done()
+
+def invoke_text_to_speech(message):
+    sentence_array = help.split_reply_to_chunks(message)
+
+    for index, sentence in enumerate(sentence_array, start=1):
+        file_path = f"{vars.tts_output_file_path}{index}.wav"
+        
+        if not vars.verbose_tts:
+            sys.stdout = open(os.devnull, 'w')
+            
+        tts.tts_to_file(text=sentence, file_path=file_path, gpu=True)
+
+        if not vars.verbose_tts:
+            sys.stdout = sys.__stdout__
+            
+        playback_queue.put(file_path)
+
+playback_thread = threading.Thread(target=play_audio_from_queue)
+playback_thread.daemon = True
+playback_thread.start()
+
+
+def write_conversation(sender, message, timestamp): 
     write_to_file(sender, message, timestamp)
     write_to_history(sender, message)
     help.write_to_longterm_memory(sender, message)
-    help.trim_chat_history() 
-    print_to_console(sender, message, timestamp)
+    help.trim_chat_history()
+    #print_to_console(sender, timestamp, message)
 
 def write_to_file(sender, message, timestamp):
     with open(help.generate_file_path("txt"), 'a', encoding="utf-8") as file:
-        file.write(f"{help.construct_message(sender, message, timestamp)}\n\n")
+        file.write(f"{help.construct_message(sender, message, timestamp)}")
         
 def write_to_history(sender, text):    
     message = {
@@ -25,66 +66,93 @@ def write_to_history(sender, text):
     
     vars.history_current.append(message)
 
-def print_to_console(sender, message, timestamp):
+def print_to_console(sender, timestamp, message=None):
     print("====================================================================")
-    if sender == vars.ai_name:
-        print(Fore.YELLOW + f"{sender} " + Style.RESET_ALL + f"({timestamp})\n" + message)
+    if message:
+        print(Fore.YELLOW + f"{vars.user_name} " + Style.RESET_ALL + f"({timestamp})\n" + message)
+        print()
     else:
-        print(Fore.GREEN + f"{sender} " + Style.RESET_ALL + f"({timestamp})\n" + message)
-    
+        print(Fore.GREEN + f"{vars.ai_name} " + Style.RESET_ALL + f"({timestamp})")
+        
     if vars.verbose_token:
-        print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(sender, message, timestamp))} ({help.get_token_count(help.construct_prompt_for_LLM())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
+        print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(sender, message, timestamp))} ({help.get_token_count(help.build_system_prompt() + help.build_user_prompt())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
 
 def infer(message, timestamp):
     help.trim_chat_history()
-
+    print_to_console(vars.user_name, timestamp, message)
     write_conversation(vars.user_name, message, timestamp)
     prompt_llm(timestamp)
         
-def prompt_llm(timestamp):
-    prompt = help.construct_prompt_for_LLM()
+def prompt_llm(timestamp):    
+    print_to_console(vars.ai_name, timestamp)
     
     if vars.verbose_history:
         print(Fore.CYAN + "CHAT HISTORY:" + Style.RESET_ALL)
-        print(prompt) 
+        print(help.build_system_prompt() + help.build_user_prompt())
     
-    llm_output = vars.llm(
-        prompt=prompt,
-        echo=False,
-        max_tokens=vars.llm_max_tokens,
-        stop=vars.llm_stop,
-        mirostat_mode=vars.llm_mirostat_mode,
-        mirostat_eta=vars.llm_mirostat_eta,
-        mirostat_tau=vars.llm_mirostat_tau,
+    first_token_processed = False
+    second_token_processed = False
+    punctuation = set([ '?!', '!?', '!', '?', '...', '..', '.', '".', '"!', '"?', '*.', '*!', '*?', '*...'])
+    answer = []
+    sentences = []
+    sentence = ""
+    word = ""
+    
+    for chunk in vars.llm.create_chat_completion(
+        messages = [
+            {
+                "role": "system",
+                "content": help.build_system_prompt()
+            },
+            {
+                "role": "user",
+                "content": help.build_user_prompt()
+            }
+        ],
         temperature=vars.llm_temperature,
         top_p=vars.llm_top_p,
         top_k=vars.llm_top_k,
-        frequency_penalty=vars.llm_frequency_penalty,
+        stream=vars.llm_stream,
+        stop=vars.llm_stop,
+        max_tokens=vars.llm_max_tokens,
         presence_penalty=vars.llm_presence_penalty,
-        repeat_penalty=vars.llm_repeat_penalty
-    )
+        frequency_penalty=vars.llm_frequency_penalty,
+        repeat_penalty=vars.llm_repeat_penalty,
+        tfs_z=vars.llm_tfs_z,
+        mirostat_mode=vars.llm_mirostat_mode,
+        mirostat_eta=vars.llm_mirostat_eta,
+        mirostat_tau=vars.llm_mirostat_tau
+    ):
+        if not first_token_processed:
+            first_token_processed = True
+        elif first_token_processed and not second_token_processed and 'content' in chunk['choices'][0]['delta']:
+            word = chunk['choices'][0]['delta']['content'].lstrip()
+            print(word, end="", flush=True)
+            second_token_processed = True
+        elif first_token_processed and second_token_processed and 'content' in chunk['choices'][0]['delta']:
+            word = chunk['choices'][0]['delta']['content']
+            print(word, end="", flush=True)
+
+        if first_token_processed:
+            sentence += word
+
+        if first_token_processed and second_token_processed and 'content' in chunk['choices'][0]['delta'] and chunk['choices'][0]['delta']['content'] in punctuation:
+            sentences.append(sentence)
+            sentence = ""
         
-    answer = llm_output["choices"][0]["text"]
-    
-    if answer is None:
+    if sentences is None:
         print(Fore.CYAN + f"{vars.ai_name} refuses to reply." + Style.RESET_ALL)
+    else:
+        print()
+        
+        # CLEAN THE TEXT UP
+        sentences = help.filter_text(sentences)
+        
+        # SENTIMENT ANALYSIS
+        help.sentiment_calculation(sentences)
     
-    # CLEANING UP RESULT
-    joined_reply = ''.join(answer)
-    cleaned_reply = joined_reply.strip() 
+        # SAVING RESPONSE MESSAGE TO LOG FILE
+        write_conversation(vars.ai_name, sentences, timestamp)
+        
     
-    # SENTIMENT ANALYSIS
-    help.sentiment_calculation(cleaned_reply)
-    
-    # SAVING RESPONSE MESSAGE TO LOG FILE
-    write_conversation(vars.ai_name, cleaned_reply, timestamp)
-    
-    # REMOVE CODE SNIPPETS BEFORE TTS
-    final_reply = help.remove_code_snippets(cleaned_reply)
-    
-    # CLEARING OUT EMOJIS, PARENTHESE, ASTERISKS, ETC.
-    final_reply = re.sub(r'[^\x00-\x7F]+', '', final_reply)
-    final_reply = help.filter_text(final_reply)
-    
-    # INVOKING TEXT2SPEECH FOR RESPONSE MESSAGE
-    AI_TTS.invoke_text_to_speech(final_reply)
+    invoke_text_to_speech(sentences)

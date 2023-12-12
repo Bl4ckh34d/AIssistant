@@ -47,30 +47,16 @@ playback_thread.start()
 
 
 def write_conversation(sender, message, timestamp): 
-    write_to_file(sender, message, timestamp)
-    write_to_history(sender, message)
-    help.write_to_longterm_memory(sender, message)
+    help.write_to_file(sender, message, timestamp)
+    help.write_to_current_chat_history(sender, message)
+    help.write_to_json(sender, message)
     help.trim_chat_history()
-    #print_to_console(sender, timestamp, message)
-
-def write_to_file(sender, message, timestamp):
-    with open(help.generate_file_path("txt"), 'a', encoding="utf-8") as file:
-        file.write(f"{help.construct_message(sender, message, timestamp)}")
-        
-def write_to_history(sender, text):    
-    message = {
-        'speaker': sender,
-        'text': text,
-        'timestamp': f"{help.get_current_time()}"
-    }
-    
-    vars.history_current.append(message)
 
 def print_to_console(sender, timestamp, message=None):
     print("====================================================================")
     if message:
         print(Fore.YELLOW + f"{vars.user_name} " + Style.RESET_ALL + f"({timestamp})\n" + message)
-        print()
+
     else:
         print(Fore.GREEN + f"{vars.ai_name} " + Style.RESET_ALL + f"({timestamp})")
         
@@ -78,37 +64,35 @@ def print_to_console(sender, timestamp, message=None):
         print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(sender, message, timestamp))} ({help.get_token_count(help.build_system_prompt() + help.build_user_prompt())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
 
 def infer(message, timestamp):
-    help.trim_chat_history()
+    help.trim_chat_history()    
     print_to_console(vars.user_name, timestamp, message)
     write_conversation(vars.user_name, message, timestamp)
     prompt_llm(timestamp)
         
 def prompt_llm(timestamp):    
+    
     print_to_console(vars.ai_name, timestamp)
     
+    messages = []
+    messages.extend(help.build_system_prompt_with_objects())
+    messages.extend(help.build_user_prompt_with_objects())
+    
     if vars.verbose_history:
-        print(Fore.CYAN + "CHAT HISTORY:" + Style.RESET_ALL)
+        print(Fore.CYAN + "CHAT HISTORY AS TEXT:" + Style.RESET_ALL)
         print(help.build_system_prompt() + help.build_user_prompt())
+        print()
+        print(Fore.CYAN + "CHAT HISTORY AS OBJECT:" + Style.RESET_ALL)
+        print(messages)
+        print()
     
     first_token_processed = False
     second_token_processed = False
-    punctuation = set([ '?!', '!?', '!', '?', '...', '..', '.', '".', '"!', '"?', '*.', '*!', '*?', '*...'])
-    answer = []
-    sentences = []
-    sentence = ""
-    word = ""
-    
+    reply = ""
+    char = ""
+    char_array = []
+        
     for chunk in vars.llm.create_chat_completion(
-        messages = [
-            {
-                "role": "system",
-                "content": help.build_system_prompt()
-            },
-            {
-                "role": "user",
-                "content": help.build_user_prompt()
-            }
-        ],
+        messages = messages,
         temperature=vars.llm_temperature,
         top_p=vars.llm_top_p,
         top_k=vars.llm_top_k,
@@ -126,33 +110,27 @@ def prompt_llm(timestamp):
         if not first_token_processed:
             first_token_processed = True
         elif first_token_processed and not second_token_processed and 'content' in chunk['choices'][0]['delta']:
-            word = chunk['choices'][0]['delta']['content'].lstrip()
-            print(word, end="", flush=True)
+            char = chunk['choices'][0]['delta']['content'].lstrip()
+            print(char, end="", flush=True)
             second_token_processed = True
         elif first_token_processed and second_token_processed and 'content' in chunk['choices'][0]['delta']:
-            word = chunk['choices'][0]['delta']['content']
-            print(word, end="", flush=True)
+            char = chunk['choices'][0]['delta']['content']
+            print(char, end="", flush=True)
 
         if first_token_processed:
-            sentence += word
-
-        if first_token_processed and second_token_processed and 'content' in chunk['choices'][0]['delta'] and chunk['choices'][0]['delta']['content'] in punctuation:
-            sentences.append(sentence)
-            sentence = ""
+            reply += char
+            char_array.append(char)
         
-    if sentences is None:
+    if reply is None:
         print(Fore.CYAN + f"{vars.ai_name} refuses to reply." + Style.RESET_ALL)
     else:
         print()
         
-        # CLEAN THE TEXT UP
-        sentences = help.filter_text(sentences)
+        reply = help.filter_text(reply)
         
-        # SENTIMENT ANALYSIS
-        help.sentiment_calculation(sentences)
-    
-        # SAVING RESPONSE MESSAGE TO LOG FILE
-        write_conversation(vars.ai_name, sentences, timestamp)
+        write_conversation(vars.ai_name, reply, timestamp)
+                
+        invoke_text_to_speech(reply)
         
-    
-    invoke_text_to_speech(sentences)
+        help.sentiment_calculation(reply)
+        

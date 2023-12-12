@@ -6,19 +6,17 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - Shortterm-Memory should clean itself before reaching the token maximum
 
 ## NOTICE!:
-- I created this for myself in a private capacity and not for commercial use. It is not well tested, nor professionally built.
+- I created this for myself in a private capacity and not for commercial use. It is not well tested, nor professionally built and the model prompt is TOXIC!
 - This is WIP and might not work as expected.
-- Adjust the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/7342fec6f59e6040060eecaa5918d691024810bd/scripts/variables.py#L118). Run [device_test.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/device_test.py) to see the IDs of your audio devices.
 - Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence.
-- Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine. The users transcribed voice input is used for this.
-This way it was more reliable to trigger functions and also much faster than waiting for the LLM to reply.
+- Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine. The users transcribed voice input is used for this. This way it is more reliable to trigger functions and also faster than waiting for the LLM to get it right.
 - If you really wish for the LLM to be responsible for executing the commands, simply trigger the responsible function using the LLM response as argument. But you will have to instruct the LLM to answer in a certain way to your requests so it triggers the execution of the tasks. I changed this
 to the voice input of the user because this method was very unreliable. Possibly this will be changed back to the LLM once models become more reliable and consistent.
 
 The whole system is setup to work with VirtualCable and VRTuber if you wish for a little AI avatar that animates its mouth to the TTS output. In VRTuber you also need to setup the virtual microphone and possibly change the ID for the virtual audio device in the [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/f00a99d99926e7cfc207a599556aefc3d43c634d/scripts/variables.py#L155). Run [device_test.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/device_test.py) to see the IDs of your audio devices.
 
 ## USAGE:
-First you might want to adjust the user_name and ai_name, ai_gender, the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
+First you might want to adjust the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
 
 ```Start AIssistant.bat```
 
@@ -48,19 +46,20 @@ VSC, PureRef, Audacity, Blender, Stable Diffusion, Calculator, System Settings
 
 ## TODO:
 - Sentiment Score of LLM seems to not work as expected, need to revisit
-- Including date and time into chat history .json
 - Browser extensions (Chrome and Firefox) for remote control through LLM
 - Implement Youtube API / Google API / ChatGPT API
 - Include an easy option to turn the LLM reply on and off
-- Continue recording the user input and transcribing sentence by sentence. When sending these chunks to the LLM, collect them temporarily until the LLM finished replying.
-All this in parallel with the TTS, which currently blocks the whole loop until it is done speaking.
-- Possibly integrate Open Interpreter and ditch my own execution code completely, if OI integrates well into this program.
+- Possibly integrate Open Interpreter and ditch my own code execution completely at some point, if OI integrates well into this.
+- Since I don't use LangChain but rather built my own Longterm Memory System, I still need to implement the following things:
+  - Once a json-Log is finished (current date =/= log date), and thie file is selected randomly to be in the memory, the LLM should add a summary of the conversation to the file. (skip this step if the summary is already in there).
+- Writing a scraper for search engines, wikipedia, weather forecast, etc. or giving the LLM API access to services for current information.
+- Getting a embedding model (maybe sentence-transformers/all-MiniLM-L6-v2) to process outside information from Vector Index (pinecone-like but locally?) + embedding dataset
 
 ## REQUIREMENTS:
 Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
 
-Conda:
+Miniconda:
 - https://docs.conda.io/projects/miniconda/en/latest/ is where you can find the current version of conda. THIS IS REQUIRED for the following install script. Paths also need to be adapted for your environment:
 
 
@@ -72,10 +71,10 @@ Adjust the install_path in the following code snipet and copy and paste it into 
 conda create -p D:\AI\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
 conda activate D:\AI\env
 
+#Obsolete
 #conda create -p D:\AI\env python=3.10.11
 #pip install torch -f https://download.pytorch.org/whl/torch_stable.html
 #conda install -c nvidia cuda-python=11.8
-
 
 # LLM
 conda install -c "nvidia/label/cuda-12.2.2" cuda-toolkit
@@ -103,8 +102,8 @@ pip install pygetwindow pywin32 pyautogui keyboard
 *Models I used for testing:*
 
 LLM:
-- https://huggingface.co/TheBloke/dolphin-2.1-mistral-7B-GGUF/resolve/main/dolphin-2.1-mistral-7b.Q4_K_M.gguf
-- https://huggingface.co/TheBloke/dolphin-2.1-mistral-7B-GGUF/resolve/main/config.json
+- https://huggingface.co/TheBloke/Starling-LM-7B-alpha-GGUF/blob/main/starling-lm-7b-alpha.Q4_K_M.gguf
+- https://huggingface.co/TheBloke/Starling-LM-7B-alpha-GGUF/blob/main/config.json
 
 SA:
 - https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/tree/main
@@ -115,5 +114,5 @@ STT:
 TTS:
 - tts_models--en--jenny--jenny (should download automatically once started)
 
-## If you enjoy what I make, consider buying me a coffee for all these sleepless nights coding away :)
+## If you enjoy what I make, consider buying me a coffee for all these sleepless nights coding away (:
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/danielbenew)

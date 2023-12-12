@@ -20,12 +20,36 @@ def setup_user_name():
     print(" /_/   \_\ |___| |___/ |___/ |_| |___/  \__|  \__,_| |_| |_|  \__|\n")
     print("====================================================================" + Style.RESET_ALL)
     print()
-    name = input("Enter your " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + ": ")
-    if name != "" and name != " ":
-        vars.user_name = name
-    
+    user_name = input("Enter your " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + ": ")
+    if user_name != "" and user_name != " ":
+        vars.user_name = user_name
+    print()
+def setup_user_gender():
+    print("Select your " + Fore.MAGENTA + "GENDER" + Style.RESET_ALL + ". Currently only male or female are supported.")
+    user_gender = input("Enter '1' for " + Fore.MAGENTA + "Male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "Female" + Style.RESET_ALL + ": ")
+    if user_gender == "1":
+        vars.user_gender = 'male'
+    elif user_gender == "2":
+        vars.user_gender = 'female'
+    else:
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + "female" + Style.RESET_ALL + ")")
+    print()
+def setup_ai_name():
+    ai_name = input("Enter the " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + " of your AIssistant: ")
+    if ai_name != "" and ai_name != " ":
+        vars.ai_name = ai_name
+    print()
+def setup_ai_gender():
+    print("Select the " + Fore.MAGENTA + "GENDER" + Style.RESET_ALL + " of your AIssistant. Currently only male or female are supported.")
+    ai_gender = input("Enter '1' for " + Fore.MAGENTA + "Male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "Female" + Style.RESET_ALL + ": ")
+    if ai_gender == "1":
+        vars.ai_gender = 'male'
+    elif ai_gender == "2":
+        vars.ai_gender = 'female'
+    else:
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + "female" + Style.RESET_ALL + ")")
     subprocess.call('cls', shell=True)
-
+    
 def setup_audio_input():
     print(Fore.MAGENTA + "\nAvailable Audio Input Devices:" + Style.RESET_ALL)
     print()
@@ -68,6 +92,7 @@ def setup_audio_output():
     
     subprocess.call('cls', shell=True)
 
+# UTILITY
 def get_token_count(text):
     if vars.llm_model_file_type == "gguf":
         text = text.encode('utf-8')
@@ -98,7 +123,7 @@ def generate_file_path(filetype):
     return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
 def split_reply_to_chunks(message):
-    chunk_pattern = r'(?<=[.!?:-](?!\w))+'
+    chunk_pattern = r'[.!?;\'",\u2026\u2014](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
     chunks = re.split(chunk_pattern, message)
     chunks = [chunk.strip() for chunk in re.split(chunk_pattern, message) if chunk.strip()]
     if vars.verbose_tts:
@@ -117,8 +142,31 @@ def extract_date_from_filename(filename):
     date_str = filename.split('_')[1].split('.')[0]
     return datetime.datetime.strptime(date_str, '%Y-%m-%d')
 
-def memory_to_history(json_f, token_budget):
-    message_list = []
+def write_to_file(sender, message, timestamp):
+    with open(generate_file_path("txt"), 'a', encoding="utf-8") as file:
+        file.write(f"{construct_message(sender, message, timestamp)}")
+        
+def write_to_current_chat_history(sender, text):
+    
+    if sender == vars.user_name:
+        role = 'user'
+    elif sender == vars.ai_name:
+        role = 'assistant'
+    else:
+        role = 'system'
+        
+    message = {
+        'role': role,
+        'speaker': sender,
+        'text': text,
+        "token": get_token_count(f"{sender}: {text}"),
+        'timestamp': f"{get_current_time()}"
+    }
+    
+    vars.history_current.append(message)
+
+def json_to_current_chat_history(json_f, token_budget):
+    messages = []
 
     # Read the JSON file
     with open(json_f, 'r') as json_file:
@@ -126,106 +174,145 @@ def memory_to_history(json_f, token_budget):
                  
     for entry in data:
         if token_budget > 0:
+
             messages = entry['message']
 
-            # Check if there's only one message in this entry
-            if len(messages) == 1:
-                speaker = messages[0]['speaker']
-                text = messages[0]['text']
-                timestamp = messages[0]['timestamp']
+            role =  messages[0]['role']
+            speaker = messages[0]['speaker']
+            text = messages[0]['text']
+            token = messages[0]['token']
+            timestamp = messages[0]['timestamp']
 
-                # Create a message dictionary for the single message
-                message = {
-                    'speaker': speaker,
-                    'text': text,
-                    'timestamp': timestamp
-                }
+            # Create a message dictionary for the message
+            message = {
+                'role': role,
+                'speaker': speaker,
+                'text': text,
+                'token': token,
+                'timestamp': timestamp
+            }
 
-                # Append the single message entry to your list variable
-                token_length = get_token_count(build_message_title(speaker, timestamp) + build_message_body(text))
-                if token_budget >= token_length:  
-                    message_list.append(message)
-                token_budget = token_budget - token_length
-            else:
-                # Assuming there are always two messages when there's more than one
-                for i in range(0, len(messages), 2):
-                    speaker1 = messages[i]['speaker']
-                    text1 = messages[i]['text']
-                    timestamp1 = messages[i]['timestamp']
-                    token_length1 = get_token_count(build_message_title(speaker1, timestamp1) + build_message_body(text1))
-                    
-                    speaker2 = messages[i + 1]['speaker']
-                    text2 = messages[i + 1]['text']
-                    timestamp2 = messages[i + 1]['timestamp']
-                    token_length2 = get_token_count(build_message_title(speaker2, timestamp2) + build_message_body(text2))
-                    
-                    # Create message dictionaries for both pairs
-                    
-                    token_length = token_length1 + token_length2
-                    if token_budget >= token_length:                      
-                        message = {
-                            'speaker': speaker1,
-                            'text': text1,
-                            'timestamp': timestamp1
-                        }
-                        message_list.append(message)
-                        
-                        message = {
-                            'speaker': speaker2,
-                            'text': text2,
-                            'timestamp': timestamp2
-                        }
-                        message_list.append(message)
-                    token_budget = token_budget - token_length
+            # Append message entry to messages
+            token_length = get_token_count(build_message_title(speaker, timestamp) + build_message_body(text))
+            if token_budget >= token_length:  
+                messages.append(message)
+            token_budget = token_budget - token_length
 
-    return message_list
+    return messages
 
-def filter_text(input_text):
+def replace_acronym(match):
     
-    input_text = ''.join(input_text)
-    input_text = input_text.strip() 
+    phonetic_mapping = {
+        'A': 'aigh ',
+        'B': 'bee ',
+        'C': 'see ',
+        'D': 'dee ',
+        'E': 'eeh ',
+        'F': 'eff ',
+        'G': 'gee ',
+        'H': 'age ',
+        'I': 'aye ',
+        'J': 'jay ',
+        'K': 'kay ',
+        'L': 'el ',
+        'M': 'em ',
+        'N': 'en ',
+        'O': 'ou ',
+        'P': 'pee ',
+        'Q': 'queue ',
+        'R': 'ar ',
+        'S': 'as ',
+        'T': 'tee ',
+        'U': 'you ',
+        'V': 'vee ',
+        'W': 'doubleyou ',
+        'X': 'eggs ',
+        'Y': 'why ',
+        'Z': 'zett ',
+        'a': 'aigh ',
+        'b': 'bee ',
+        'c': 'see ',
+        'd': 'dee ',
+        'e': 'eeh ',
+        'f': 'eff ',
+        'g': 'gee ',
+        'h': 'age ',
+        'i': 'aye ',
+        'j': 'jay ',
+        'k': 'kay ',
+        'l': 'el ',
+        'm': 'em ',
+        'n': 'en ',
+        'o': 'ou ',
+        'p': 'pee ',
+        'q': 'queue ',
+        'r': 'ar ',
+        's': 'as ',
+        't': 'tee ',
+        'u': 'you ',
+        'v': 'vee ',
+        'w': 'doubleyou ',
+        'x': 'eggs ',
+        'y': 'why ',
+        'z': 'zett ',
+        '0': 'zero ',
+        '1': 'one ',
+        '2': 'two ',
+        '3': 'three ',
+        '4': 'four ',
+        '5': 'five ',
+        '6': 'six ',
+        '7': 'seven ',
+        '8': 'eight ',
+        '9': 'nine ',
+        '&': 'and '
+    }
     
-    # Define regular expressions to match emojis and *wink*
-    emoji_pattern = re.compile("["
-                               u"\U0001F600-\U0001F64F"  # Emojis
-                               u"\U0001F300-\U0001F5FF"  # Misc symbols & pictographs
-                               u"\U0001F680-\U0001F6FF"  # Transport & map symbols
-                               u"\U0001F700-\U0001F77F"  # Alchemical symbols
-                               u"\U0001F780-\U0001F7FF"  # Geometric shapes
-                               u"\U0001F800-\U0001F8FF"  # Supplemental symbols & pictographs
-                               "]+", flags=re.UNICODE)
-    # Define a regular expression pattern for smileys
-    smiley_pattern = re.compile(r"(:\)|:\(|;\)|:D|:P|:\||B\)|:-\*|:-O)")    
-    text_in_asterisks_pattern = re.compile(r'\*([^*]+)\*')
-    text_in_parentheses_pattern = re.compile(r'\(([^)]+)\)')
-    hashtag_pattern = re.compile(r'#\w+')
-    http_pattern = re.compile(r'https?://\S+')
-    # Define a regular expression pattern to match consecutive capital letters
-    capital_letters_pattern = re.compile(r'(?<=[a-z])(?=[A-Z])')
+    acronym = match.group(0)
+    return ''.join(phonetic_mapping.get(char, char) for char in acronym)
 
-    # Remove emojis, text in asterisks, and hashtags from the input text
-    filtered_text = emoji_pattern.sub('', input_text)
-    filtered_text = text_in_asterisks_pattern.sub('', filtered_text)
-    filtered_text = text_in_parentheses_pattern.sub('', filtered_text)
-    filtered_text = hashtag_pattern.sub('', filtered_text)
-    filtered_text = http_pattern.sub('', filtered_text)
-    filtered_text = smiley_pattern.sub('-', filtered_text)
-    filtered_text = capital_letters_pattern.sub(' ', filtered_text)
+def filter_text(input_text):   
     
-    # Replace backticks with single quotes
-    filtered_text = filtered_text.replace("`", "\'")
-    filtered_text = filtered_text.replace("`a", "'t")
-    filtered_text = filtered_text.replace("```", "")
-    # Replace ellipsis with full stops
-    filtered_text = filtered_text.replace("…", "...")
-    # Remove single asterisks
-    filtered_text = filtered_text.replace("*", "")
-    # Too much love isn't healthy
-    filtered_text = filtered_text.replace("<3", "I love you!")
-    # Replace HTML break line tag with string break line.
-    filtered_text = filtered_text.replace("<br>", "\n")
-    # Remove EOS Token
-    filtered_text = filtered_text.replace(vars.eos_token,"")
+    everything_pattern = re.compile(r'[^a-zA-Z\s\d.,?!;:\'"&%/\\(){}\[\]=$§"\'+~*#<>|^°-]')
+    smiley_pattern = re.compile(r"(\s:\)|\s:\(|\s;\)|\s:D|\s:P|\s:\||\sB\)|\s:-\*|\s:-O|\s:\/)")
+    
+    acronym_pattern = re.compile(r'\b(?:[A-Z0-9&]*[A-Z]){2,3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){3}[A-Z0-9&]*\b')
+    
+    and_pattern = re.compile(r'&amp;')
+    
+    ellipsis_pattern = re.compile(r'\.{2,}|\u2026')
+    dash_pattern = re.compile(r'[\s.]?\—')
+    hashtag_pattern = re.compile(r'[\s.]?\#')
+    bracket_pattern = re.compile(r'[\s.]?[\(\)]')
+    backtick_pattern = re.compile(r'`(\s*[^`]|[^`])')
+    asterisk_pattern = re.compile(r'\*+')
+    heart_pattern = re.compile(r'\s*<3+\s*')
+    br_pattern = re.compile(r'\s*<br>\s*')
+    eos_token_pattern = re.compile(r'\s*' + vars.eos_token + r'\s*')
+    comma_after_punctuation_pattern = re.compile(r'(?<=[.!?;,:])\s*,')
+    
+    filtered_text = everything_pattern.sub('', input_text)
+    filtered_text = smiley_pattern.sub('', filtered_text)
+    
+    # Check if the input consists solely of acronyms
+    if acronym_pattern.fullmatch(input_text):
+        return ' '.join(replace_acronym(match) for match in acronym_pattern.finditer(input_text))
+    else:
+        filtered_text = acronym_pattern.sub(replace_acronym, filtered_text)
+    
+    filtered_text = and_pattern.sub('&', filtered_text)
+    filtered_text = ellipsis_pattern.sub('.', filtered_text)
+    filtered_text = dash_pattern.sub('-', filtered_text)
+    filtered_text = hashtag_pattern.sub('Hashtag', filtered_text)
+    filtered_text = bracket_pattern.sub('', filtered_text)
+    filtered_text = backtick_pattern.sub("'", filtered_text)
+    filtered_text = asterisk_pattern.sub('', filtered_text)
+    filtered_text = heart_pattern.sub("I love you!", filtered_text)
+    filtered_text = br_pattern.sub("\n", filtered_text)
+    filtered_text = eos_token_pattern.sub("\n", filtered_text)
+    filtered_text = comma_after_punctuation_pattern.sub('', filtered_text)
+    
+    #filtered_text = filtered_text.replace("```", "")
     
     return filtered_text
 
@@ -318,7 +405,7 @@ def swap_persona():
 def build_message_title(speaker, timestamp):
     title = f"{speaker} ({timestamp})\n"
     return title
-    
+
 def build_message_body(text):
     body = f"{text}\n\n"
     return body
@@ -327,13 +414,47 @@ def construct_message(speaker, text, timestamp):
     message = build_message_title(speaker, timestamp) + build_message_body(text)
     return message
 
+def construct_message_with_objects(speaker, text, timestamp):
+    message = [
+            {
+                'role':'system',
+                'content':f'{speaker} ({timestamp})\n'
+            },
+            {
+                'role':f'{speaker}',
+                'content':f'{text}\n\n'
+            }        
+        ]
+    return message
+
 def build_system_prompt():
     system_prompt = vars.persona + vars.active_mood + vars.rules + vars.instructions
     return system_prompt
 
+def build_system_prompt_with_objects():
+    message = [
+        {
+            'role':'system',
+            'content':vars.persona + vars.active_mood + vars.rules + vars.instructions
+        }
+    ]
+    return message
+
 def build_user_prompt():
-    user_prompt = populate_history() + vars.eos_token + "\n" + build_message_title(vars.ai_name, get_current_time()) + "\n"
+    user_prompt = populate_history() + "\n" + build_message_title(vars.ai_name, get_current_time()) + "\n"
     return user_prompt
+
+def build_user_prompt_with_objects():
+    messages = []
+    message = [
+        {
+            'role':'system',
+            'content':f'{vars.ai_name} ({get_current_time()})\n'
+        }
+    ]
+    messages.extend(populate_history_with_objects())
+    messages.extend(message)
+    return messages
 
 # LLM HISTORY
 def populate_history():
@@ -351,11 +472,91 @@ def populate_history():
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
                 
     if vars.history_current != []:
-        temp_history = temp_history + 'Your memories from todays conversation:\n\n'
+        if len(vars.history_current) > 1:
+            temp_history = temp_history + 'Your memories from todays conversation:\n\n'
     
         for entry in vars.history_current:
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
-    
+    return temp_history
+
+def populate_history_with_objects():
+    temp_history = []
+    if vars.history_old != []:
+        message = [
+            {
+                'role':'system',
+                'content':'Your memories from an old conversation:\n\n'
+            }
+        ]
+        temp_history.extend(message)
+        
+        for entry in vars.history_old:
+            message = [
+                {
+                    'role':'system',
+                    'content':f'{entry["speaker"]} ({get_current_time()})\n'
+                }
+            ]
+            temp_history.extend(message)
+            message = [
+                {
+                    'role':entry['role'],
+                    'content':entry['text']
+                }
+            ]
+            temp_history.extend(message)
+            
+    if vars.history_recent != []:
+        message = [
+            {
+                'role':'system',
+                'content':f'{entry["speaker"]} ({get_current_time()})\n'
+            }
+        ]
+        temp_history.extend(message)
+        message = [
+            {
+                'role':'system',
+                'content':'Your memories from a recent conversation:\n\n'
+            }
+        ]
+        temp_history.extend(message)
+        
+        for entry in vars.history_recent:
+            message = [
+                {
+                    'role':entry['role'],
+                    'content':entry['text']
+                }
+            ]
+            temp_history.extend(message)
+        
+    if vars.history_current != []:
+        if len(vars.history_current) > 1:
+            message = [
+                {
+                    'role':'system',
+                    'content':'Your memories from todays conversation:\n\n'
+                }
+            ]
+            temp_history.extend(message)
+        
+        for entry in vars.history_current:
+            message = [
+                {
+                    'role':'system',
+                    'content':f'{entry["speaker"]} ({get_current_time()})\n'
+                }
+            ]
+            temp_history.extend(message)
+            message = [
+                {
+                    'role':entry['role'],
+                    'content':entry['text']
+                }
+            ]
+            temp_history.extend(message)
+            
     return temp_history
 
 def trim_chat_history():
@@ -417,9 +618,8 @@ def sentiment_calculation(message):
         vars.persona_saved_time = time.time()
         vars.persona_current_change_time = random.randint(vars.persona_min_change_time, vars.persona_max_change_time)
 
-
 # LLM MEMORY
-def write_to_longterm_memory(sender, message):  
+def write_to_json(sender, message):  
     # Load existing chat history (if any)
     try:
         with open(generate_file_path("json"), 'r', encoding='utf-8') as json_file:
@@ -428,26 +628,25 @@ def write_to_longterm_memory(sender, message):
         # If the file doesn't exist, initialize an empty chat history
         memory = []
         
-    # Create a new message block if there's no current block or if the current block belongs to the AI
-    if not memory or memory[-1]['message'][-1]['speaker'] == vars.ai_name:
-        memory.append({
-            "message": [
-                {
-                    "speaker": sender,
-                    "text": message,
-                    "token": get_token_count(f"{sender}: {message}"),
-                    "timestamp": f"{get_current_time()}, {get_current_date()}"
-                }
-            ]
-        })
+    if sender == vars.user_name:
+        role = 'user'
+    elif sender == vars.ai_name:
+        role = 'assistant'
     else:
-        # Append to the existing message block
-        memory[-1]['message'].append({
-            "speaker": sender,
-            "text": message,
-            "token": get_token_count(f"{sender}: {message}"),
-            "timestamp": f"{get_current_time()}, {get_current_date()}"
-        })
+        role = 'system'
+        
+    # Create a new message block
+    memory.append({
+        "message": [
+            {
+                "role": role,
+                "speaker": sender,
+                "text": message,
+                "token": get_token_count(f"{sender}: {message}"),
+                "timestamp": f"{get_current_time()}, {get_current_date()}"
+            }
+        ]
+    })
     
     # Write the updated chat history back to the JSON file
     with open(generate_file_path("json"), 'w', encoding='utf-8') as json_file:
@@ -500,13 +699,13 @@ def build_memory():
 
     # Construct file paths if needed
     if rest_files:
-        mem = memory_to_history(os.path.join(vars.directory_text, random_rest_file), rest_budget)
+        mem = json_to_current_chat_history(os.path.join(vars.directory_text, random_rest_file), rest_budget)
         vars.history_old.extend(mem)
     if recent_files:
-        mem = memory_to_history(os.path.join(vars.directory_text, random_recent_file), recent_budget)
+        mem = json_to_current_chat_history(os.path.join(vars.directory_text, random_recent_file), recent_budget)
         vars.history_recent.extend(mem)
     if today_file:
-        mem = memory_to_history(os.path.join(vars.directory_text, today_file), today_budget)
+        mem = json_to_current_chat_history(os.path.join(vars.directory_text, today_file), today_budget)
         vars.history_current.extend(mem)
         
     trim_chat_history()

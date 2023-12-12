@@ -26,13 +26,13 @@ def setup_user_name():
     print()
 def setup_user_gender():
     print("Select your " + Fore.MAGENTA + "GENDER" + Style.RESET_ALL + ". Currently only male or female are supported.")
-    user_gender = input("Enter '1' for " + Fore.MAGENTA + "Male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "Female" + Style.RESET_ALL + ": ")
+    user_gender = input("Enter '1' for " + Fore.MAGENTA + "male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "female" + Style.RESET_ALL + ": ")
     if user_gender == "1":
         vars.user_gender = 'male'
     elif user_gender == "2":
         vars.user_gender = 'female'
     else:
-        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + "female" + Style.RESET_ALL + ")")
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.user_gender}" + Style.RESET_ALL + ")")
     print()
 def setup_ai_name():
     ai_name = input("Enter the " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + " of your AIssistant: ")
@@ -41,13 +41,13 @@ def setup_ai_name():
     print()
 def setup_ai_gender():
     print("Select the " + Fore.MAGENTA + "GENDER" + Style.RESET_ALL + " of your AIssistant. Currently only male or female are supported.")
-    ai_gender = input("Enter '1' for " + Fore.MAGENTA + "Male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "Female" + Style.RESET_ALL + ": ")
+    ai_gender = input("Enter '1' for " + Fore.MAGENTA + "male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "female" + Style.RESET_ALL + ": ")
     if ai_gender == "1":
         vars.ai_gender = 'male'
     elif ai_gender == "2":
         vars.ai_gender = 'female'
     else:
-        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + "female" + Style.RESET_ALL + ")")
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.ai_gender}" + Style.RESET_ALL + ")")
     subprocess.call('cls', shell=True)
     
 def setup_audio_input():

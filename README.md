@@ -60,7 +60,7 @@ Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
 
 Miniconda:
-- https://docs.conda.io/projects/miniconda/en/latest/ is where you can find the current version of conda. THIS IS REQUIRED for the following install script. Paths also need to be adapted for your environment:
+- https://docs.conda.io/projects/miniconda/en/latest/ is where you can find the current version of conda. THIS IS REQUIRED for the following install script. Paths also need to be adapted for your environment.
 
 
 ## INSTALLATION:

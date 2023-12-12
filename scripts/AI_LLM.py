@@ -54,7 +54,7 @@ def write_conversation(sender, message, timestamp):
 
 def print_to_console(sender, timestamp, message=None):
     print("====================================================================")
-    if message:
+    if sender == vars.user_name:
         print(Fore.YELLOW + f"{vars.user_name} " + Style.RESET_ALL + f"({timestamp})\n" + message)
 
     else:

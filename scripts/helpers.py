@@ -1,4 +1,4 @@
-import datetime, time, llama_cpp, random, re, json, os, psutil, win32gui, win32con, win32process, pyautogui, subprocess, pyaudio
+import datetime, time, llama_cpp, random, re, json, os, psutil, win32gui, win32con, win32process, pyautogui, subprocess, pyaudio, time
 import sounddevice as sd, variables as vars
 from transformers import pipeline
 from colorama import Fore, Back, Style, init
@@ -23,10 +23,13 @@ def setup_user_name():
     user_name = input("Enter your " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + ": ")
     if user_name != "" and user_name != " ":
         vars.user_name = user_name
+    else:
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.user_name}" + Style.RESET_ALL + ")")
     print()
+    
 def setup_user_gender():
     print("Select your " + Fore.MAGENTA + "GENDER" + Style.RESET_ALL + ". Currently only male or female are supported.")
-    user_gender = input("Enter '1' for " + Fore.MAGENTA + "male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "female" + Style.RESET_ALL + ": ")
+    user_gender = input("Enter '1' for " + Fore.MAGENTA + "male" + Style.RESET_ALL + " or '2' for " + Fore.MAGENTA + "female" + Style.RESET_ALL + ": ")
     if user_gender == "1":
         vars.user_gender = 'male'
     elif user_gender == "2":
@@ -34,20 +37,25 @@ def setup_user_gender():
     else:
         print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.user_gender}" + Style.RESET_ALL + ")")
     print()
+    
 def setup_ai_name():
     ai_name = input("Enter the " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + " of your AIssistant: ")
     if ai_name != "" and ai_name != " ":
         vars.ai_name = ai_name
+    else:
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.ai_name}" + Style.RESET_ALL + ")")
     print()
+    
 def setup_ai_gender():
     print("Select the " + Fore.MAGENTA + "GENDER" + Style.RESET_ALL + " of your AIssistant. Currently only male or female are supported.")
-    ai_gender = input("Enter '1' for " + Fore.MAGENTA + "male" + Style.RESET_ALL + " and '2' for " + Fore.MAGENTA + "female" + Style.RESET_ALL + ": ")
+    ai_gender = input("Enter '1' for " + Fore.MAGENTA + "male" + Style.RESET_ALL + " or '2' for " + Fore.MAGENTA + "female" + Style.RESET_ALL + ": ")
     if ai_gender == "1":
         vars.ai_gender = 'male'
     elif ai_gender == "2":
         vars.ai_gender = 'female'
     else:
         print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.ai_gender}" + Style.RESET_ALL + ")")
+        time.sleep(1)
     subprocess.call('cls', shell=True)
     
 def setup_audio_input():
@@ -123,7 +131,7 @@ def generate_file_path(filetype):
     return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
 def split_reply_to_chunks(message):
-    chunk_pattern = r'[.!?;\'",\u2026\u2014](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
+    chunk_pattern = r'[.!?;\'"\u2026\u2014](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
     chunks = re.split(chunk_pattern, message)
     chunks = [chunk.strip() for chunk in re.split(chunk_pattern, message) if chunk.strip()]
     if vars.verbose_tts:
@@ -275,11 +283,8 @@ def filter_text(input_text):
     
     everything_pattern = re.compile(r'[^a-zA-Z\s\d.,?!;:\'"&%/\\(){}\[\]=$§"\'+~*#<>|^°-]')
     smiley_pattern = re.compile(r"(\s:\)|\s:\(|\s;\)|\s:D|\s:P|\s:\||\sB\)|\s:-\*|\s:-O|\s:\/)")
-    
     acronym_pattern = re.compile(r'\b(?:[A-Z0-9&]*[A-Z]){2,3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){3}[A-Z0-9&]*\b')
-    
     and_pattern = re.compile(r'&amp;')
-    
     ellipsis_pattern = re.compile(r'\.{2,}|\u2026')
     dash_pattern = re.compile(r'[\s.]?\—')
     hashtag_pattern = re.compile(r'[\s.]?\#')
@@ -293,13 +298,11 @@ def filter_text(input_text):
     
     filtered_text = everything_pattern.sub('', input_text)
     filtered_text = smiley_pattern.sub('', filtered_text)
-    
     # Check if the input consists solely of acronyms
     if acronym_pattern.fullmatch(input_text):
         return ' '.join(replace_acronym(match) for match in acronym_pattern.finditer(input_text))
     else:
         filtered_text = acronym_pattern.sub(replace_acronym, filtered_text)
-    
     filtered_text = and_pattern.sub('&', filtered_text)
     filtered_text = ellipsis_pattern.sub('.', filtered_text)
     filtered_text = dash_pattern.sub('-', filtered_text)
@@ -311,8 +314,6 @@ def filter_text(input_text):
     filtered_text = br_pattern.sub("\n", filtered_text)
     filtered_text = eos_token_pattern.sub("\n", filtered_text)
     filtered_text = comma_after_punctuation_pattern.sub('', filtered_text)
-    
-    #filtered_text = filtered_text.replace("```", "")
     
     return filtered_text
 

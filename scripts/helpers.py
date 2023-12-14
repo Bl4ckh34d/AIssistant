@@ -332,7 +332,7 @@ def replace_float(match):
 
 def replace_math_symbols(match):
     replacements = {
-        '-': ' minus ',
+        #'-': ' minus ',
         '+': ' plus ',
         '*': ' multiplied by ',
         '/': ' divided by ',
@@ -504,7 +504,7 @@ def filter_text(input_text):
     everything_pattern = re.compile(r'[^a-zA-Z\s\d.,?!;:\'"&%/\\(){}\[\]=$§"\'+~*#<>|^°-]')
     greek_pattern = re.compile(r'[\u0391-\u03A9\u03B1-\u03C9]|[Α-Ωα-ω]')
     float_pattern = re.compile(r'\b\d+(\.\d+)?[Ee][+-]?\d+\b|\b\d+\.\d+\b')
-    math_pattern = re.compile(r'mc^2|[-+*/^=≠><≥≤√±%∞°∑∏∫≈∝∀∃∈∉∅]|sqrt|Sqrt|²|³|mc')
+    math_pattern = re.compile(r'mc^2|[+*/^=≠><≥≤√±%∞°∑∏∫≈∝∀∃∈∉∅]|sqrt|Sqrt|²|³|mc') #Minus frequently used by model despite telling it not to do it.
     numbered_pattern = re.compile(r'(?:^|\n|\s+)(?:[1-9]|1[0-9]|20)\. ')
     smiley_pattern = re.compile(r"(\s:\)|\s:\(|\s;\)|\s:D|\s:P|\s:\||\sB\)|\s:-\*|\s:-O|\s:\/)")
     acronym_pattern = re.compile(r'\b(?:[A-Z0-9&]*[A-Z]){2,3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){3}[A-Z0-9&]*\b')

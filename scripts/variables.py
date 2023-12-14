@@ -80,7 +80,7 @@ stt_model_task = "transcribe" #translate
 llm_model_name = "starling-lm-7b-alpha.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #dolphin-2.1-mistral-7b.Q4_K_M #wizard-vicuna-7b-uncensored.Q4_K_M
 llm_model_file_type = "gguf" #gguf
 
-user_name = 'Daniel' #User
+user_name = 'User'
 user_gender = 'male'
 ai_name = 'ARIA'
 ai_gender = 'female'
@@ -115,7 +115,7 @@ llm_n_gpu_layers=40
 llm_n_cpu_threads=12
 llm_n_batch=512
 llm_max_tokens=512
-llm_stop=[eos_token, '</s>']
+llm_stop=[eos_token]
 llm_echo=False
 llm_stream=True
 llm_mirostat_mode=2

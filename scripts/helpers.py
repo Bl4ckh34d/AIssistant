@@ -12,30 +12,32 @@ classifier_sentiment = pipeline("sentiment-analysis", model=vars.sa_model_path, 
 def setup_user_name():
     subprocess.call('cls', shell=True)
     print()
-    print(Fore.MAGENTA + "====================================================================")
-    print("\n     _      ___               _         _                     _   ")
+    print("====================================================================")
+    print(Fore.MAGENTA + "\n     _      ___               _         _                     _   ")
     print("    / \    |_ _|  ___   ___  (_)  ___  | |_    __ _   _ __   | |_ ")
     print("   / _ \    | |  / __| / __| | | / __| | __|  / _` | | '_ \  | __|")
     print("  / ___ \   | |  \__ \ \__ \ | | \__ \ | |_  | (_| | | | | | | |_ ")
-    print(" /_/   \_\ |___| |___/ |___/ |_| |___/  \__|  \__,_| |_| |_|  \__|\n")
-    print("====================================================================" + Style.RESET_ALL)
+    print(" /_/   \_\ |___| |___/ |___/ |_| |___/  \__|  \__,_| |_| |_|  \__|\n" + Style.RESET_ALL)
+    print("YOUR " + Fore.MAGENTA + "TOXIC" + Style.RESET_ALL + "AND" + Fore.MAGENTA + "USELESS" + Style.RESET_ALL + " AI ASSISTANT - " + Fore.MAGENTA + "BETTER" + Style.RESET_ALL + " THAN HAVING " + Fore.MAGENTA + "NO FRIENDS" + Style.RESET_ALL)
     print()
-    user_name = input("Enter your " + Fore.MAGENTA + "NAME" + Style.RESET_ALL + ": ")
+    print("====================================================================")
+    print()
+    user_name = input("Enter your " + Fore.YELLOW + "NAME" + Style.RESET_ALL + ": ")
     if user_name != "" and user_name != " ":
         vars.user_name = user_name
     else:
-        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.user_name}" + Style.RESET_ALL + ")")
+        print(Fore.YELLOW + "No input" + Style.RESET_ALL + ". Setting standard name (" + Fore.YELLOW + f"{vars.user_name}" + Style.RESET_ALL + ").")
     print()
     
 def setup_user_gender():
-    print("Select your " + Fore.MAGENTA + "GENDER" + Style.RESET_ALL + ". Currently only male or female are supported.")
-    user_gender = input("Enter '1' for " + Fore.MAGENTA + "male" + Style.RESET_ALL + " or '2' for " + Fore.MAGENTA + "female" + Style.RESET_ALL + ": ")
+    print("Select your " + Fore.YELLOW + "GENDER" + Style.RESET_ALL + ". Currently only male or female are supported.")
+    user_gender = input("Enter '1' for " + Fore.YELLOW + "male" + Style.RESET_ALL + " or '2' for " + Fore.YELLOW + "female" + Style.RESET_ALL + ": ")
     if user_gender == "1":
         vars.user_gender = 'male'
     elif user_gender == "2":
         vars.user_gender = 'female'
     else:
-        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.user_gender}" + Style.RESET_ALL + ")")
+        print(Fore.YELLOW + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.YELLOW + f"{vars.user_gender}" + Style.RESET_ALL + ")")
     print()
     
 def setup_ai_name():
@@ -56,9 +58,11 @@ def setup_ai_gender():
     else:
         print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Resorting to standard setting (" + Fore.MAGENTA + f"{vars.ai_gender}" + Style.RESET_ALL + ")")
         time.sleep(1)
-    subprocess.call('cls', shell=True)
+    print()
+    #subprocess.call('cls', shell=True)
     
 def setup_audio_input():
+    print("====================================================================")
     print(Fore.MAGENTA + "\nAvailable Audio Input Devices:" + Style.RESET_ALL)
     print()
     
@@ -76,10 +80,13 @@ def setup_audio_input():
         vars.AUDIO_INPUT_DEVICE_ID = int(audio_device)
     else:
         vars.AUDIO_INPUT_DEVICE_ID = device_ids[0]
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Setting Standard Audio Input Device (" + Fore.MAGENTA + f"{vars.AUDIO_INPUT_DEVICE_ID}" + Style.RESET_ALL + ").")
     
-    subprocess.call('cls', shell=True)
+    print()
+    #subprocess.call('cls', shell=True)
     
 def setup_audio_output():
+    print("====================================================================")
     print(Fore.MAGENTA + "\nAvailable Audio Output Devices:" + Style.RESET_ALL)
     print()
     
@@ -97,8 +104,35 @@ def setup_audio_output():
         vars.AUDIO_OUTPUT_DEVICE_ID = int(audio_device)
     else:
         vars.AUDIO_OUTPUT_DEVICE_ID = device_ids[0]
+        print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Setting Standard Audio Output Device (" + Fore.MAGENTA + f"{vars.AUDIO_OUTPUT_DEVICE_ID}" + Style.RESET_ALL + ").")
     
-    subprocess.call('cls', shell=True)
+    print()
+    #subprocess.call('cls', shell=True)
+
+def show_instructions():
+    print("====================================================================")
+    print()
+    print("If you wish to give the AIssistant a command,")
+    print("say '" + Fore.MAGENTA + "I command you to..." + Style.RESET_ALL + "' followed by your command.")
+    print()
+    print("Currently valid commands are: ")
+    print(Fore.MAGENTA + "  AGAIN" + Style.RESET_ALL + " will perform the last performed action once more")
+    print(Fore.MAGENTA + "  OPEN" + Style.RESET_ALL + " followed by a window/program name or new folder/browser tab")
+    print(Fore.MAGENTA + "  CLOSE" + Style.RESET_ALL + " followed by a window/program name or new folder/browser tab")
+    print(Fore.MAGENTA + "  REFRESH" + Style.RESET_ALL + " will press F5")
+    print(Fore.MAGENTA + "  GO BACK" + Style.RESET_ALL + " + " + Fore.MAGENTA + "TAB/BROWSER" + Style.RESET_ALL + " will press CTRL + SHIFT + TAB")
+    print(Fore.MAGENTA + "  SCROLL" + Style.RESET_ALL + " + " + Fore.MAGENTA + "UP/DOWN" + Style.RESET_ALL + " will scroll up or down")
+    print(Fore.MAGENTA + "  GO TO" + Style.RESET_ALL + " + " + Fore.MAGENTA + "window/program name" + Style.RESET_ALL + " will try to navigate to that window if already open")
+    print(Fore.MAGENTA + "  SWITCH" + Style.RESET_ALL + " + " + Fore.MAGENTA + "window/tab" + Style.RESET_ALL + " will press CTRL + TAB or ALT + TAB respectively")
+    print(Fore.MAGENTA + "  MINIMIZE" + Style.RESET_ALL + " will press WIN + DOWN")
+    print(Fore.MAGENTA + "  MAXIMIZE" + Style.RESET_ALL + " will press WIN + UP")
+    print()
+    print("For more info like what programs and folder locations are currently supported,")
+    print("have a look at " + Fore.MAGENTA + "commands.py" + Style.RESET_ALL + " and " + Fore.MAGENTA + "command_list.py" + Style.RESET_ALL + " yourself.")
+    print()
+    print()
+    #subprocess.call('cls', shell=True)
+    
 
 # UTILITY
 def get_token_count(text):
@@ -131,7 +165,7 @@ def generate_file_path(filetype):
     return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
 def split_reply_to_chunks(message):
-    chunk_pattern = r'[.!?;\'"\u2026\u2014](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
+    chunk_pattern = r'[.!?;–—\'"\u2026\u2014\n](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
     chunks = re.split(chunk_pattern, message)
     chunks = [chunk.strip() for chunk in re.split(chunk_pattern, message) if chunk.strip()]
     if vars.verbose_tts:
@@ -279,14 +313,208 @@ def replace_acronym(match):
     acronym = match.group(0)
     return ''.join(phonetic_mapping.get(char, char) for char in acronym)
 
-def filter_text(input_text):   
-    
+def replace_float(match):
+    number = match.group()
+    if 'E' in number or 'e' in number:
+        parts = re.split(r'[Ee]', number)
+        integer_part = parts[0] + ' point ' + parts[1].replace('+', ' times ten to the power of ') + ' '
+
+        return integer_part
+
+    parts = number.split('.')
+    integer_part = parts[0] + ' point '
+
+    # Spacing out the fractional part after the dot
+    fractional_part = ' '.join(parts[1]) if len(parts) > 1 else ''
+    spaced_fractional = ' '.join(fractional_part) + ' ' if fractional_part else ''
+
+    return integer_part + spaced_fractional
+
+def replace_math_symbols(match):
+    replacements = {
+        '-': ' minus ',
+        '+': ' plus ',
+        '*': ' multiplied by ',
+        '/': ' divided by ',
+        '^': ' raised to ',
+        '=': ' equals ',
+        '≠': ' not equal to ',
+        '>': ' greater than ',
+        '<': ' less than ',
+        '≥': ' greater than or equal to ',
+        '≤': ' less than or equal to ',
+        '√': ' square root of ',
+        'sqrt': ' square root of ',
+        'Sqrt': ' square root of ',
+        '±': ' plus or minus ',
+        '%': ' percent ',
+        '∞': ' infinity ',
+        '°': ' degrees ',
+        '∑': ' sum of ',
+        '∏': ' product of ',
+        '∫': ' integral of ',
+        '≈': ' approximately equal to ',
+        '∝': ' proportional to ',
+        '∀': ' for all ',
+        '∃': ' there exists ',
+        '∈': ' belongs to ',
+        '∉': ' does not belong to ',
+        '∅': ' empty set ',
+        '²': ' squared ',
+        '³': ' cubed ',
+        'mc': 'M C ',
+        'mc^2': 'M C squared'
+    }
+    math_symbol = match.group()
+    for symbol, replacement in replacements.items():
+        math_symbol = math_symbol.replace(symbol, replacement)
+    return math_symbol
+
+def replace_numbers(match):
+    number_words = {
+        '1': 'first',
+        '2': 'second',
+        '3': 'third',
+        '4': 'fourth',
+        '5': 'fifth',
+        '6': 'sixth',
+        '7': 'seventh',
+        '8': 'eighth',
+        '9': 'ninth',
+        '10': 'tenth',
+        '11': 'eleventh',
+        '12': 'twelfth',
+        '13': 'thirteenth',
+        '14': 'fourteenth',
+        '15': 'fifteenth',
+        '16': 'sixteenth',
+        '17': 'seventeenth',
+        '18': 'eighteenth',
+        '19': 'nineteenth',
+        '20': 'twentieth'
+    }
+    number = match.group().strip('. \n\r')  # Strip extra characters
+    return number_words[number] + '. '
+
+def replace_greek_alphabet(match):
+    replacements = {
+        'Α': ' Uppercase Alpha ',
+        '\u0391': ' Uppercase Alpha ',
+        'α': ' Lowercase Alpha ',
+        '\u03B1': ' Lowercase Alpha ',
+        'Β': ' Uppercase Beta ',
+        '\u0392': ' Uppercase Beta ',
+        'β': ' Lowercase Beta ',
+        '\u03B2': ' Lowercase Beta ',
+        'Γ': ' Uppercase Gamma ',
+        '\u0393': ' Uppercase Gamma ',
+        'γ': ' Lowercase Gamma ',
+        '\u03B3': ' Lowercase Gamma ',
+        'Δ': ' Uppercase Delta ',
+        '\u0394': ' Uppercase Delta ',
+        'δ': ' Lowercase Delta ',
+        '\u03B4': ' Lowercase Delta ',
+        'Ε': ' Uppercase Epsilon ',
+        '\u0395': ' Uppercase Epsilon ',
+        'ε': ' Lowercase Epsilon ',
+        '\u03B5': ' Lowercase Epsilon ',
+        'Ζ': ' Uppercase Zeta ',
+        '\u0396': ' Uppercase Zeta ',
+        'ζ': ' Lowercase Zeta ',
+        '\u03B6': ' Lowercase Zeta ',
+        'Η': ' Uppercase Eta ',
+        '\u0397': ' Uppercase Eta ',
+        'η': ' Lowercase Eta ',
+        '\u03B7': ' Lowercase Eta ',
+        'Θ': ' Uppercase Theta ',
+        '\u0398': ' Uppercase Theta ',
+        'θ': ' Lowercase Theta ',
+        '\u03B8': ' Lowercase Theta ',
+        'Ι': ' Uppercase Iota ',
+        '\u0399': ' Uppercase Iota ',
+        'ι': ' Lowercase Iota ',
+        '\u03B9': ' Lowercase Iota ',
+        'Κ': ' Uppercase Kappa ',
+        '\u039A': ' Uppercase Kappa ',
+        'κ': ' Lowercase Kappa ',
+        '\u03BA': ' Lowercase Kappa ',
+        'Λ': ' Uppercase Lambda ',
+        '\u039B': ' Uppercase Lambda ',
+        'λ': ' Lowercase Lambda ',
+        '\u03BB': ' Lowercase Lambda ',
+        'Μ': ' Uppercase Mu ',
+        '\u039C': ' Uppercase Mu ',
+        'μ': ' Lowercase Mu ',
+        '\u03BC': ' Lowercase Mu ',
+        'Ν': ' Uppercase Nu ',
+        '\u039D': ' Uppercase Nu ',
+        'ν': ' Lowercase Nu ',
+        '\u03BD': ' Lowercase Nu ',
+        'Ξ': ' Uppercase Xi ',
+        '\u039E': ' Uppercase Xi ',
+        'ξ': ' Lowercase Xi ',
+        '\u03BE': ' Lowercase Xi ',
+        'Ο': ' Uppercase Omicron ',
+        '\u039F': ' Uppercase Omicron ',
+        'ο': ' Lowercase Omicron ',
+        '\u03BF': ' Lowercase Omicron ',
+        'Π': ' Uppercase Pi ',
+        '\u03A0': ' Uppercase Pi ',
+        'π': ' Lowercase Pi ',
+        '\u03C0': ' Lowercase Pi ',
+        'Ρ': ' Uppercase Rho ',
+        '\u03A1': ' Uppercase Rho ',
+        'ρ': ' Lowercase Rho ',
+        '\u03C1': ' Lowercase Rho ',
+        'Σ': ' Uppercase Sigma ',
+        '\u03A3': ' Uppercase Sigma ',
+        'σ': ' Lowercase Sigma ',
+        '\u03C3': ' Lowercase Sigma ',
+        'Τ': ' Uppercase Tau ',
+        '\u03A4': ' Uppercase Tau ',
+        'τ': ' Lowercase Tau ',
+        '\u03C4': ' Lowercase Tau ',
+        'Υ': ' Uppercase Upsilon ',
+        '\u03A5': ' Uppercase Upsilon ',
+        'υ': ' Lowercase Upsilon ',
+        '\u03C5': ' Lowercase Upsilon ',
+        'Φ': ' Uppercase Phi ',
+        '\u03A6': ' Uppercase Phi ',
+        'φ': ' Lowercase Phi ',
+        '\u03C6': ' Lowercase Phi ',
+        'Χ': ' Uppercase Chi ',
+        '\u03A7': ' Uppercase Chi ',
+        'χ': ' Lowercase Chi ',
+        '\u03C7': ' Lowercase Chi ',
+        'Ψ': ' Uppercase Psi ',
+        '\u03A8': ' Uppercase Psi ',
+        'ψ': ' Lowercase Psi ',
+        '\u03C8': ' Lowercase Psi ',
+        'Ω': ' Uppercase Omega ',
+        '\u03A9': ' Uppercase Omega ',
+        'ω': ' Lowercase Omega ',
+        '\u03C9': ' Lowercase Omega '
+    }
+    greek_alphabet = match.group()
+    for symbol, replacement in replacements.items():
+        greek_alphabet = greek_alphabet.replace(symbol, replacement)
+    return greek_alphabet
+
+def filter_text(input_text):
     everything_pattern = re.compile(r'[^a-zA-Z\s\d.,?!;:\'"&%/\\(){}\[\]=$§"\'+~*#<>|^°-]')
+    greek_pattern = re.compile(r'[\u0391-\u03A9\u03B1-\u03C9]|[Α-Ωα-ω]')
+    float_pattern = re.compile(r'\b\d+(\.\d+)?[Ee][+-]?\d+\b|\b\d+\.\d+\b')
+    math_pattern = re.compile(r'mc^2|[-+*/^=≠><≥≤√±%∞°∑∏∫≈∝∀∃∈∉∅]|sqrt|Sqrt|²|³|mc')
+    numbered_pattern = re.compile(r'(?:^|\n|\s+)(?:[1-9]|1[0-9]|20)\. ')
     smiley_pattern = re.compile(r"(\s:\)|\s:\(|\s;\)|\s:D|\s:P|\s:\||\sB\)|\s:-\*|\s:-O|\s:\/)")
     acronym_pattern = re.compile(r'\b(?:[A-Z0-9&]*[A-Z]){2,3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){3}[A-Z0-9&]*\b')
+    # Modified acronym pattern excluding the specific acronym
+    modified_acronym_pattern = re.compile(
+        rf'\b(?!(?:{vars.ai_name}))' + acronym_pattern.pattern
+    )
     and_pattern = re.compile(r'&amp;')
     ellipsis_pattern = re.compile(r'\.{2,}|\u2026')
-    dash_pattern = re.compile(r'[\s.]?\—')
+    multiple_hashtag_pattern = re.compile(r'\#{2,}')
     hashtag_pattern = re.compile(r'[\s.]?\#')
     bracket_pattern = re.compile(r'[\s.]?[\(\)]')
     backtick_pattern = re.compile(r'`(\s*[^`]|[^`])')
@@ -295,17 +523,22 @@ def filter_text(input_text):
     br_pattern = re.compile(r'\s*<br>\s*')
     eos_token_pattern = re.compile(r'\s*' + vars.eos_token + r'\s*')
     comma_after_punctuation_pattern = re.compile(r'(?<=[.!?;,:])\s*,')
+    for_example_pattern = re.compile(r'\b(e\.g\.)\b')
+    id_est_pattern = re.compile(r'\b(i\.e\.)\b')
     
-    filtered_text = everything_pattern.sub('', input_text)
+    filtered_text = greek_pattern.sub(replace_greek_alphabet, input_text)
+    filtered_text = float_pattern.sub(replace_float, filtered_text)
+    filtered_text = math_pattern.sub(replace_math_symbols, filtered_text)
+    filtered_text = numbered_pattern.sub(replace_numbers, filtered_text)
     filtered_text = smiley_pattern.sub('', filtered_text)
     # Check if the input consists solely of acronyms
-    if acronym_pattern.fullmatch(input_text):
-        return ' '.join(replace_acronym(match) for match in acronym_pattern.finditer(input_text))
+    if modified_acronym_pattern.fullmatch(filtered_text):
+        return ' '.join(replace_acronym(match) for match in modified_acronym_pattern.finditer(filtered_text))
     else:
-        filtered_text = acronym_pattern.sub(replace_acronym, filtered_text)
+        filtered_text = modified_acronym_pattern.sub(replace_acronym, filtered_text)
     filtered_text = and_pattern.sub('&', filtered_text)
     filtered_text = ellipsis_pattern.sub('.', filtered_text)
-    filtered_text = dash_pattern.sub('-', filtered_text)
+    filtered_text = multiple_hashtag_pattern.sub('', filtered_text)
     filtered_text = hashtag_pattern.sub('Hashtag', filtered_text)
     filtered_text = bracket_pattern.sub('', filtered_text)
     filtered_text = backtick_pattern.sub("'", filtered_text)
@@ -314,6 +547,10 @@ def filter_text(input_text):
     filtered_text = br_pattern.sub("\n", filtered_text)
     filtered_text = eos_token_pattern.sub("\n", filtered_text)
     filtered_text = comma_after_punctuation_pattern.sub('', filtered_text)
+    filtered_text = for_example_pattern.sub('for example', filtered_text)
+    filtered_text = id_est_pattern.sub('that is', filtered_text)
+    
+    filtered_text = everything_pattern.sub('', filtered_text)
     
     return filtered_text
 

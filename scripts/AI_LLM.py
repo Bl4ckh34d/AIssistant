@@ -58,7 +58,7 @@ def print_to_console(sender, timestamp, message=None):
         print(Fore.YELLOW + f"{vars.user_name} " + Style.RESET_ALL + f"({timestamp})\n" + message)
 
     else:
-        print(Fore.GREEN + f"{vars.ai_name} " + Style.RESET_ALL + f"({timestamp})")
+        print(Fore.MAGENTA + f"{vars.ai_name} " + Style.RESET_ALL + f"({timestamp})")
         
     if vars.verbose_token:
         print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(sender, message, timestamp))} ({help.get_token_count(help.build_system_prompt() + help.build_user_prompt())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
@@ -126,10 +126,10 @@ def prompt_llm(timestamp):
     else:
         print()
         
+        write_conversation(vars.ai_name, reply, timestamp)   
+                     
         reply = help.filter_text(reply)
         
-        write_conversation(vars.ai_name, reply, timestamp)
-                
         invoke_text_to_speech(reply)
         
         help.sentiment_calculation(reply)

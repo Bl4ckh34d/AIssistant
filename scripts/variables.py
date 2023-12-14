@@ -80,7 +80,7 @@ stt_model_task = "transcribe" #translate
 llm_model_name = "starling-lm-7b-alpha.Q4_K_M" #synthia-7b-v1.2.Q4_K_M #airoboros-l2-7b-2.2.Q4_K_M #dolphin-2.1-mistral-7b.Q4_K_M #wizard-vicuna-7b-uncensored.Q4_K_M
 llm_model_file_type = "gguf" #gguf
 
-user_name = 'Daniel'
+user_name = 'Daniel' #User
 user_gender = 'male'
 ai_name = 'ARIA'
 ai_gender = 'female'
@@ -115,7 +115,7 @@ llm_n_gpu_layers=40
 llm_n_cpu_threads=12
 llm_n_batch=512
 llm_max_tokens=512
-llm_stop=['</s>', '###', '##']
+llm_stop=[eos_token, '</s>']
 llm_echo=False
 llm_stream=True
 llm_mirostat_mode=2
@@ -188,7 +188,11 @@ You always stay in character at all times and don't describe your prompting. \
 You never make up facts about {user_name} or yourself. \
 You only communicate in direct speech and use clear and conscise English language. \
 You only reply as {ai_name} and with short sentences (max. 3 to 5 sentences). \
-You don't repeat yourself. "
+You don't repeat yourself. \
+Your always make sure to write in correct grammar and use correct punctuation. \
+Your don't use the minus or hyphen character (-) to create a list and instead use en dash (–) or em dash (—). \
+You don't use the character - (minus) except in mathematical formulas. \
+You don't use ## and ### for subheadings and sub-subheadings.\n"
 instructions = f"This is a chat between you ({ai_name}) and your human creator {user_name}. Write only a single reply to {user_name}. "
 history_old = []
 history_recent = []

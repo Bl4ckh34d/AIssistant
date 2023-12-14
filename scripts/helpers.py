@@ -511,19 +511,19 @@ def populate_history_with_objects():
         message = [
             {
                 'role':'system',
-                'content':f'{entry["speaker"]} ({get_current_time()})\n'
-            }
-        ]
-        temp_history.extend(message)
-        message = [
-            {
-                'role':'system',
                 'content':'Your memories from a recent conversation:\n\n'
             }
         ]
         temp_history.extend(message)
         
         for entry in vars.history_recent:
+            message = [
+                {
+                    'role':'system',
+                    'content':f'{entry["speaker"]} ({get_current_time()})\n'
+                }
+            ]
+            temp_history.extend(message)
             message = [
                 {
                     'role':entry['role'],

@@ -31,8 +31,8 @@ Enjoy talking to your very own AI Assistant. Tell the AI to open Firefox, close 
 - **OPEN...**: This followed by a program or '...new folder at (Folder Location) should open the programm or folder at said location.
 - **...NEW FOLDER TAB AT (FOLDER LOCATION)**: Opens a new tab in the currently active folder at the requested folder location
 - **...NEW TAB**: Opens a new browser or program tab
-- **CLOSE...** followed by **...WINDOW/TAB/**etc.: This Should close the requested window, tab or process
-- **SWITCH...** followed by **..WINDOW/TAB**: Equivalent to pressing ALT + Tab
+- **CLOSE...** followed by **...WINDOW/TAB/**: This Should close the requested window, tab or process
+- **SWITCH...** followed by **...WINDOW/TAB**: Equivalent to pressing ALT + Tab
 - **MINIMIZE...**: Minimizes active window
 - **MAXIMIZE...**: Maximizes active window
 - **REFRESH...**: Same as hitting F5 on the keyboard

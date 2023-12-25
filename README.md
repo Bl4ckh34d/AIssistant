@@ -5,7 +5,7 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - Rudimentary Longterm-Memory: Based on past chat logs, the LLM fills its context with chats older than 5 days, chats within the last 5 days and the most recent conversation. (UNTESTED)
 - Shortterm-Memory should clean itself before reaching the token maximum
 
-## NOTICE!:
+## NOTICE:
 - I created this for myself in a private capacity and not for commercial use. It is not well tested, nor professionally built and the model prompt is TOXIC!
 - This is WIP and might not work as expected.
 - Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence.
@@ -53,7 +53,13 @@ Miniconda:
 
 
 ## INSTALLATION:
-Adjust the install path (here D:) in the following code snipet and copy all the uncommented lines one by one into your terminal.
+Open a Windows Terminal and navigate to the folder where you want to install the AIssistant (cd path/of/directory).
+Adjust the install path (here D:) in the following lines of code where applicable and copy all the uncommented lines (without # in front) one by one into your terminal and hit enter after each line. If prompted to install/create files, confirm with yes (y).
+TTS currently causes an error, which is why you will have to add one line of code to the api.py script as described below.
+Download the Large Language Model (currently only GGUF supported) as well as the Sentiment Analysis Model and place them in the respective directory under models.
+The model and config file (LLM) need to be inside a folder with matching name of the model (ex. ../models/llm/starling-lm-7b-alpha.Q4_K_M/starling-lm-7b-alpha.Q4_K_M.gguf).
+The following files from the Sentiment Analysis Model need to be placed into "../models/sa/cardiffnlp--twitter-roberta-base-sentiment-latest/cardiffnlp--twitter-roberta-base-sentiment-latest/pytorch_model.bin": config.json, pytorch_model.bin, special_tokens_map.json, tf_model.h5, vocab.json
+See below for the links to these models.
 
 ```shell
 # ENVIRONMENT

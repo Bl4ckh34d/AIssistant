@@ -78,6 +78,7 @@ conda create -p D:\AIssistant\env python=3.10.11 pytorch==2.1.1 torchvision==0.1
 conda activate D:\AIssistant\env
 
 # LLM
+conda install -c "nvidia/label/cuda-12.3.1" cuda-toolkit
 conda install -c "nvidia/label/cuda-12.2.2" cuda-toolkit
 pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/textgen/AVX2/cu122
 pip install numpy==1.22 --force

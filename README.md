@@ -68,8 +68,10 @@ Adjust the install_path in the following code snipet and copy and paste it into 
 
 ```shell
 # ENVIRONMENT
-conda create -p D:\AI\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
-conda activate D:\AI\env
+d:
+https://github.com/Bl4ckh34d/AIssistant.git
+conda create -p D:\AIssistant\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
+conda activate D:\AIssistant\env
 
 #Obsolete
 #conda create -p D:\AI\env python=3.10.11

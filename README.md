@@ -95,7 +95,7 @@ pip install pygetwindow pywin32 pyautogui keyboard
 
 # THERE IS A PROBLEM IN THE TTS PACKAGE. THE FOLLOWING NEEEDS TO BE CHANGED FOR THIS TO WORK:
 # Inside \env\lib\site-packages\TTS\api.py insert the following line before 226:
-# if self.model_name is not None and "xtts" in self.model_name:
+if self.model_name is not None and "xtts" in self.model_name:
 # and indent the following if-statements.
 ```
 

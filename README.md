@@ -75,7 +75,7 @@ conda activate D:\AIssistant\env
 
 # LLM
 conda install -c "nvidia/label/cuda-12.2.2" cuda-toolkit
-pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/AVX2/cu118
+pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/textgen/AVX2/cu122
 pip install numpy==1.22 --force
 
 # TTS

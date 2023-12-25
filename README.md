@@ -44,17 +44,6 @@ C Drive, D Drive, AppData, Programs, Programs86, Home, Downloads
 Firefox, Firefox (Incognito), Explorer, VLC, Media Player Classic, Keepass, Steam, Discord, MS Word, MS Excel, MS Powerpoint, Notepad++,
 VSC, PureRef, Audacity, Blender, Stable Diffusion, Calculator, System Settings
 
-## TODO:
-- Sentiment Score of LLM seems to not work as expected, need to revisit
-- Browser extensions (Chrome and Firefox) for remote control through LLM
-- Implement Youtube API / Google API / ChatGPT API
-- Include an easy option to turn the LLM reply on and off
-- Possibly integrate Open Interpreter and ditch my own code execution completely at some point, if OI integrates well into this.
-- Since I don't use LangChain but rather built my own Longterm Memory System, I still need to implement the following things:
-  - Once a json-Log is finished (current date =/= log date), and thie file is selected randomly to be in the memory, the LLM should add a summary of the conversation to the file. (skip this step if the summary is already in there).
-- Writing a scraper for search engines, wikipedia, weather forecast, etc. or giving the LLM API access to services for current information.
-- Getting a embedding model (maybe sentence-transformers/all-MiniLM-L6-v2) to process outside information from Vector Index (pinecone-like but locally?) + embedding dataset
-
 ## REQUIREMENTS:
 Pytorch:
 - https://pytorch.org/get-started/locally/ is where you can find the current version of pytorch
@@ -110,6 +99,17 @@ STT:
 
 TTS:
 - tts_models--en--jenny--jenny (should download automatically once started)
+
+## TODO:
+- Sentiment Score of LLM seems to not work as expected, need to revisit
+- Browser extensions (Chrome and Firefox) for remote control through LLM
+- Implement Youtube API / Google API / ChatGPT API
+- Include an easy option to turn the LLM reply on and off
+- Possibly integrate Open Interpreter and ditch my own code execution completely at some point, if OI integrates well into this.
+- Since I don't use LangChain but rather built my own Longterm Memory System, I still need to implement the following things:
+  - Once a json-Log is finished (current date =/= log date), and thie file is selected randomly to be in the memory, the LLM should add a summary of the conversation to the file. (skip this step if the summary is already in the file).
+- Writing a scraper for search engines, wikipedia, weather forecast, etc. or giving the LLM API access to services for current information.
+- Getting a embedding model (maybe sentence-transformers/all-MiniLM-L6-v2) to process outside information from Vector Index (pinecone-like but locally?) + embedding dataset
 
 ## If you enjoy what I make, consider buying me a coffee (:
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/danielbenew)

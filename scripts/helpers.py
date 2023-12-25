@@ -106,8 +106,8 @@ def setup_audio_output():
         vars.AUDIO_OUTPUT_DEVICE_ID = device_ids[0]
         print(Fore.MAGENTA + "Invalid input" + Style.RESET_ALL + ". Setting Standard Audio Output Device (" + Fore.MAGENTA + f"{vars.AUDIO_OUTPUT_DEVICE_ID}" + Style.RESET_ALL + ").")
     
-    print()
-    #subprocess.call('cls', shell=True)
+    #print()
+    subprocess.call('cls', shell=True)
 
 def show_instructions():
     print("====================================================================")
@@ -139,7 +139,7 @@ def get_token_count(text):
     if vars.llm_model_file_type == "gguf":
         text = text.encode('utf-8')
         llm_embd_inp = (llama_cpp.llama_token * (len(text) + 1))()
-        return llama_cpp.llama_tokenize(vars.llm_ctx, text, llm_embd_inp, len(llm_embd_inp), True)
+        return llama_cpp.llama_tokenize(vars.llm_ctx, text, len(text), llm_embd_inp, len(llm_embd_inp), True, False)
 
 def get_current_date():
     current_datetime = datetime.datetime.now()

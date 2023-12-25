@@ -2,7 +2,7 @@ import os, whisper, llama_cpp, time, psutil
 from llama_cpp import Llama
 
 # DEBUGGING
-verbose_history = False
+verbose_history = True
 verbose_mood = False
 verbose_token = False
 verbose_commands = False
@@ -109,9 +109,9 @@ else:
 
 eos_token = '<|end_of_turn|>'
 
-llm_chat_format = 'llama-2'
+llm_chat_format = 'openchat'
 llm_n_ctx=8192 #4096 #8192 #32000
-llm_n_gpu_layers=40
+llm_n_gpu_layers=30
 llm_n_cpu_threads=12
 llm_n_batch=512
 llm_max_tokens=512
@@ -133,7 +133,8 @@ llm_model_path = os.path.abspath(os.path.join(directory_llm_model, f"{llm_model_
 if llm_model_file_type == "gguf":
     llm_model_file_path = os.path.abspath(os.path.join(llm_model_path, f"{llm_model_name}.{llm_model_file_type}")) 
     llm_lparams = llama_cpp.llama_context_default_params()
-    llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_lparams)
+    llm_mparams = llama_cpp.llama_model_default_params()
+    llm_model = llama_cpp.llama_load_model_from_file(llm_model_file_path.encode('utf-8'), llm_mparams)
     llm_ctx = llama_cpp.llama_new_context_with_model(llm_model, llm_lparams)
     llm = Llama(
         model_path=llm_model_file_path,
@@ -142,7 +143,8 @@ if llm_model_file_type == "gguf":
         verbose=False,
         n_gpu_layers=llm_n_gpu_layers,
         llm_n_cpu_threads=llm_n_cpu_threads,
-        chat_format=llm_chat_format)
+        chat_format=llm_chat_format
+    )
 
 llm_mood_score = 0
 llm_type_speed = 0.05

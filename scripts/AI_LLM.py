@@ -34,7 +34,7 @@ def invoke_text_to_speech(message):
         if not vars.verbose_tts:
             sys.stdout = open(os.devnull, 'w')
             
-        tts.tts_to_file(text=sentence, file_path=file_path, gpu=True)
+        tts.tts_to_file(text=sentence, language="en", file_path=file_path, gpu=True)
 
         if not vars.verbose_tts:
             sys.stdout = sys.__stdout__
@@ -80,10 +80,6 @@ def prompt_llm(timestamp):
     if vars.verbose_history:
         print(Fore.CYAN + "CHAT HISTORY AS TEXT:" + Style.RESET_ALL)
         print(help.build_system_prompt() + help.build_user_prompt())
-        print()
-        print(Fore.CYAN + "CHAT HISTORY AS OBJECT:" + Style.RESET_ALL)
-        print(messages)
-        print()
     
     first_token_processed = False
     second_token_processed = False

@@ -64,7 +64,7 @@ Miniconda:
 
 
 ## INSTALLATION:
-Adjust the install_path in the following code snipet and copy and paste it into your terminal.
+Adjust the install path (here D:) in the following code snipet and copy all the uncommented lines one by one into your terminal.
 
 ```shell
 # ENVIRONMENT

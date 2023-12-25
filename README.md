@@ -74,13 +74,11 @@ See below for the links to these models.
 d:
 git clone https://github.com/Bl4ckh34d/AIssistant.git
 conda create -p D:\AIssistant\env python=3.10.11 pytorch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 cuda-python pytorch-cuda=12.1 -c pytorch -c nvidia
-# conda create -p D:\AIssistant\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
 conda activate D:\AIssistant\env
 
 # LLM
-conda install -c "nvidia/label/cuda-12.3.1" cuda-toolkit
 conda install -c "nvidia/label/cuda-12.2.2" cuda-toolkit
-pip install llama-cpp-python --prefer-binary --extra-index-url=https://jllllll.github.io/llama-cpp-python-cuBLAS-wheels/textgen/AVX2/cu122
+pip install https://github.com/jllllll/llama-cpp-python-cuBLAS-wheels/releases/download/wheels/llama_cpp_python-0.2.24+cu121-cp310-cp310-win_amd64.whl
 pip install numpy==1.22 --force
 
 # TTS

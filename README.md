@@ -114,5 +114,5 @@ STT:
 TTS:
 - tts_models--en--jenny--jenny (should download automatically once started)
 
-## If you enjoy what I make, consider buying me a coffee for all these sleepless nights coding away (:
+## If you enjoy what I make, consider buying me a coffee (:
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/danielbenew)

@@ -1,7 +1,7 @@
-import re, threading, queue, os, sys
+import threading, queue, os, sys
 import soundfile as sf, sounddevice as sd, variables as vars, helpers as help
 from TTS.api import TTS
-from colorama import Fore, Back, Style, init
+from colorama import Fore, Style, init
 
 # Initialize colorama
 init()
@@ -71,15 +71,15 @@ def infer(message, timestamp):
         
 def prompt_llm(timestamp):    
     
-    print_to_console(vars.ai_name, timestamp)
-    
     messages = []
     messages.extend(help.build_system_prompt_with_objects())
     messages.extend(help.build_user_prompt_with_objects())
-    
+
     if vars.verbose_history:
         print(Fore.CYAN + "CHAT HISTORY AS TEXT:" + Style.RESET_ALL)
-        print(help.build_system_prompt() + help.build_user_prompt())
+        print(messages)
+        
+    print_to_console(vars.ai_name, timestamp)
     
     first_token_processed = False
     second_token_processed = False

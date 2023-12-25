@@ -159,6 +159,11 @@ def get_current_time():
     formatted_time = current_datetime.strftime("%H:%M:%S") + " " + get_current_timezone()
     return formatted_time
 
+def get_current_day():
+    current_datetime = datetime.datetime.now()
+    day_as_word = current_datetime.strftime("%A")
+    return day_as_word
+
 def generate_file_path(filetype):
     current_datetime = datetime.datetime.now()
     formatted_datetime = current_datetime.strftime("%Y-%m-%d")
@@ -641,11 +646,11 @@ def swap_persona():
 
 # LLM PROMPT 
 def build_message_title(speaker, timestamp):
-    title = f"{speaker} ({timestamp})\n"
+    title = f"{speaker} ({timestamp})"
     return title
 
 def build_message_body(text):
-    body = f"{text}\n\n"
+    body = f"{text}"
     return body
 
 def construct_message(speaker, text, timestamp):
@@ -666,14 +671,14 @@ def construct_message_with_objects(speaker, text, timestamp):
     return message
 
 def build_system_prompt():
-    system_prompt = vars.persona + vars.active_mood + vars.rules + vars.instructions
+    system_prompt = vars.persona + vars.active_mood + vars.rules + vars.instructions + f"Current it is {get_current_day()}, {get_current_date()} at {get_current_time()}. "
     return system_prompt
 
 def build_system_prompt_with_objects():
     message = [
         {
             'role':'system',
-            'content':vars.persona + vars.active_mood + vars.rules + vars.instructions
+            'content':vars.persona + vars.active_mood + vars.rules + vars.instructions + f"Current it is {get_current_day()}, {get_current_date()} at {get_current_time()}. "
         }
     ]
     return message
@@ -723,7 +728,7 @@ def populate_history_with_objects():
         message = [
             {
                 'role':'system',
-                'content':'Your memories from an old conversation:\n\n'
+                'content':'Your memories from an old conversation:'
             }
         ]
         temp_history.extend(message)
@@ -732,7 +737,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':f'{entry["speaker"]} ({get_current_time()})\n'
+                    'content':f'{entry["speaker"]} ({get_current_time()})'
                 }
             ]
             temp_history.extend(message)
@@ -748,7 +753,7 @@ def populate_history_with_objects():
         message = [
             {
                 'role':'system',
-                'content':'Your memories from a recent conversation:\n\n'
+                'content':'Your memories from a recent conversation:'
             }
         ]
         temp_history.extend(message)
@@ -757,7 +762,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':f'{entry["speaker"]} ({get_current_time()})\n'
+                    'content':f'{entry["speaker"]} ({get_current_time()})'
                 }
             ]
             temp_history.extend(message)
@@ -774,7 +779,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':'Your memories from todays conversation:\n\n'
+                    'content':'Your memories from todays conversation:'
                 }
             ]
             temp_history.extend(message)
@@ -783,7 +788,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':f'{entry["speaker"]} ({get_current_time()})\n'
+                    'content':f'{entry["speaker"]} ({get_current_time()})'
                 }
             ]
             temp_history.extend(message)
@@ -891,6 +896,9 @@ def write_to_json(sender, message):
         json.dump(memory, json_file, indent=4)
 
 def build_memory():
+    # Update system prompts
+    vars.update_prompts()
+    
     # Get a list of all JSON files in the specified directory
     json_files = [filename for filename in os.listdir(vars.directory_text) if filename.endswith('.json')]
 

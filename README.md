@@ -58,9 +58,9 @@ Miniconda:
 - TTS currently causes an error, which is why you will have to add one line of code to the api.py script as described below.
 - Download the **Large Language Model** (currently **only GGUF** supported) as well as the **Sentiment Analysis Model** and place them in the respective directory under models:
   -> The model and config file (**LLM**) need to be inside a folder with matching name of the model
-  (ex. *../models/llm/starling-lm-7b-alpha.Q4_K_M/starling-lm-7b-alpha.Q4_K_M.gguf*).
+  (ex. *./models/llm/starling-lm-7b-alpha.Q4_K_M/starling-lm-7b-alpha.Q4_K_M.gguf*).
   -> The following files from the Sentiment Analysis Model need to be placed into
-  *../models/sa/cardiffnlp--twitter-roberta-base-sentiment-latest/cardiffnlp--twitter-roberta-base-sentiment-latest/pytorch_model.bin*:
+  *./models/sa/cardiffnlp--twitter-roberta-base-sentiment-latest/cardiffnlp--twitter-roberta-base-sentiment-latest/pytorch_model.bin*:
     - config.json
     - pytorch_model.bin
     - special_tokens_map.json

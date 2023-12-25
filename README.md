@@ -69,14 +69,9 @@ Adjust the install path (here D:) in the following code snipet and copy all the 
 ```shell
 # ENVIRONMENT
 d:
-https://github.com/Bl4ckh34d/AIssistant.git
+git clone https://github.com/Bl4ckh34d/AIssistant.git
 conda create -p D:\AIssistant\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
 conda activate D:\AIssistant\env
-
-#Obsolete
-#conda create -p D:\AI\env python=3.10.11
-#pip install torch -f https://download.pytorch.org/whl/torch_stable.html
-#conda install -c nvidia cuda-python=11.8
 
 # LLM
 conda install -c "nvidia/label/cuda-12.2.2" cuda-toolkit
@@ -96,7 +91,7 @@ choco install ffmpeg
 pip install pygetwindow pywin32 pyautogui keyboard
 
 # THERE IS A PROBLEM IN THE TTS PACKAGE. THE FOLLOWING NEEEDS TO BE CHANGED FOR THIS TO WORK:
-# Inside env\lib\site-packages\TTS\api.py insert the following line before 226:
+# Inside \env\lib\site-packages\TTS\api.py insert the following line before 226:
 # if self.model_name is not None and "xtts" in self.model_name:
 # and indent the following if-statements.
 ```

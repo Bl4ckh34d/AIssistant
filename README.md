@@ -53,12 +53,20 @@ Miniconda:
 
 
 ## INSTALLATION:
-Open a Windows Terminal and navigate to the folder where you want to install the AIssistant (cd path/of/directory).
-Adjust the install path (here D:) in the following lines of code where applicable and copy all the uncommented lines (without # in front) one by one into your terminal and hit enter after each line. If prompted to install/create files, confirm with yes (y).
-TTS currently causes an error, which is why you will have to add one line of code to the api.py script as described below.
-Download the Large Language Model (currently only GGUF supported) as well as the Sentiment Analysis Model and place them in the respective directory under models.
-The model and config file (LLM) need to be inside a folder with matching name of the model (ex. ../models/llm/starling-lm-7b-alpha.Q4_K_M/starling-lm-7b-alpha.Q4_K_M.gguf).
-The following files from the Sentiment Analysis Model need to be placed into "../models/sa/cardiffnlp--twitter-roberta-base-sentiment-latest/cardiffnlp--twitter-roberta-base-sentiment-latest/pytorch_model.bin": config.json, pytorch_model.bin, special_tokens_map.json, tf_model.h5, vocab.json
+- Open a Windows Terminal and navigate to the folder where you want to install the AIssistant (*cd path/of/directory*).
+- Adjust the install path (here D:) in the following lines of code where applicable and copy all the uncommented lines (without # in front) one by one into your terminal and hit enter after each line. If prompted to install/create files, confirm with yes (y).
+- TTS currently causes an error, which is why you will have to add one line of code to the api.py script as described below.
+- Download the **Large Language Model** (currently **only GGUF** supported) as well as the **Sentiment Analysis Model** and place them in the respective directory under models:
+  -> The model and config file (**LLM**) need to be inside a folder with matching name of the model
+  (ex. *../models/llm/starling-lm-7b-alpha.Q4_K_M/starling-lm-7b-alpha.Q4_K_M.gguf*).
+  -> The following files from the Sentiment Analysis Model need to be placed into
+  *../models/sa/cardiffnlp--twitter-roberta-base-sentiment-latest/cardiffnlp--twitter-roberta-base-sentiment-latest/pytorch_model.bin*:
+    - config.json
+    - pytorch_model.bin
+    - special_tokens_map.json
+    - tf_model.h5
+    - vocab.json
+
 See below for the links to these models.
 
 ```shell

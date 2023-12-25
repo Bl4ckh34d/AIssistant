@@ -73,7 +73,8 @@ See below for the links to these models.
 # ENVIRONMENT
 d:
 git clone https://github.com/Bl4ckh34d/AIssistant.git
-conda create -p D:\AIssistant\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
+conda create -p D:\AIssistant\env python=3.10.11 pytorch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 cuda-python pytorch-cuda=12.1 -c pytorch -c nvidia
+# conda create -p D:\AIssistant\env python=3.10.11 pytorch torchvision torchaudio cuda-python pytorch-cuda=11.8 -c pytorch -c nvidia -y
 conda activate D:\AIssistant\env
 
 # LLM

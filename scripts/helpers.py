@@ -18,7 +18,7 @@ def setup_user_name():
     print("   / _ \    | |  / __| / __| | | / __| | __|  / _` | | '_ \  | __|")
     print("  / ___ \   | |  \__ \ \__ \ | | \__ \ | |_  | (_| | | | | | | |_ ")
     print(" /_/   \_\ |___| |___/ |___/ |_| |___/  \__|  \__,_| |_| |_|  \__|\n" + Style.RESET_ALL)
-    print("YOUR " + Fore.MAGENTA + "TOXIC" + Style.RESET_ALL + "AND" + Fore.MAGENTA + "USELESS" + Style.RESET_ALL + " AI ASSISTANT - " + Fore.MAGENTA + "BETTER" + Style.RESET_ALL + " THAN HAVING " + Fore.MAGENTA + "NO FRIENDS" + Style.RESET_ALL)
+    print("YOUR " + Fore.MAGENTA + "TOXIC " + Style.RESET_ALL + "AND " + Fore.MAGENTA + "USELESS" + Style.RESET_ALL + " AI ASSISTANT - " + Fore.MAGENTA + "BETTER" + Style.RESET_ALL + " THAN HAVING " + Fore.MAGENTA + "NO FRIENDS" + Style.RESET_ALL)
     print()
     print("====================================================================")
     print()

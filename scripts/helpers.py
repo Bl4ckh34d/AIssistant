@@ -171,12 +171,22 @@ def generate_file_path(filetype):
     return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
 def split_reply_to_chunks(message):
-    chunk_pattern = r'[.!?;–—\u2026\u2014\n](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
+    chunk_pattern = r'([.!?]|(?:–|—|\u2026|\u2014))\s*(?=\s|$)'
     chunks = re.split(chunk_pattern, message)
-    chunks = [chunk.strip() for chunk in re.split(chunk_pattern, message) if chunk.strip()]
+   
+    chunks = [chunk.strip() for chunk in chunks if chunk.strip()]
+    modified_chunks = []
+    for i in range(0, len(chunks), 2):
+        sentence = chunks[i]
+        if i + 1 < len(chunks):
+            punctuation = chunks[i + 1]
+            if punctuation and punctuation in ".!?":
+                sentence += punctuation
+        modified_chunks.append(sentence)
+    
     if vars.verbose_tts:
-        print(chunks)
-    return chunks
+        print(modified_chunks)
+    return modified_chunks
 
 def split_message_to_sentences(message):
     sentence_pattern = r'(?<=[.!?–—]) +'

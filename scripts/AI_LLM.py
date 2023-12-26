@@ -55,18 +55,18 @@ def write_conversation(sender, message, timestamp):
 def print_to_console(sender, timestamp, message=None):
     print("====================================================================")
     if sender == vars.user_name:
-        print(Fore.YELLOW + f"{vars.user_name} " + Style.RESET_ALL + f"({timestamp})\n" + message)
-
+        print(Fore.YELLOW + f"{vars.user_name} " + Style.RESET_ALL + f"({timestamp}):\n" + message)
     else:
-        print(Fore.MAGENTA + f"{vars.ai_name} " + Style.RESET_ALL + f"({timestamp})")
-        
-    if vars.verbose_token:
-        print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(sender, message, timestamp))} ({help.get_token_count(help.build_system_prompt() + help.build_user_prompt())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
+        print(Fore.MAGENTA + f"{vars.ai_name} " + Style.RESET_ALL + f"({timestamp}):")
 
 def infer(message, timestamp):
     help.trim_chat_history()    
     print_to_console(vars.user_name, timestamp, message)
     write_conversation(vars.user_name, message, timestamp)
+    
+    if vars.verbose_token:
+        print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(vars.user_name, message, timestamp))} ({help.get_token_count(help.build_system_prompt() + help.build_user_prompt())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)
+    
     prompt_llm(timestamp)
         
 def prompt_llm(timestamp):    
@@ -122,7 +122,10 @@ def prompt_llm(timestamp):
     else:
         print()
         
-        write_conversation(vars.ai_name, reply, timestamp)   
+        write_conversation(vars.ai_name, reply, timestamp)
+        
+        if vars.verbose_token:
+            print(Fore.CYAN + f'[Tokens: {help.get_token_count(help.construct_message(vars.ai_name, reply, timestamp))} ({help.get_token_count(help.build_system_prompt() + help.build_user_prompt())}/{vars.llm_n_ctx})]\n' + Style.RESET_ALL)  
                      
         reply = help.filter_text(reply)
         

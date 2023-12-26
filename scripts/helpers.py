@@ -138,8 +138,8 @@ def show_instructions():
 def get_token_count(text):
     if vars.llm_model_file_type == "gguf":
         text = text.encode('utf-8')
-        llm_embd_inp = (llama_cpp.llama_token * (len(text) + 1))()
-        return llama_cpp.llama_tokenize(vars.llm_ctx, text, len(text), llm_embd_inp, len(llm_embd_inp), True, False)
+        token_count = len(vars.llm.tokenize(text, True, True))
+        return token_count
 
 def get_current_date():
     current_datetime = datetime.datetime.now()
@@ -151,12 +151,13 @@ def get_current_timezone():
     now = datetime.datetime.now()
     local_offset = now.astimezone().utcoffset()
     formatted_offset = local_offset.total_seconds() // 3600
-    formatted_offset = f"UTC{'+' if formatted_offset >= 0 else ''}{int(formatted_offset)}"
+    formatted_offset = now.astimezone().tzname()
+    #formatted_offset = f"UTC{'+' if formatted_offset >= 0 else ''}{int(formatted_offset)}"
     return formatted_offset
 
 def get_current_time():
     current_datetime = datetime.datetime.now()
-    formatted_time = current_datetime.strftime("%H:%M:%S") + " " + get_current_timezone()
+    formatted_time = current_datetime.strftime("%H:%M:%S")
     return formatted_time
 
 def get_current_day():
@@ -170,7 +171,7 @@ def generate_file_path(filetype):
     return vars.directory_text + f"/session_{formatted_datetime}.{filetype}"
 
 def split_reply_to_chunks(message):
-    chunk_pattern = r'[.!?;–—\'"\u2026\u2014\n](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
+    chunk_pattern = r'[.!?;–—\u2026\u2014\n](?=\s|$)' #r'(?<=[.!?:—;](?!\w))+'
     chunks = re.split(chunk_pattern, message)
     chunks = [chunk.strip() for chunk in re.split(chunk_pattern, message) if chunk.strip()]
     if vars.verbose_tts:
@@ -178,7 +179,7 @@ def split_reply_to_chunks(message):
     return chunks
 
 def split_message_to_sentences(message):
-    sentence_pattern = r'(?<=[.!?]) +'
+    sentence_pattern = r'(?<=[.!?–—]) +'
     sentences = re.split(sentence_pattern, message)
     sentences = [sentence.strip() for sentence in re.split(sentence_pattern, message) if sentence.strip()]
     if vars.verbose_tts:
@@ -191,7 +192,7 @@ def extract_date_from_filename(filename):
 
 def write_to_file(sender, message, timestamp):
     with open(generate_file_path("txt"), 'a', encoding="utf-8") as file:
-        file.write(f"{construct_message(sender, message, timestamp)}")
+        file.write(f"{construct_message(sender, message, timestamp)}\n\n")
         
 def write_to_current_chat_history(sender, text):
     
@@ -206,7 +207,7 @@ def write_to_current_chat_history(sender, text):
         'role': role,
         'speaker': sender,
         'text': text,
-        "token": get_token_count(f"{sender}: {text}"),
+        "token": get_token_count(f"{sender} ({get_current_time()}): {text}"),
         'timestamp': f"{get_current_time()}"
     }
     
@@ -250,73 +251,75 @@ def json_to_current_chat_history(json_f, token_budget):
 def replace_acronym(match):
     
     phonetic_mapping = {
-        'A': 'aigh ',
-        'B': 'bee ',
-        'C': 'see ',
-        'D': 'dee ',
-        'E': 'eeh ',
-        'F': 'eff ',
-        'G': 'gee ',
-        'H': 'age ',
-        'I': 'aye ',
-        'J': 'jay ',
-        'K': 'kay ',
-        'L': 'el ',
-        'M': 'em ',
-        'N': 'en ',
-        'O': 'ou ',
-        'P': 'pee ',
-        'Q': 'queue ',
-        'R': 'ar ',
-        'S': 'as ',
-        'T': 'tee ',
-        'U': 'you ',
-        'V': 'vee ',
-        'W': 'doubleyou ',
-        'X': 'eggs ',
-        'Y': 'why ',
-        'Z': 'zett ',
-        'a': 'aigh ',
-        'b': 'bee ',
-        'c': 'see ',
-        'd': 'dee ',
-        'e': 'eeh ',
-        'f': 'eff ',
-        'g': 'gee ',
-        'h': 'age ',
-        'i': 'aye ',
-        'j': 'jay ',
-        'k': 'kay ',
-        'l': 'el ',
-        'm': 'em ',
-        'n': 'en ',
-        'o': 'ou ',
-        'p': 'pee ',
-        'q': 'queue ',
-        'r': 'ar ',
-        's': 'as ',
-        't': 'tee ',
-        'u': 'you ',
-        'v': 'vee ',
-        'w': 'doubleyou ',
-        'x': 'eggs ',
-        'y': 'why ',
-        'z': 'zett ',
-        '0': 'zero ',
-        '1': 'one ',
-        '2': 'two ',
-        '3': 'three ',
-        '4': 'four ',
-        '5': 'five ',
-        '6': 'six ',
-        '7': 'seven ',
-        '8': 'eight ',
-        '9': 'nine ',
-        '&': 'and '
+        'A': ' aigh',
+        'B': ' bee',
+        'C': ' see',
+        'D': ' dee',
+        'E': ' eeh',
+        'F': ' eff',
+        'G': ' gee',
+        'H': ' age',
+        'I': ' eye',
+        'J': ' jay',
+        'K': ' kay',
+        'L': ' ell',
+        'M': ' em',
+        'N': ' en',
+        'O': ' ou',
+        'P': ' pee',
+        'Q': ' queue',
+        'R': ' ar',
+        'S': ' as',
+        'T': ' tee',
+        'U': ' you',
+        'V': ' vee',
+        'W': ' doubleyou',
+        'X': ' eggs',
+        'Y': ' why',
+        'Z': ' zett',
+        'a': ' aigh',
+        'b': ' bee',
+        'c': ' see',
+        'd': ' dee',
+        'e': ' eeh',
+        'f': ' eff',
+        'g': ' gee',
+        'h': ' age',
+        'i': ' eye',
+        'j': ' jay',
+        'k': ' kay',
+        'l': ' ell',
+        'm': ' em',
+        'n': ' en',
+        'o': ' ou',
+        'p': ' pee',
+        'q': ' queue',
+        'r': ' ar',
+        's': 's',
+        't': ' tee',
+        'u': ' you',
+        'v': ' vee',
+        'w': ' doubleyou',
+        'x': ' eggs',
+        'y': ' why',
+        'z': ' zett',
+        '0': ' zero',
+        '1': ' one',
+        '2': ' two',
+        '3': ' three',
+        '4': ' four',
+        '5': ' five',
+        '6': ' six',
+        '7': ' seven',
+        '8': ' eight',
+        '9': ' nine',
+        '&': ' and'
     }
-    
-    acronym = match.group(0)
-    return ''.join(phonetic_mapping.get(char, char) for char in acronym)
+    if (match != "YOU"):
+        acronym = match.group(0)
+        return ''.join(phonetic_mapping.get(char, char) for char in acronym)
+    else:
+        return match
 
 def replace_float(match):
     number = match.group()
@@ -512,7 +515,8 @@ def filter_text(input_text):
     math_pattern = re.compile(r'mc^2|[+*/^=≠><≥≤√±%∞°∑∏∫≈∝∀∃∈∉∅]|sqrt|Sqrt|²|³|mc') #Minus frequently used by model despite telling it not to do it.
     numbered_pattern = re.compile(r'(?:^|\n|\s+)(?:[1-9]|1[0-9]|20)\. ')
     smiley_pattern = re.compile(r"(\s:\)|\s:\(|\s;\)|\s:D|\s:P|\s:\||\sB\)|\s:-\*|\s:-O|\s:\/)")
-    acronym_pattern = re.compile(r'\b(?:[A-Z0-9&]*[A-Z]){2,3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){3}[A-Z0-9&]*\b')
+    #acronym_pattern = re.compile(r'\b(?:[A-Z0-9&]*[A-Z]){2,3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){3}[A-Z0-9&]*\b')
+    acronym_pattern = re.compile(r'\b(?:[A-Z0-9&]*[A-Z]){2,3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){3}[A-Z0-9&]*\b|\b(?:[A-Z0-9&]*[A-Z]){2,}[a-z]?\b')
     # Modified acronym pattern excluding the specific acronym
     modified_acronym_pattern = re.compile(
         rf'\b(?!(?:{vars.ai_name}))' + acronym_pattern.pattern
@@ -646,7 +650,7 @@ def swap_persona():
 
 # LLM PROMPT 
 def build_message_title(speaker, timestamp):
-    title = f"{speaker} ({timestamp})"
+    title = f"{speaker} ({timestamp}): "
     return title
 
 def build_message_body(text):
@@ -661,30 +665,30 @@ def construct_message_with_objects(speaker, text, timestamp):
     message = [
             {
                 'role':'system',
-                'content':f'{speaker} ({timestamp})\n'
+                'content':f'{speaker} ({timestamp}): '
             },
             {
                 'role':f'{speaker}',
-                'content':f'{text}\n\n'
+                'content':f'{text}'
             }        
         ]
     return message
 
 def build_system_prompt():
-    system_prompt = vars.persona + vars.active_mood + vars.rules + vars.instructions + f"Current it is {get_current_day()}, {get_current_date()} at {get_current_time()}. "
+    system_prompt = vars.persona + vars.active_mood + vars.rules + vars.instructions + f"Currently it is {get_current_day()}, {get_current_date()} at {get_current_time()} (Time Zone: {get_current_timezone()}). "
     return system_prompt
 
 def build_system_prompt_with_objects():
     message = [
         {
             'role':'system',
-            'content':vars.persona + vars.active_mood + vars.rules + vars.instructions + f"Current it is {get_current_day()}, {get_current_date()} at {get_current_time()}. "
+            'content':vars.persona + vars.active_mood + vars.rules + vars.instructions + f"Currently it is {get_current_day()}, {get_current_date()} at {get_current_time()} (Time Zone: {get_current_timezone()}). "
         }
     ]
     return message
 
 def build_user_prompt():
-    user_prompt = populate_history() + "\n" + build_message_title(vars.ai_name, get_current_time()) + "\n"
+    user_prompt = populate_history() + build_message_title(vars.ai_name, get_current_time())
     return user_prompt
 
 def build_user_prompt_with_objects():
@@ -692,7 +696,7 @@ def build_user_prompt_with_objects():
     message = [
         {
             'role':'system',
-            'content':f'{vars.ai_name} ({get_current_time()})\n'
+            'content':f'{vars.ai_name} ({get_current_time()}): '
         }
     ]
     messages.extend(populate_history_with_objects())
@@ -703,20 +707,20 @@ def build_user_prompt_with_objects():
 def populate_history():
     temp_history = ""
     if vars.history_old != []:
-        temp_history = temp_history + 'Your memories from an old conversation:\n\n'
+        temp_history = temp_history + 'Your memories from an old conversation: '
     
         for entry in vars.history_old:
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
         
     if vars.history_recent != []:
-        temp_history = temp_history + 'Your memories from a recent conversation:\n\n'
+        temp_history = temp_history + 'Your memories from a recent conversation: '
     
         for entry in vars.history_recent:
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
                 
     if vars.history_current != []:
         if len(vars.history_current) > 1:
-            temp_history = temp_history + 'Your memories from todays conversation:\n\n'
+            temp_history = temp_history + 'Your memories from todays conversation: '
     
         for entry in vars.history_current:
             temp_history = temp_history + build_message_title(entry['speaker'], entry['timestamp']) + build_message_body(entry['text'])
@@ -728,7 +732,7 @@ def populate_history_with_objects():
         message = [
             {
                 'role':'system',
-                'content':'Your memories from an old conversation:'
+                'content':'Your memories from an old conversation: '
             }
         ]
         temp_history.extend(message)
@@ -737,7 +741,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':f'{entry["speaker"]} ({get_current_time()})'
+                    'content':f'{entry["speaker"]} ({get_current_time()}): '
                 }
             ]
             temp_history.extend(message)
@@ -753,7 +757,7 @@ def populate_history_with_objects():
         message = [
             {
                 'role':'system',
-                'content':'Your memories from a recent conversation:'
+                'content':'Your memories from a recent conversation: '
             }
         ]
         temp_history.extend(message)
@@ -762,7 +766,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':f'{entry["speaker"]} ({get_current_time()})'
+                    'content':f'{entry["speaker"]} ({get_current_time()}): '
                 }
             ]
             temp_history.extend(message)
@@ -779,7 +783,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':'Your memories from todays conversation:'
+                    'content':'Your memories from todays conversation: '
                 }
             ]
             temp_history.extend(message)
@@ -788,7 +792,7 @@ def populate_history_with_objects():
             message = [
                 {
                     'role':'system',
-                    'content':f'{entry["speaker"]} ({get_current_time()})'
+                    'content':f'{entry["speaker"]} ({get_current_time()}): '
                 }
             ]
             temp_history.extend(message)
@@ -885,7 +889,7 @@ def write_to_json(sender, message):
                 "role": role,
                 "speaker": sender,
                 "text": message,
-                "token": get_token_count(f"{sender}: {message}"),
+                "token": get_token_count(f"{sender} ({get_current_time()}): {message}"),
                 "timestamp": f"{get_current_time()}, {get_current_date()}"
             }
         ]

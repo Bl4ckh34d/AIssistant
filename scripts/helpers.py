@@ -352,7 +352,7 @@ def replace_math_symbols(match):
     replacements = {
         #'-': ' minus ',
         '+': ' plus ',
-        '*': ' multiplied by ',
+        #'*': ' multiplied by ',
         '/': ' divided by ',
         '^': ' raised to ',
         '=': ' equals ',

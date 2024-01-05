@@ -118,7 +118,6 @@ TTS:
 - Sentiment Score of LLM seems to not work as expected, need to revisit
 - Browser extensions (Chrome and Firefox) for remote control through LLM
 - Implement Youtube API / Google API / ChatGPT API
-- Include an easy option to turn the LLM reply on and off
 - Possibly integrate Open Interpreter and ditch my own code execution completely at some point, if OI integrates well into this.
 - Since I don't use LangChain but rather built my own Longterm Memory System, I still need to implement the following things:
   - Once a json-Log is finished (current date =/= log date), and thie file is selected randomly to be in the memory, the LLM should add a summary of the conversation to the file. (skip this step if the summary is already in the file).

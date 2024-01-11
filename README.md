@@ -9,7 +9,7 @@ A LLM assistant for personal computers that can open and close programs, tabs, f
 - I created this for myself in a private capacity and not for commercial use. It is not well tested, nor professionally built and the model prompt is TOXIC!
 - This is WIP and might not work as expected.
 - Adjust the paths in [commands.py](https://github.com/Bl4ckh34d/AIssistant/blob/5f7ef44548ab6323a588dc9b6d2560adafca794d/scripts/commands.py#L13-L30) to your needs. This script as well as [commands_list.py](https://github.com/Bl4ckh34d/AIssistant/blob/main/scripts/command_list.py) are interesting for you, if you want to add your own functionality. Saving and deleting files is currently not implemented for safety reasons. Also a more fine-grained control still needs to be worked out to give multiple commands in a single sentence.
-- Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users mashine. The users transcribed voice input is used for this. This way it is more reliable to trigger functions and also faster than waiting for the LLM to get it right.
+- Also note, that not the answer of the LLM is responsible for triggering functions and tasks on the users machine. The users transcribed voice input is used for this. This way it is more reliable to trigger functions and also faster than waiting for the LLM to get it right.
 
 ## USAGE:
 First you might want to adjust the paths to your programs and some other things inside [variables.py](https://github.com/Bl4ckh34d/AIssistant/blob/ac081c086708e21e9cc5ef2cf7832181d124d44b/scripts/variables.py#L75-L78).
